@@ -244,7 +244,7 @@ header.mob{display:none}
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"+Ya7lSRtIWWYAMYGRSN5DA==\",\"iv\":\"JiDFiUzZWy5APsyM\",\"ct\":\"dggjn/fkSsMeLhdDH89a+RHbPLU400eShORqQ/SrnWY+XEmh9Ri/rRH5BUpei0nN2zvXeHPuMignoAnkmLjDVEqR2obB5nzkzVvhYomLxodBdlCVmBQiDpHSrjVKr/0t8esnxt9hODj2oTiXcMxsoYuf5KfZxZAVp0ygWrQwwSuihqt7A9DkjDjYu7M0/oUWy6tiXNGCBwNa7g9+I6xZhKPKqMuVsQ7q5uNNgG7edwyRnQu2wZVSvMSi0PMwZvhKmAtumjuc7STwPejeGJss\"}";
+const ENCRYPTED = "{\"salt\":\"5i8SJHKj0t1D5PNGj2I4kQ==\",\"iv\":\"afWHr6xqC8UW0MYa\",\"ct\":\"zMgpTQsuS1X7h1DDDRGtRoAuW45MxPFVROoyyTIDzUEcVcCWUpDXe4FuExOk6PprLnVZz/PWgmps71A2OiubQIaqCYJedpt2fH2a4ae637JrB0QgxLxJAYJ+qk43Rfq8qQT0upWTgdDKiIGedcMnud1t95SEyoK2tyGjuBAWsylTB0I6kvQTn4r8ZPAHxdtXsMC4Xejopfe9di+VlV/Kcd9LOwJUzHjBbddohOWgl03WwsE2VQHwQ+V+obwYWkJ79Sz8oPWtdIloSI7rJvkj\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -514,10 +514,30 @@ function statusBanner(){
     <div class="st-sub">${esc(s.time || "")}</div></div>`;
   return b;
 }
+function unassignedCard(){
+  if(MODE !== "admin") return null;
+  const rows = DB.unassignedRecordings?.recordings || [];
+  if(!rows.length) return null;
+  const c = el("div","card","<h2>⚠️ NEEDS STUDENT ASSIGNMENT</h2>");
+  const ul = el("ul","repeat");
+  rows.forEach(r => {
+    const names = (r.observedNames||[]).join(", ") || "(no participant name detected)";
+    const li = el("li");
+    li.innerHTML = `<div><div><b>${esc(names)}</b></div>
+      <div style="font-size:calc(15px * var(--fs));color:var(--muted)">${esc(r.recordingName||"")} · seen ${esc(String(r.seenCount||1))}×</div></div>`;
+    ul.appendChild(li);
+  });
+  c.appendChild(ul);
+  c.appendChild(el("div","",`<div style="font-size:calc(15px * var(--fs));color:var(--muted);margin-top:10px">
+    Terminal: <code>python3 scripts/assign_recording.py --list</code> then <code>--id &lt;id&gt; --slug &lt;student&gt;</code></div>`));
+  return c;
+}
 function renderHome(){
   const ls = lessons();
   const sb = statusBanner();
   if(sb) view.appendChild(sb);
+  const ua = unassignedCard();
+  if(ua) view.appendChild(ua);
   if(!ls.length){
     view.appendChild(el("div","card","<div class='empty'>No lesson data yet.<br>After your next lesson, your review will appear here automatically ✨</div>"));
     return;
