@@ -254,7 +254,7 @@ header.mob{display:none}
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"52/zNvENij15JPYgXKzS3w==\",\"iv\":\"a7YRLJrEqKPo6j1D\",\"ct\":\"8SpDyvfxNoLPgP9rHc+1FJ94fAkMb+rHjFcHlfiNuqdH4gAEZ8DNbEQIdxInBuIPjqyx/+IsNegnjZQ4NGX5vTLuPXZvEmu5APqSddol8DGgPArCWtWRADCA+FpsnswzBCA1JyvQg5xWXn6bW/EjigWLJP376+UZZiUlGbBJTBFtT+R3QSjUNnSfKBYwK0b7WEQAucF+gDmio8ZRqWico60saFRx00s+RZyBlBpyUh/yUqm6hEzBSR8Ix3F3YCDyx92p9wMzCl+38vvFajfY\"}";
+const ENCRYPTED = "{\"salt\":\"2R9g9+lCEJTBZMvWL6GjnA==\",\"iv\":\"AcRN1MsswLHJSXe8\",\"ct\":\"e83VAwU+ncsot4cB2IDrWL+YvDlPijRa6+K/fhMnkCL2LnFOpi2mRJKZWLAuXD8quDcEBtUFKlK1qaEj/DfqXUhCEGE+tO2uPzA55XVHSKlHrgi3/0j+4hna7qGXaw2OogBkaruQjb1Vi6CpV/c36+mW4TFtA4bZ5juHRx+IT4V07/swKvOIzfQmNZujIGkg4N7vKqGI2hiqStZBo8PbvunOC/poUyA3BvoqYd/c37Fl+oyjlc3kP3QzaI1LQMK+OmItYRZXBQGy2vsH/yuL\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -542,12 +542,59 @@ function unassignedCard(){
     Terminal: <code>python3 scripts/assign_recording.py --list</code> then <code>--id &lt;id&gt; --slug &lt;student&gt;</code></div>`));
   return c;
 }
+function karteCard(){
+  if(MODE !== "admin") return null;
+  const entries = STU.karte?.entries || [];
+  if(!entries.length) return null;
+  const k = entries[entries.length-1];
+  const row = (label, html) => html ? `<div style="margin-top:8px"><span style="color:var(--muted);font-size:calc(14px * var(--fs))">${label}</span><div style="font-size:calc(17px * var(--fs));line-height:1.7">${html}</div></div>` : "";
+  const list = arr => (arr||[]).map(x => renderJa(x)).join(" ・ ");
+  const c = el("div","card",`<h2>📋 前回の引き継ぎ · ${esc(k.date||"")}</h2>`);
+  c.appendChild(el("div","",
+    row("話したこと", list(k.topics)) +
+    row("どこまで", k.stoppedAt ? renderJa(k.stoppedAt) : "") +
+    row("約束・宿題", list(k.promises)) +
+    row("メモ", k.teacherNotes ? renderJa(k.teacherNotes) : "") +
+    row("次回の重点", list(k.nextFocus))
+  ));
+  return c;
+}
+function grammarCard(){
+  if(MODE !== "admin") return null;
+  const gp = STU.grammarProgress;
+  if(!gp || !gp.lessons?.length) return null;
+  const c = el("div","card",`<h2>📚 教科書進捗 · ${esc((gp.curriculum||"").toUpperCase())}</h2>`);
+  const wrap = el("div");
+  wrap.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-top:12px";
+  gp.lessons.forEach(l => {
+    const covered = l.total ? (l.practiced + l.mastered) / l.total : 0;
+    const touched = l.total ? (l.introduced + l.practiced + l.mastered) / l.total : 0;
+    const bg = covered >= 1 ? "var(--accent)"
+      : covered > 0 ? "rgba(0,245,245,.45)"
+      : touched > 0 ? "rgba(0,245,245,.18)"
+      : "rgba(255,255,255,.07)";
+    const ink = covered >= 1 ? "#032222" : "var(--ink)";
+    const box = el("span");
+    box.style.cssText = `min-width:40px;text-align:center;padding:6px 4px;border-radius:6px;background:${bg};color:${ink};font-size:12px;cursor:default`;
+    box.title = `L${l.lesson}: 定着${l.mastered} / 練習${l.practiced} / 導入${l.introduced} / 全${l.total}項目`;
+    box.textContent = (l.book === 2 ? "II-" : "I-") + l.lesson;
+    wrap.appendChild(box);
+  });
+  c.appendChild(wrap);
+  c.appendChild(el("div","",`<div style="font-size:calc(13px * var(--fs));color:var(--muted);margin-top:10px">
+    薄い=導入あり / 中間=一部練習済み / 濃い=全項目練習済み（ホバーで内訳）</div>`));
+  return c;
+}
 function renderHome(){
   const ls = lessons();
   const sb = statusBanner();
   if(sb) view.appendChild(sb);
   const ua = unassignedCard();
   if(ua) view.appendChild(ua);
+  const kc = karteCard();
+  if(kc) view.appendChild(kc);
+  const gc = grammarCard();
+  if(gc) view.appendChild(gc);
   if(!ls.length){
     view.appendChild(el("div","card","<div class='empty'>No lesson data yet.<br>After your next lesson, your review will appear here automatically ✨</div>"));
     return;
