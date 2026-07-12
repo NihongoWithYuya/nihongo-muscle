@@ -124,7 +124,7 @@ header.mob{display:none}
 .chart svg{display:block}
 .chart text{font-family:"DM Sans",sans-serif}
 /* Statsだけを約70%の密度にする。ほかのタブのサイズは変えない */
-.stats-view{--fs:.7}
+.stats-view{--fs:.7;width:70%}
 .stats-view .tiles{gap:8px;margin-bottom:10px}
 .stats-view .tile{padding:11px 13px;border-radius:10px}
 .stats-view .card{padding:14px;margin-bottom:10px;border-radius:10px}
@@ -132,6 +132,7 @@ header.mob{display:none}
 .stats-view .legend{gap:6px 13px;margin-top:8px}
 .stats-view .legend i{width:8px;height:8px}
 .stats-view .ghostbtn{padding:8px 14px;min-height:32px}
+@media (max-width:900px){.stats-view{width:100%}}
 #tooltip{position:fixed;z-index:50;pointer-events:none;background:var(--surface2);border:1px solid var(--grid);
   border-radius:10px;padding:11px 14px;font-size:calc(18px * var(--fs));box-shadow:0 8px 24px rgba(0,0,0,.5);display:none;max-width:320px}
 #tooltip .tt-title{font-weight:600;margin-bottom:5px}
@@ -253,7 +254,7 @@ header.mob{display:none}
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"9HwSYf85mch2hb07MtZ4kA==\",\"iv\":\"gADtKC1KKfJhkkjn\",\"ct\":\"qWasmqBTuokRvFp02dBZkmbvBMq/5zXR2zqWYGbkutK3EIhYnUWoDPvHk2vRnCU5ysChcIVa1JlS9t6OGuGSo0vWmDR7wPGmqqpV15Fk5lnfqzp6s2Wqf7FgmIqeY85527sUf7TPxpWahjMQWvlDokS/6KDWd5+StfQt6Dqto3IFWDNdtpx9+LvBqR4kYhNpSYeeK50679Qo/i19xcEUR+xrw5XpEnBynTO2dzE6Cum0YzOm3PMljAuRionEtGq+fuVYCX7o3a513KbX7quL\"}";
+const ENCRYPTED = "{\"salt\":\"vNuSUBvft26Y1s0w2urOqw==\",\"iv\":\"y3pa3Z49/vGpHA/o\",\"ct\":\"DhGrwBgrGaHj8JaoBX6ziChRxvxJ6Wsg5StsZyotV2vKUK6LzxPn9m8k1f3ElHLquXNfNfjaE80VeBdv9wWoKzVn6sD0HFUfGadc/AJEiykz7fl5yBA1DuUNjQ/q6e5xiYmnXo1sTloYlM1aEEpGU6bq40QdTCAz0ac1KdeupmtqnRrlkAY+iT+XNsLJDEFmoT1dZVnmecGoOcDeusgIahiQQhtUSO389tWXUiHBOqdsiMQQDIfOWlZS1DiA1o0PagkAj8GvibM/J2jgg37E\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -429,20 +430,19 @@ function stackedBar(rows, cats){
   return svg;
 }
 function lineChart(labels, series, unit){
-  const scale = .7, chartFont = Math.round(CHF * scale);
-  const pad = {l:35, r:11, t:10, b:20}, w = Math.max(380, labels.length*52 + pad.l + pad.r), h = 168;
+  const pad = {l:50, r:16, t:14, b:28}, w = Math.max(380, labels.length*52 + pad.l + pad.r), h = 240;
   const yMax = Math.ceil(Math.max(4, ...series.flatMap(s => s.values.filter(v => v != null))) * 1.15);
-  const {svg, plotW, plotH} = chartFrame(w, h, pad, yMax, yMax <= 5 ? yMax : 4, chartFont);
+  const {svg, plotW, plotH} = chartFrame(w, h, pad, yMax, yMax <= 5 ? yMax : 4);
   const xs = i => pad.l + (labels.length === 1 ? plotW/2 : plotW * i / (labels.length-1));
   const ys = v => pad.t + plotH - plotH * v / yMax;
   series.forEach(s => {
     const pts = s.values.map((v,i) => v == null ? null : [xs(i), ys(v)]).filter(Boolean);
     if(pts.length > 1)
-      svg.appendChild(svgEl("path", {d:"M" + pts.map(p => p.join(",")).join("L"), fill:"none", stroke:s.color, "stroke-width":1.75, "stroke-linejoin":"round"}));
-    pts.forEach(p => svg.appendChild(svgEl("circle", {cx:p[0], cy:p[1], r:3.5, fill:s.color, stroke:css("--surface"), "stroke-width":1.4})));
+      svg.appendChild(svgEl("path", {d:"M" + pts.map(p => p.join(",")).join("L"), fill:"none", stroke:s.color, "stroke-width":2.5, "stroke-linejoin":"round"}));
+    pts.forEach(p => svg.appendChild(svgEl("circle", {cx:p[0], cy:p[1], r:5, fill:s.color, stroke:css("--surface"), "stroke-width":2})));
     const lastIdx = s.values.length - 1, lastV = s.values[lastIdx];
     if(lastV != null){
-      const t2 = svgEl("text", {x:xs(lastIdx), y:ys(lastV)-7, "text-anchor":"middle", "font-size":chartFont, "font-weight":600, fill:css("--ink2")});
+      const t2 = svgEl("text", {x:xs(lastIdx), y:ys(lastV)-10, "text-anchor":"middle", "font-size":CHF, "font-weight":600, fill:css("--ink2")});
       t2.textContent = lastV; svg.appendChild(t2);
     }
   });
@@ -456,7 +456,7 @@ function lineChart(labels, series, unit){
     hit.addEventListener("pointerleave", hideTT);
     svg.appendChild(hit);
   });
-  xLabels(svg, xs, labels, h - 6, chartFont);
+  xLabels(svg, xs, labels, h - 8);
   return svg;
 }
 function legendFor(names, colors){
