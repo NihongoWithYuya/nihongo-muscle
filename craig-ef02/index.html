@@ -140,6 +140,13 @@ header.mob{display:none}
 #tooltip .tt-row{display:flex;align-items:center;gap:8px;color:var(--ink2)}
 #tooltip .tt-row i{width:11px;height:11px;border-radius:3px;display:inline-block}
 #tooltip .tt-row b{margin-left:auto;color:var(--ink);font-variant-numeric:tabular-nums}
+/* --- selection translate popup --- */
+#selPop{position:fixed;z-index:61;display:none;background:var(--surface);border:1px solid var(--grid);border-radius:12px;
+  padding:13px 15px;max-width:min(360px,86vw);box-shadow:0 8px 24px rgba(15,23,42,.16);font-size:calc(16px * var(--fs));line-height:1.7}
+#selPop .sp-src{color:var(--muted);font-size:calc(13px * var(--fs));margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#selPop .sp-tr{font-weight:600}
+#selPop .sp-note{color:var(--muted);font-size:calc(11px * var(--fs));margin-top:8px}
+#selPop a{font-size:calc(14px * var(--fs))}
 /* --- category totals (sorted horizontal bars) --- */
 .catbars{display:grid;gap:9px}
 .catbar{display:grid;grid-template-columns:minmax(96px,auto) 1fr 36px;align-items:center;gap:10px;font-size:calc(16px * var(--fs))}
@@ -260,10 +267,11 @@ header.mob{display:none}
   </div>
 </div>
 <div id="tooltip"></div>
+<div id="selPop"></div>
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"ZU0mtV1hqrCHKGMwhyr/Cw==\",\"iv\":\"R3LWhYAJjW1OTYFB\",\"ct\":\"ZOOyIA6WUEJwBOfqGZZvW7uat/u47AeqGpaUolqr0iGTlvxserITtXktSgcHeMCVUIC5IZa069T135LhZwgMHJgwgZi5D5l27aC6xnAhHMCLNtyp4VeT/S8XxY1nwgp5yFWAhqcLiBaRT5g+tEYZ3amlXIFPlP3KKismYwzvwi7w4RaKanB4g1Lk1keEmSfYTwJYbnT6F4BzseZQwDC/Uo1lB9QysNQrwYlKGha9bTSmKXaO+el/EP3iBfatQSZixdu+dAQlYBSoYAyXFkYqqwnq\"}";
+const ENCRYPTED = "{\"salt\":\"MdVYNmMaWU33fO3J1Y7qhQ==\",\"iv\":\"GaOTH8QLlB/hkl7+\",\"ct\":\"+N2qXfjWgAyKTTeGF1z6fk95I8AuNOb+ra7+IOgrJt7MYdKYnfHVwEHFMqkq1PN+Ls03jLOskCGZz2Zw/cmRGnIUBs0bCXQKqEggx93+5aotiHFZl10sIrc2U1RYs7oHQeTlLFajM8mx/YyigM0dJYrCHjENY9CgEBT9/3nONMwyZ42w110+1xjNYividqcIPC9SF2WQ/DmzAmO2OlT6uWgIIuB0pa0LTbN99kjlgib/Midx+PeHtcPlALYuozUYmaDlb1LmAHnUBF1/UF0vIR8x\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -1095,6 +1103,107 @@ function renderStats(){
     view.appendChild(c);
   }
 }
+
+/* ============ 選択テキストの翻訳ポップアップ（Reports内・選択で直接表示） ============
+   ①レッスンデータの事前生成訳（mistakes[].translationEn / expressions[].meaning）に
+     一致すれば通信ゼロで即表示。
+   ②なければDeepLプロキシ（TRANSLATE_PROXY設定時）→ 未設定ならGoogle翻訳へ
+     選択部分のみ送信。失敗時はDeepLリンク。 */
+const TRANSLATE_PROXY = "https://nihongo-translate.yuya-h0710.workers.dev"; // build時に .translate.json から注入（未設定なら空）
+const selPop = document.getElementById("selPop");
+let selTimer = null;
+let selSeq = 0;
+const selCache = new Map();
+function selectionInMd(){
+  const sel = window.getSelection();
+  if(!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+  const node = sel.anchorNode;
+  const elm = node && (node.nodeType === 1 ? node : node.parentElement);
+  if(!elm || !elm.closest(".md")) return null;
+  return sel;
+}
+function selNoRuby(sel){
+  const frag = sel.getRangeAt(0).cloneContents();
+  frag.querySelectorAll("rt").forEach(n => n.remove());
+  return (frag.textContent || "").replace(/\s+/g, " ").trim();
+}
+function placeNear(node, rect){
+  node.style.visibility = "hidden";
+  node.style.display = "block";
+  const w = node.offsetWidth || 300;
+  const h = node.offsetHeight || 80;
+  const x = Math.min(Math.max(rect.left + rect.width / 2 - w / 2, 8), innerWidth - w - 8);
+  const y = rect.bottom + 10 + h > innerHeight - 8 ? Math.max(8, rect.top - h - 10) : rect.bottom + 10;
+  node.style.left = x + "px";
+  node.style.top = y + "px";
+  node.style.visibility = "visible";
+}
+const normJa = s => stripFuri(String(s||"")).replace(/[\s、。！？!?・,.…「」『』（）()〜ー―\-]+/g, "");
+function localTranslation(text){
+  const key = normJa(text);
+  if(key.length < 2) return null;
+  for(const l of lessons()){
+    for(const m of (l.mistakes || [])){
+      if(!m.translationEn) continue;
+      for(const cand of [m.corrected, m.original, m.better]){
+        const ck = normJa(cand);
+        if(ck && (ck === key || ck.includes(key) || key.includes(ck))) return {tr: m.translationEn, src: "レッスンデータ"};
+      }
+    }
+    for(const x of (l.expressions || [])){
+      const pk = normJa(x.phrase);
+      if(pk && x.meaning && (pk === key || key === pk || pk.includes(key) || key.includes(pk))) return {tr: x.meaning, src: "レッスンデータ"};
+    }
+  }
+  return null;
+}
+function showPop(rect, srcText, trHtml, note){
+  selPop.innerHTML = `<div class="sp-src">${esc(srcText)}</div><div class="sp-tr">${trHtml}</div>` +
+    (note ? `<div class="sp-note">${note}</div>` : "");
+  placeNear(selPop, rect);
+}
+async function remoteTranslation(text){
+  if(selCache.has(text)) return selCache.get(text);
+  let result;
+  if(TRANSLATE_PROXY){
+    const res = await fetch(TRANSLATE_PROXY, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({text})});
+    if(!res.ok) throw new Error("proxy " + res.status);
+    const data = await res.json();
+    result = {tr: data.translation || "(no result)", src: "DeepL"};
+  } else {
+    const res = await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=" + encodeURIComponent(text));
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    result = {tr: (data[0] || []).filter(Boolean).map(x => x[0]).join("") || "(no result)", src: "Google翻訳"};
+  }
+  selCache.set(text, result);
+  return result;
+}
+document.addEventListener("selectionchange", () => {
+  clearTimeout(selTimer);
+  const seq = ++selSeq;
+  selTimer = setTimeout(async () => {
+    const sel = selectionInMd();
+    if(!sel){ selPop.style.display = "none"; return; }
+    const text = selNoRuby(sel);
+    if(!text || text.length < 2 || text.length > 300){ selPop.style.display = "none"; return; }
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    const local = localTranslation(text);
+    if(local){ showPop(rect, text, esc(local.tr), local.src + "（オフライン）"); return; }
+    showPop(rect, text, "…", null);
+    try{
+      const r = await remoteTranslation(text);
+      if(seq !== selSeq) return; // 選択が変わっていたら破棄
+      showPop(rect, text, esc(r.tr), r.src + " — 選択した部分だけが送信されます");
+    }catch(err){
+      if(seq !== selSeq) return;
+      showPop(rect, text,
+        `翻訳を取得できませんでした。<a href="https://www.deepl.com/translator#ja/en/${encodeURIComponent(text)}" target="_blank" rel="noopener">DeepLで開く →</a>`, null);
+    }
+  }, 500);
+});
+document.addEventListener("mousedown", e => { if(!selPop.contains(e.target)) selPop.style.display = "none"; });
+addEventListener("scroll", () => { selPop.style.display = "none"; }, true);
 </script>
 </body>
 </html>
