@@ -189,6 +189,7 @@ header.mob{display:none}
 .fc-btns button:active{background:var(--surface2)}
 .fc-btns .b-again{color:var(--bad)} .fc-btns .b-hard{color:var(--warn)}
 .fc-btns .b-good{color:var(--accent)} .fc-btns .b-easy{color:var(--good)}
+.fc-btns .iv{display:block;font-size:calc(12px * var(--fs));color:var(--muted);font-weight:400;margin-top:3px;letter-spacing:.04em}
 .fc-meta{font-size:calc(16px * var(--fs));color:var(--muted);margin-bottom:12px;letter-spacing:.08em;font-variant-numeric:tabular-nums;max-width:640px;text-align:center}
 .fc-done{text-align:center;padding:52px 12px 24px;color:var(--ink2);font-size:calc(21px * var(--fs));line-height:2}
 /* --- cards mode toggle --- */
@@ -254,7 +255,7 @@ header.mob{display:none}
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"UIl0FFTZCfwl3V2cKHjs2Q==\",\"iv\":\"qAZvWMjySUbXQv2t\",\"ct\":\"okHnpxLg4Uo1z6XzBaj/qIN0nvEsRGPL7c5hsAOB+fkqk7FoyoyPutAIPmPi8TemcuG70GYeZstFoTW5jjssJ+gE399MRxXK+eggdNDA83x7/2X/UQVQzXSi9uAuaQQoDaRT50RHCA4poB2lL/0UpcggPuqTQXOtuNt+Ud/I5oKuStGLup0shqe3u/GRb28kMdcHFiLzyuL17IvaccCGntD4HC0v7h8Nh7nNXKUeV4tGe9XJdbz4c3QMjYxFeGwkmjzclEOOnFbgPh0OPYiYpcml\"}";
+const ENCRYPTED = "{\"salt\":\"DxzFdQV23tWuz8kq0hZMtQ==\",\"iv\":\"NAnnP4r7kwQuelxI\",\"ct\":\"euq550I2RFAmBz2bpBkSee4LNNFK4EB2u3t9mPqhURj0BVl26Q/fWDYfGFKpoZmIshwlwKggYZI6n5ENnT5pgz1he/TvnyBlGRhAhneo4V5riRaULdF6BVCxiIkFbLE6pfetgogcDeFTlEBzYv3i+ZVDolbGfE8Y8GUbAb4tLp3ZvEE/A/t38f26NifIoqrqixPkd4WHJ4JwVx4uLc3RHQywaI7INXu1K4hsQw1xxJq7xFjwPCDUloYwgMI5ETAi6P3kI36xq9gjARlgea2ySf4k\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -516,7 +517,7 @@ function tile(lbl, val, unit, delta, goodWhenDown){
 function statusBanner(){
   const s = DB.status;
   if(!s || MODE !== "admin") return null;
-  const icons = {ok:"🤖", running:"⏳", error:"⚠️", warn:"⚠️"};
+  const icons = {ok:"🤖", needs_review:"👀", running:"⏳", error:"⚠️", warn:"⚠️"};
   const cls = s.state === "error" ? " err" : (s.state === "running" || s.state === "warn" ? " run" : "");
   const b = el("div", "status-banner" + cls);
   b.innerHTML = `<span class="st-ico">${icons[s.state] || "ℹ️"}</span>
@@ -775,28 +776,131 @@ function renderReports(){
   show(dates[0]);
 }
 
-/* ============ フラッシュカード (SRS: SM-2簡易版) ============ */
+/* ============ フラッシュカード (SRS: Anki式) ============
+   新規カードは分単位の学習ステップ(1分→10分)を卒業してから日単位の復習へ。
+   復習でAgainするとease-0.20のペナルティ付きで再学習(10分)に戻る。
+   新規は1日20枚まで。進捗はlocalStorage(端末ごと)。 */
+const SRS_CFG = {
+  learningStepsMin: [1, 10],  // 新規カードの学習ステップ（分）
+  relearnStepsMin: [10],      // 復習失敗後の再学習ステップ（分）
+  graduateDays: 1,            // 学習卒業時の間隔
+  easyDays: 4,                // 学習中Easyの卒業間隔
+  lapseDays: 1,               // 再学習卒業時の間隔
+  newPerDay: 20,              // 1日の新規カード上限
+  learnAheadMin: 20,          // 待ちが無いとき学習カードを先取り表示する上限（分）
+  maxIntervalDays: 365,
+  minEase: 1.3,
+};
 const srsKey = () => "nm-srs-" + (STU?.info?.slug || "x");
 const srsLoad = () => JSON.parse(localStorage.getItem(srsKey()) || "{}");
 const srsSave = s => localStorage.setItem(srsKey(), JSON.stringify(s));
 const today = () => new Date().toISOString().slice(0,10);
-function dueCards(){
-  const st = srsLoad(), t2 = today();
-  return (STU.cards?.cards || []).filter(c => !st[c.id] || st[c.id].due <= t2);
-}
-function rate(card, grade){ // 0=again 1=hard 2=good 3=easy
-  const st = srsLoad();
-  const s = st[card.id] || {interval:0, ease:2.5};
-  if(grade === 0){ s.interval = 0; }
-  else{
-    s.ease = Math.max(1.3, s.ease + [0,-0.15,0,0.15][grade]);
-    if(s.interval === 0) s.interval = grade === 1 ? 1 : (grade === 3 ? 4 : 2);
-    else s.interval = Math.round(s.interval * (grade === 1 ? 1.2 : s.ease * (grade === 3 ? 1.3 : 1)));
-    s.interval = Math.min(s.interval, 365);
+function cardState(st, id){ // 旧形式 {interval, ease, due} からの移行も担当
+  let s = st[id];
+  if(!s) return null;
+  if(!s.phase){
+    s = s.interval > 0
+      ? {phase:"review", interval:s.interval, ease:s.ease || 2.5, due:s.due}
+      : {phase:"learning", step:0, ease:s.ease || 2.5, dueMs:Date.now()};
+    st[id] = s;
   }
+  return s;
+}
+function srsMeta(st){
+  const t2 = today();
+  if(!st._meta || st._meta.day !== t2) st._meta = {day:t2, newCount:0};
+  return st._meta;
+}
+function srsQueues(){
+  const st = srsLoad();
+  const meta = srsMeta(st);
+  const now = Date.now(), t2 = today();
+  const learn = [], review = [], fresh = [], ahead = [];
+  for(const c of (STU.cards?.cards || [])){
+    const s = cardState(st, c.id);
+    if(!s){ fresh.push(c); continue; }
+    if(s.phase === "review"){ if(s.due <= t2) review.push(c); }
+    else if(s.dueMs <= now) learn.push([s.dueMs, c]);
+    else if(s.dueMs <= now + SRS_CFG.learnAheadMin * 60000) ahead.push([s.dueMs, c]);
+  }
+  learn.sort((a,b) => a[0]-b[0]); ahead.sort((a,b) => a[0]-b[0]);
+  const newAllowed = Math.max(0, SRS_CFG.newPerDay - meta.newCount);
+  srsSave(st);
+  return {
+    learn: learn.map(x => x[1]), review, fresh: fresh.slice(0, newAllowed), ahead: ahead.map(x => x[1]),
+    counts: {learn: learn.length + ahead.length, review: review.length, fresh: Math.min(fresh.length, newAllowed)},
+  };
+}
+function dueCards(){
+  const q = srsQueues();
+  return [...q.learn, ...q.review, ...q.fresh];
+}
+function scheduleDays(s, days){
+  s.interval = Math.min(SRS_CFG.maxIntervalDays, days);
   const d = new Date(); d.setDate(d.getDate() + s.interval);
   s.due = d.toISOString().slice(0,10);
+  delete s.dueMs; delete s.step;
+}
+function graduate(s, days){ s.phase = "review"; scheduleDays(s, days); }
+function rate(card, grade){ // 0=Again 1=Hard 2=Good 3=Easy
+  const st = srsLoad();
+  const meta = srsMeta(st);
+  let s = cardState(st, card.id);
+  const now = Date.now();
+  if(!s){ meta.newCount += 1; s = {phase:"learning", step:0, ease:2.5}; st[card.id] = s; }
+  if(s.phase === "review"){
+    if(grade === 0){ // lapse: easeペナルティ→再学習へ
+      s.ease = Math.max(SRS_CFG.minEase, (s.ease || 2.5) - 0.20);
+      s.phase = "relearn"; s.step = 0;
+      s.dueMs = now + SRS_CFG.relearnStepsMin[0] * 60000;
+      s.interval = SRS_CFG.lapseDays;
+      delete s.due;
+    } else {
+      if(grade === 1) s.ease = Math.max(SRS_CFG.minEase, (s.ease || 2.5) - 0.15);
+      if(grade === 3) s.ease = (s.ease || 2.5) + 0.15;
+      const mult = grade === 1 ? 1.2 : (grade === 3 ? s.ease * 1.3 : s.ease);
+      scheduleDays(s, Math.max(s.interval + 1, Math.round(s.interval * mult)));
+    }
+  } else {
+    const steps = s.phase === "learning" ? SRS_CFG.learningStepsMin : SRS_CFG.relearnStepsMin;
+    if(grade === 0){ s.step = 0; s.dueMs = now + steps[0] * 60000; }
+    else if(grade === 1){ s.dueMs = now + steps[Math.min(s.step || 0, steps.length - 1)] * 60000; }
+    else if(grade === 3){ graduate(s, s.phase === "learning" ? SRS_CFG.easyDays : SRS_CFG.lapseDays + 1); }
+    else { // Good: 次のステップへ、最後なら卒業
+      const next = (s.step || 0) + 1;
+      if(next < steps.length){ s.step = next; s.dueMs = now + steps[next] * 60000; }
+      else graduate(s, s.phase === "learning" ? SRS_CFG.graduateDays : (s.interval || SRS_CFG.lapseDays));
+    }
+  }
   st[card.id] = s; srsSave(st);
+}
+function fmtIv(days){
+  if(days >= 30) return Math.round(days / 30) + "mo";
+  return Math.round(days) + "d";
+}
+function previews(card){ // 各ボタンの「次に出るまで」プレビュー（Anki風）
+  const st = srsLoad();
+  const s = cardState(st, card.id);
+  if(!s || s.phase !== "review"){
+    const learning = !s || s.phase === "learning";
+    const steps = learning ? SRS_CFG.learningStepsMin : SRS_CFG.relearnStepsMin;
+    const step = s ? (s.step || 0) : 0;
+    const next = step + 1;
+    return [
+      steps[0] + "m",
+      steps[Math.min(step, steps.length - 1)] + "m",
+      next < steps.length ? steps[next] + "m" : fmtIv(learning ? SRS_CFG.graduateDays : SRS_CFG.lapseDays),
+      fmtIv(learning ? SRS_CFG.easyDays : SRS_CFG.lapseDays + 1),
+    ];
+  }
+  const ease = s.ease || 2.5;
+  const cap = d => Math.min(SRS_CFG.maxIntervalDays, Math.max(s.interval + 1, Math.round(d)));
+  return [
+    SRS_CFG.relearnStepsMin[0] + "m",
+    fmtIv(cap(s.interval * 1.2)),
+    fmtIv(cap(s.interval * ease)),
+    fmtIv(cap(s.interval * ease * 1.3)),
+  ];
 }
 let cardsMode = "review"; // "review" | "browse"
 function switchCardsMode(mode){
@@ -818,26 +922,43 @@ function renderCards(){
 
   if(cardsMode === "browse"){ renderCardsBrowse(all); return; }
 
-  let queue = dueCards();
   const meta = el("div","fc-meta");
   const stage = el("div","fc-stage");
   const btns = el("div","fc-btns");
-  btns.innerHTML = `<button class="b-again">Again</button><button class="b-hard">Hard</button>
-    <button class="b-good">Good</button><button class="b-easy">Easy</button>`;
+  btns.innerHTML = `<button class="b-again">Again<span class="iv"></span></button><button class="b-hard">Hard<span class="iv"></span></button>
+    <button class="b-good">Good<span class="iv"></span></button><button class="b-easy">Easy<span class="iv"></span></button>`;
   view.appendChild(meta); view.appendChild(stage); view.appendChild(btns);
 
+  let current = null, redrawTimer = null;
   function draw(){
-    stage.innerHTML = ""; btns.style.visibility = queue.length ? "visible" : "hidden";
-    meta.textContent = `${queue.length} of ${all.length} cards left`;
-    if(!queue.length){
-      stage.appendChild(el("div","fc-done","🎉 Done for today!"));
+    if(redrawTimer){ clearTimeout(redrawTimer); redrawTimer = null; }
+    stage.innerHTML = "";
+    const q = srsQueues();
+    current = q.learn[0] || q.review[0] || q.fresh[0] || q.ahead[0] || null;
+    meta.textContent = `New ${q.counts.fresh} · Learning ${q.counts.learn} · Review ${q.counts.review}`;
+    btns.style.visibility = current ? "visible" : "hidden";
+    if(!current){
+      const st = srsLoad();
+      let nextMs = Infinity;
+      for(const key in st){
+        if(key.startsWith("_")) continue;
+        const s = st[key];
+        if(s && s.dueMs && s.dueMs > Date.now()) nextMs = Math.min(nextMs, s.dueMs);
+      }
+      if(isFinite(nextMs)){
+        const mins = Math.max(1, Math.ceil((nextMs - Date.now()) / 60000));
+        stage.appendChild(el("div","fc-done",`⏳ Learning cards return in ~${mins} min`));
+        redrawTimer = setTimeout(draw, Math.min(nextMs - Date.now() + 500, 60000));
+      } else {
+        stage.appendChild(el("div","fc-done","🎉 Done for today!"));
+      }
       const b = el("button","bigbtn","📋 Browse all cards");
       b.style.maxWidth = "360px"; b.style.margin = "0 auto";
       b.onclick = () => switchCardsMode("browse");
       stage.appendChild(b);
       return;
     }
-    const c = queue[0];
+    const c = current;
     const cardNode = el("div","fc-card");
     cardNode.innerHTML = `
       <div class="fc-face">
@@ -853,11 +974,12 @@ function renderCards(){
     cardNode.onclick = e => { if(e.target.closest(".fc-speak")) return; cardNode.classList.toggle("flip"); };
     cardNode.querySelectorAll(".fc-speak").forEach(b => b.onclick = () => speak(c.audio));
     stage.appendChild(cardNode);
+    const iv = previews(c);
+    btns.querySelectorAll(".iv").forEach((node, i) => node.textContent = iv[i]);
   }
   btns.querySelectorAll("button").forEach((b, grade) => b.onclick = () => {
-    const c = queue.shift();
-    rate(c, grade);
-    if(grade === 0) queue.push(c);
+    if(!current) return;
+    rate(current, grade);
     draw();
   });
   draw();
