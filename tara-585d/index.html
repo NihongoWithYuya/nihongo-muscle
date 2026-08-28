@@ -310,13 +310,23 @@ header.mob{display:none}
   .coh-d{flex-direction:column;gap:6px}
   .coh-d-list{width:100%}
 }
+/* --- coherence 過去5回のミニレーダー（E案） --- */
+.coh-trend{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:4px}
+.coh-trend-cell{flex:1;min-width:104px;text-align:center;background:var(--surface2);
+  border:1px solid var(--grid);border-radius:12px;padding:8px 4px 10px}
+.coh-trend-latest{border-color:var(--accent);background:var(--accent-sub)}
+.coh-trend-cap b{font-size:calc(20px * var(--fs));font-weight:800;color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.coh-trend-cap span{display:block;font-size:calc(11px * var(--fs));color:var(--muted);margin-top:2px}
 /* --- coherence（根拠引用） --- */
 .coh-evtitle{margin-top:14px;font-size:calc(14px * var(--fs));font-weight:700;color:var(--accent-ink);letter-spacing:.06em}
-.coh-ev{display:flex;gap:10px;align-items:baseline;padding:9px 12px;margin-top:8px;background:var(--surface2);
-  border:1px solid var(--grid);border-radius:10px;line-height:1.8}
-.coh-axis{flex:none;font-size:calc(14px * var(--fs));color:var(--ink2);min-width:9.5em}
-.coh-axis b{color:var(--accent-ink)}
-.coh-quote{font-size:calc(16px * var(--fs));color:var(--ink)}
+.coh-ev{padding:12px 14px;margin-top:10px;background:var(--surface2);
+  border:1px solid var(--grid);border-radius:12px;line-height:1.8}
+.coh-ev-head{font-size:calc(14px * var(--fs));font-weight:600;color:var(--ink2);letter-spacing:.04em}
+.coh-ev-head b{color:var(--accent-ink);font-size:calc(16px * var(--fs))}
+.coh-quote{font-size:calc(17px * var(--fs));color:var(--ink);margin-top:4px}
+.coh-fb{font-size:calc(14px * var(--fs));color:var(--muted);margin-top:6px;line-height:1.7}
+.coh-improved{margin-top:8px;padding:8px 12px;border-left:3px solid var(--good);background:var(--surface);
+  border-radius:8px;font-size:calc(16px * var(--fs));color:var(--ink)}
 .coh-comment{margin-top:12px;padding:12px 14px;border-left:3px solid var(--c5);background:var(--surface2);
   border-radius:8px;font-size:calc(15px * var(--fs));color:var(--ink2);line-height:1.8}
 /* --- vocabulary tab（PCは表・スマホはカード型） --- */
@@ -424,7 +434,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"x8sWwdSf7J6NTYucbaLOAw==\",\"iv\":\"TxUO5tAlyCbX+MdJ\",\"ct\":\"3K9r88G/1dXIYIY0syfWUJqjzxFiq6e1+Xs8Br2Pdon1XHPC43uCK5kR86eF1XttPlXBAFaH7jR+zJGUuw1LIx4Vx7bvxJWQ08THVhJvcFcyRI21va9OyNLra5HwAM9Twd7kCYRkdrq8FUYCplMxIjWIjHrwdd9sshyEP2LybnqS6A61IKw8fRLXiRPSk5KspYqpXvMS0qq66dkMtq3vTCRjFwH0mcYqT1V5dEOE5Fgpyy4/myMjIbj0sObHeCLFPwSmQgjg+yIsIGl5Z9Moo/46CYgk1kVRt8i6wDiy4D0EGQeKs0qelu07FivLpprJGt8i8D9bRwCUfWhlQqZ28BPpsLLGbf0YScdIgKJLLM88wUUlJY8AjmYpfiIE7RoDRx3iAYunNG9HGXsVT3W8utVC6GS1/l/G9eUnCD4ykQT3hGcj8mY=\"}";
+const ENCRYPTED = "{\"salt\":\"Z9CeyUpZw07D1mh4T+54Ig==\",\"iv\":\"RmNZs6p5Ct40Um6d\",\"ct\":\"Xn2QlDbtLstuY1XJlJ+RshWdDd0VtGzNlUOg15VE35lfz20FHgJjH0TCLLphmgT2nN3pbtEfjrlQDJA6h2BkfeYUa2Fm3aM8UlP2Tp/lDUR95BZ5sFn4SsM1qWl30N5XzWfz+jl1lV0ZgM0x8pnaSpts2YuQwYNLgVVhJL9v5KeJBpDpoqwoy2Ci2Qs3HkNoPJ4Pl8GMeUyfN7HZYfWjwkLug3OWpExezm4/PLq6AemtgxDU0L6B2kaLF4M0vXqcjzDN1k/3+ttvouQfSEBDFC9kCPyX3ZsOS+/70MDKoluSEpUjStNOo2gKzm9Be5Gb+zfbgYVobOVXg7H2zxNHEjsfh1DNbNgNKnKV4bdNzBUdWW87suFXbIKgee85dS2sL8Uh+ogFX2jQubIMhZNh5Zi5jIOWmVpCH6ZRCrKyYCNv55+4bHs=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -899,14 +909,36 @@ function coherenceHomeCard(ls){
   card.appendChild(row);
   if(prevC) card.appendChild(legendFor(["latest","previous"],[css("--c5"),css("--axis")]));
 
-  card.appendChild(el("div","coh-evtitle","🗣 WHAT YOU SAID (EVIDENCE)"));
+  card.appendChild(el("div","coh-evtitle","🗣 WHAT YOU SAID & HOW TO LEVEL UP"));
   COH_AXES.forEach(a => {
     const s = latest.coherence.scores[a[0]];
     if(!s?.evidence) return;
+    // 引用 → 何が起きていたか(feedback) → 模範の言い直し(improved・弱い軸のみ)
     card.appendChild(el("div","coh-ev",
-      `<span class="coh-axis">${a[1]} <b>${fmt1(s.score)}</b></span><span class="coh-quote">「${renderJa(s.evidence)}」</span>`));
+      `<div class="coh-ev-head">${a[1]} <b>${fmt1(s.score)}</b></div>
+       <div class="coh-quote">「${renderJa(s.evidence)}」</div>
+       ${s.feedback ? `<div class="coh-fb">${esc(s.feedback)}</div>` : ""}
+       ${s.improved ? `<div class="coh-improved">✅ Try: 「${renderJa(s.improved)}」</div>` : ""}`));
   });
   if(latest.coherence.comment) card.appendChild(el("div","coh-comment",esc(latest.coherence.comment)));
+
+  /* 過去5回のミニレーダー（E案）。比較なので2レッスン以上あるときだけ */
+  const recent = cohLessons.slice(-5);
+  if(recent.length >= 2){
+    card.appendChild(el("div","coh-evtitle","📈 LAST " + recent.length + " LESSONS"));
+    const row = el("div","coh-trend");
+    recent.forEach((l, i) => {
+      const vals = values(l);
+      const cell = el("div","coh-trend-cell" + (i === recent.length-1 ? " coh-trend-latest" : ""));
+      cell.appendChild(radarChart(["","","","",""],
+        [{name:"score", color:css("--c5"), values:vals, fillOpacity:i === recent.length-1 ? 0.25 : 0.10}],
+        5, {w:150, h:130, r:52, f:1, lm:1.0}));
+      cell.appendChild(el("div","coh-trend-cap",
+        `<b>${fmt1(l.coherence.overall)}</b><span>${esc(shortDate(l.date))}</span>`));
+      row.appendChild(cell);
+    });
+    card.appendChild(row);
+  }
   view.appendChild(card);
 }
 
