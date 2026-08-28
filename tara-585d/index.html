@@ -439,7 +439,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"C2y7TtoP30jBFYsvuqTkeQ==\",\"iv\":\"CjzOS/w7bLr3q6rl\",\"ct\":\"+EbaoKcDJD2+vE9G/wjLffwtwI/5N9jwKRwkKSyB5xXspazFaOPMtFEgq5zBhUfOjQLlZ9Dp9NTK4VV/Z5UZ85WokWNMC27ZEJKnp6MPA49n8l0ZG0x8PhVSUiLgTZovRcc54oVYiZjsaI308KcV/82MgK76FkIjNk0yrIWbw1VDnTxqAc1ePTGk+6h04Fa/MmmvgimCeLqZkF7OVE4lh5G8qoMPC4WMTp7kbN6mL8YMIUSNNmR73MM6VV8FuqcLNtuZl5j1f6SgBWesxBwhpCLNZN+LDzTeRHmPHu4MWUnCpSPTtAkp0mqFyRZJgPZ9OTNvTrgSP3RUcA/GW0l+bE26yXl8CKJyiRNAIwYoJlNV89nXmVhZPtpzDCcrCbCqU7DCpjzVe0FtlP9lYh68RSl4RytXyo/AGbVlgkmSAxVzSp/bpXw=\"}";
+const ENCRYPTED = "{\"salt\":\"2XpRggRhIopvFOFXAPMoig==\",\"iv\":\"EgDhe3u6ze/ZFCXA\",\"ct\":\"q/9ehL66XpiPZFvzV3njvtdKIctGqmWhtPUUT+iSWxUTbSPZVgCT4nCPAE/CNEMpfG5xNy++I6U75RjYmSo1cmSZEN9e9Czep1p9zER8a4tvMT5dPBd2kh3qCIlWjHIrjhgCAT3/RRO7p5dXPg56vQhwOSHpNG7fy3KaMLS+DkniQcHDYMimsDeCT3YCXSkXFXwqc06Q/ImF6I4/XnLlN9Dqj/zQFG91x6v0n8ui0gf3yavOEocMrR1X0fvFukyqZf0VRwYBoBEYjGGeXT67S5W03AYnwW7GCuuSc0Xp1daRg/ZfKzQPDYzjYP8aza+lmQSCyTzmte3gKErHy3fD1ph2ei4dSlmI9XJqlGQUZ8nu8kQiIgr1s9R2loYLy8+k2grdo7ucv264m/IccMcHChWpT8VFxBU2gyaGvIio/TN/W1RSNNs=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -655,7 +655,7 @@ function legendFor(names, colors){
 /* コヒーレンス用レーダー（5軸・1〜5）。series = [{name, color, values, fillOpacity?}] */
 function radarChart(axes, series, maxV=5, opts={}){
   const w = opts.w ?? 360, h = opts.h ?? 300, cx = w/2, cy = h/2 + 6, R = opts.r ?? 100;
-  const svg = svgEl("svg", {viewBox:`0 0 ${w} ${h}`, width:"100%", style:"max-width:400px"});
+  const svg = svgEl("svg", {viewBox:`0 0 ${w} ${h}`, width:"100%", style:`max-width:${opts.maxw ?? 400}px`});
   const pt = (i, v) => {
     const a = -Math.PI/2 + 2*Math.PI*i/axes.length, r = R*v/maxV;
     return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
@@ -911,7 +911,7 @@ function buildCoherenceCard(lesson, cohLessons, opts = {}){
   const rSeries = [];
   if(prevC) rSeries.push({name:"previous", color:css("--axis"), values:values(prevC), fillOpacity:0.06});
   rSeries.push({name:"this lesson", color:css("--c5"), values:values(lesson)});
-  const size = opts.compact ? {w:520, h:390, r:145, f:16, lm:1.10} : {w:640, h:470, r:180, f:20, lm:1.10};
+  const size = opts.compact ? {w:560, h:400, r:145, f:18, lm:1.10, maxw:460} : {w:700, h:490, r:180, f:24, lm:1.10, maxw:560};
   rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, size));
   row.appendChild(rc);
 
