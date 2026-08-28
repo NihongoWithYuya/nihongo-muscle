@@ -439,7 +439,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"XdwTE6qLlLFXj4GY9Pe+kQ==\",\"iv\":\"crHVPOPJWK2Q/U8s\",\"ct\":\"QzxitCeRXBsJqAql6/Z2/UaKHgOIM9kvTjnSHX9ykPuQ6YWc2e7ceAtERKPUODvvNRDx8IVlkniMbp9awIeaSbFoznt9Itk6V3Jlab1jOVFgKzbBmPrEgK0gecqDLCtS5Gpt5n75QTAvHtPLxx0qDU2wypwypudIvWcUv4VaV/zLweRB5H1L2WAV+RWEbvqGF1e7LYntE/6PbQurtMi0pGT/NX+71ur0iU1qv4GLIf8yNLMVfH7ui15nV6/7ahmbBBkLlw+Vsvytukc1zO8m9j1J0lWEOGZl4kdL6WC7PboDLBPXA3cpW4UEy35X932rL2nHnFlJzVKXLx93+jSO2aMwdF9ECoZBHC0AlbJGPWAyBpBKMe+IMMxNWoMnbXf20Rkxqbig2h8DRuV5nPkflt7aSlPJ9W3OvRNHBIFyuHdYGusW7bU=\"}";
+const ENCRYPTED = "{\"salt\":\"C2y7TtoP30jBFYsvuqTkeQ==\",\"iv\":\"CjzOS/w7bLr3q6rl\",\"ct\":\"+EbaoKcDJD2+vE9G/wjLffwtwI/5N9jwKRwkKSyB5xXspazFaOPMtFEgq5zBhUfOjQLlZ9Dp9NTK4VV/Z5UZ85WokWNMC27ZEJKnp6MPA49n8l0ZG0x8PhVSUiLgTZovRcc54oVYiZjsaI308KcV/82MgK76FkIjNk0yrIWbw1VDnTxqAc1ePTGk+6h04Fa/MmmvgimCeLqZkF7OVE4lh5G8qoMPC4WMTp7kbN6mL8YMIUSNNmR73MM6VV8FuqcLNtuZl5j1f6SgBWesxBwhpCLNZN+LDzTeRHmPHu4MWUnCpSPTtAkp0mqFyRZJgPZ9OTNvTrgSP3RUcA/GW0l+bE26yXl8CKJyiRNAIwYoJlNV89nXmVhZPtpzDCcrCbCqU7DCpjzVe0FtlP9lYh68RSl4RytXyo/AGbVlgkmSAxVzSp/bpXw=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -668,7 +668,10 @@ function radarChart(axes, series, maxV=5, opts={}){
     const [x, y] = pt(i, maxV);
     svg.appendChild(svgEl("line", {x1:cx, y1:cy, x2:x, y2:y, stroke:css("--grid"), "stroke-width":1}));
     const [lx, ly] = pt(i, maxV*(opts.lm ?? 1.24));
-    const t2 = svgEl("text", {x:lx, y:ly+CHF*.35, "text-anchor":"middle", "font-size":opts.f ?? CHF, "font-weight":600, fill:css("--ink2")});
+    // 左右のラベルは中央揃えだと五角形側へ食い込む（Developmentが被る）ので外側へ流す
+    const c = Math.cos(-Math.PI/2 + 2*Math.PI*i/axes.length);
+    const anchor = c < -0.25 ? "end" : c > 0.25 ? "start" : "middle";
+    const t2 = svgEl("text", {x:lx, y:ly+CHF*.35, "text-anchor":anchor, "font-size":opts.f ?? CHF, "font-weight":600, fill:css("--ink2")});
     t2.textContent = label; svg.appendChild(t2);
   });
   series.forEach(s => {
@@ -908,7 +911,7 @@ function buildCoherenceCard(lesson, cohLessons, opts = {}){
   const rSeries = [];
   if(prevC) rSeries.push({name:"previous", color:css("--axis"), values:values(prevC), fillOpacity:0.06});
   rSeries.push({name:"this lesson", color:css("--c5"), values:values(lesson)});
-  const size = opts.compact ? {w:470, h:390, r:145, f:16, lm:1.18} : {w:580, h:470, r:180, f:20, lm:1.18};
+  const size = opts.compact ? {w:520, h:390, r:145, f:16, lm:1.10} : {w:640, h:470, r:180, f:20, lm:1.10};
   rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, size));
   row.appendChild(rc);
 
