@@ -292,9 +292,9 @@ header.mob{display:none}
 .gw-note{font-size:calc(14px * var(--fs));color:var(--muted);line-height:1.7;margin-bottom:12px}
 @media (max-width:600px){.bk-line{flex-direction:column;gap:0}.bk-lbl{width:auto}}
 /* --- coherence（Homeサマリー直下・パターンD: レーダー左＋軸別リスト右） --- */
-.coh-d{display:flex;gap:22px;align-items:center;margin-top:4px}
+.coh-d{display:flex;gap:14px;align-items:center;margin-top:4px}
 .coh-d-radar{flex:1;display:flex;justify-content:center;min-width:0}
-.coh-d-list{flex:none;width:260px}
+.coh-d-list{flex:none;width:238px}
 .coh-d-top{margin-bottom:14px;text-align:center}
 .coh-d-top b{font-size:calc(52px * var(--fs));font-weight:800;color:var(--accent-ink);font-variant-numeric:tabular-nums;line-height:1}
 .coh-d-top span{font-size:calc(18px * var(--fs));color:var(--muted);margin-left:4px}
@@ -302,7 +302,7 @@ header.mob{display:none}
 .coh-d-top i em{display:block;font-style:normal;font-weight:500;font-size:calc(12px * var(--fs));color:var(--muted);margin-top:2px}
 .coh-d-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--grid);
   font-size:calc(14px * var(--fs));color:var(--ink2)}
-.coh-d-row span{flex:none;width:108px}
+.coh-d-row span{flex:none;width:104px}
 .coh-d-row em{flex:1;height:7px;background:var(--grid);border-radius:4px;overflow:hidden}
 .coh-d-row u{display:block;height:100%;background:var(--c5);border-radius:4px}
 .coh-d-row b{flex:none;width:38px;text-align:right;font-size:calc(16px * var(--fs));color:var(--ink);font-variant-numeric:tabular-nums}
@@ -424,7 +424,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"s+ibsXDCBDiXdjPiFvpJZw==\",\"iv\":\"W/0vNB5iYPyTLh31\",\"ct\":\"MbbPfjA8+Sjq1lE3lvHhyYn/WHwDhOmvWqN10XU/miz25Y2DaLiG7+Z1+WnbCF3NLQbcBkvb8P11uEWaFQ1TeV3i7eLLQO+3zeAUeE0R2mxuQuggB6H4+r7DV0sUvv3VsT+B89dcFZlQlpePVF5bQB1uI/L/Q/K6Pseu86/y1dwFz2yPy4VkvEKFka/hok5FmgYveQYYGoqzzTKqAzRtbwBT1JPcxfmFViZ641kUsj3ERuH6Q45gZQGm/J7Cly9sQ6RPpCZbBEEs0vL/LjRfg+DPCn2O+3X9twZnf93XjlRei5EtuVNo7cs3kjZAWVTSa5WJ8P1gZbSRPamJNza1O1u9DDlaG11gr3RCVRBu0ZmvO4CsWmWTpppk5k8Jd19L4Xjd7V33m4KLIUIJDL3lTItuUytsaHSjBPeN1T21V0z222IJZdQ=\"}";
+const ENCRYPTED = "{\"salt\":\"x8sWwdSf7J6NTYucbaLOAw==\",\"iv\":\"TxUO5tAlyCbX+MdJ\",\"ct\":\"3K9r88G/1dXIYIY0syfWUJqjzxFiq6e1+Xs8Br2Pdon1XHPC43uCK5kR86eF1XttPlXBAFaH7jR+zJGUuw1LIx4Vx7bvxJWQ08THVhJvcFcyRI21va9OyNLra5HwAM9Twd7kCYRkdrq8FUYCplMxIjWIjHrwdd9sshyEP2LybnqS6A61IKw8fRLXiRPSk5KspYqpXvMS0qq66dkMtq3vTCRjFwH0mcYqT1V5dEOE5Fgpyy4/myMjIbj0sObHeCLFPwSmQgjg+yIsIGl5Z9Moo/46CYgk1kVRt8i6wDiy4D0EGQeKs0qelu07FivLpprJGt8i8D9bRwCUfWhlQqZ28BPpsLLGbf0YScdIgKJLLM88wUUlJY8AjmYpfiIE7RoDRx3iAYunNG9HGXsVT3W8utVC6GS1/l/G9eUnCD4ykQT3hGcj8mY=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -652,7 +652,7 @@ function radarChart(axes, series, maxV=5, opts={}){
   axes.forEach((label, i) => {
     const [x, y] = pt(i, maxV);
     svg.appendChild(svgEl("line", {x1:cx, y1:cy, x2:x, y2:y, stroke:css("--grid"), "stroke-width":1}));
-    const [lx, ly] = pt(i, maxV*1.24);
+    const [lx, ly] = pt(i, maxV*(opts.lm ?? 1.24));
     const t2 = svgEl("text", {x:lx, y:ly+CHF*.35, "text-anchor":"middle", "font-size":opts.f ?? CHF, "font-weight":600, fill:css("--ink2")});
     t2.textContent = label; svg.appendChild(t2);
   });
@@ -879,7 +879,7 @@ function coherenceHomeCard(ls){
   const rSeries = [];
   if(prevC) rSeries.push({name:"previous", color:css("--axis"), values:values(prevC), fillOpacity:0.06});
   rSeries.push({name:"latest", color:css("--c5"), values:values(latest)});
-  rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, {w:470, h:380, r:125, f:15}));
+  rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, {w:580, h:470, r:180, f:20, lm:1.18}));
   row.appendChild(rc);
 
   const list = el("div","coh-d-list");
