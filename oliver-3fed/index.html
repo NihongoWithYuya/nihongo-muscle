@@ -324,7 +324,7 @@ header.mob{display:none}
 .coh-ev-head{font-size:calc(14px * var(--fs));font-weight:600;color:var(--ink2);letter-spacing:.04em}
 .coh-ev-head b{color:var(--accent-ink);font-size:calc(16px * var(--fs))}
 .coh-quote{font-size:calc(17px * var(--fs));color:var(--ink);margin-top:4px}
-.coh-fb{font-size:calc(14px * var(--fs));color:var(--muted);margin-top:6px;line-height:1.7}
+.coh-fb{font-size:calc(16px * var(--fs));color:var(--ink2);margin-top:6px;line-height:1.75}
 .coh-improved{margin-top:8px;padding:8px 12px;border-left:3px solid var(--good);background:var(--surface);
   border-radius:8px;font-size:calc(16px * var(--fs));color:var(--ink)}
 .coh-comment{margin-top:12px;padding:12px 14px;border-left:3px solid var(--c5);background:var(--surface2);
@@ -434,7 +434,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"EdGbvd0zpeqAQuKYByp0LA==\",\"iv\":\"PgNu2zOq6StopVVJ\",\"ct\":\"rYvmyF6q03xy6lsMvcha1w/Xl+y7ZjxEuBe816Glf2KmKbA6JiKAO0S7PC/Q+Cka7URRhQksSsaoBOQH4JFrMhRToYzhf1o/0WFMY7qQmdvQz3MzLpLlsjF1DSrTqUghkm3c9XF2eBFhunC20YzyhiLp81ysiE73VrWDwXI4ccua/xPqi3/fYBjasEFrHQXQiIMVudwiviF5NpECeY1BB5za/YZXBegQdM08qfzcUbQ++4gP0yTTVBAbsFm+qLxCjsPZBhLTiEvbyt2q9GGW5DnOsX3T1aqxxOJtKXSvlmhfyFn792mVVhXxlq8tziFBmcLQKSBjnb3jAOXB3+xUt2BuPobhBcX1FAM3USe7d4pi5GDCfWEL3Jxs1Bv+ImjXRTVu1JZqjBJG3QrNZknzUzSCHG9cc1ZAPvCmkbJBw59JktAKDW1bNZ6xuZ8=\"}";
+const ENCRYPTED = "{\"salt\":\"6I0DR9W8u+PwuTAeVuw+Qw==\",\"iv\":\"BdnaPyoEkhtZanad\",\"ct\":\"//5HWDyjOcdwiCh9fWSndSSMsYDuDgXcYuInaimaYacWgmBuxI3mqwsLoDU2LWT/PN081lBUSsRNT/B7jygnaaK2dmeNP23MN/f8b8PhFC8RHSU19Fj+VLgFEg9APiGk55hOg6SOIo9GkBzAlEs9JIOrXSE3hRk4iliWxc8CZy/WO9FYVcCyl1r7/feDOaKMjtdHMFOXHkSL71XuNxkJEq/wjfWHWhMn9Dk0tCt9+vE4unh8qDj4qDAK7C/EuAFdwG8WS18I9et2LGA3JNNEv9dS3hn0iiKRnlKvwpN4UxEtP7IUUlTc+sQhgeRYW5IbKm2caQw5HSl7VkEbXvE9dn+7Ry0IjobEccMT2gvMAy6wRXnddgLsuVGT2TeVPiagJ9mILihZhd6suC8WmRjc9Vx/+B7WPWf8WEk/87poY93Nd73UovLJMko/TH0=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}

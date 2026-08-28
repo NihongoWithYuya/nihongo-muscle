@@ -324,7 +324,7 @@ header.mob{display:none}
 .coh-ev-head{font-size:calc(14px * var(--fs));font-weight:600;color:var(--ink2);letter-spacing:.04em}
 .coh-ev-head b{color:var(--accent-ink);font-size:calc(16px * var(--fs))}
 .coh-quote{font-size:calc(17px * var(--fs));color:var(--ink);margin-top:4px}
-.coh-fb{font-size:calc(14px * var(--fs));color:var(--muted);margin-top:6px;line-height:1.7}
+.coh-fb{font-size:calc(16px * var(--fs));color:var(--ink2);margin-top:6px;line-height:1.75}
 .coh-improved{margin-top:8px;padding:8px 12px;border-left:3px solid var(--good);background:var(--surface);
   border-radius:8px;font-size:calc(16px * var(--fs));color:var(--ink)}
 .coh-comment{margin-top:12px;padding:12px 14px;border-left:3px solid var(--c5);background:var(--surface2);
@@ -434,7 +434,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"Z9CeyUpZw07D1mh4T+54Ig==\",\"iv\":\"RmNZs6p5Ct40Um6d\",\"ct\":\"Xn2QlDbtLstuY1XJlJ+RshWdDd0VtGzNlUOg15VE35lfz20FHgJjH0TCLLphmgT2nN3pbtEfjrlQDJA6h2BkfeYUa2Fm3aM8UlP2Tp/lDUR95BZ5sFn4SsM1qWl30N5XzWfz+jl1lV0ZgM0x8pnaSpts2YuQwYNLgVVhJL9v5KeJBpDpoqwoy2Ci2Qs3HkNoPJ4Pl8GMeUyfN7HZYfWjwkLug3OWpExezm4/PLq6AemtgxDU0L6B2kaLF4M0vXqcjzDN1k/3+ttvouQfSEBDFC9kCPyX3ZsOS+/70MDKoluSEpUjStNOo2gKzm9Be5Gb+zfbgYVobOVXg7H2zxNHEjsfh1DNbNgNKnKV4bdNzBUdWW87suFXbIKgee85dS2sL8Uh+ogFX2jQubIMhZNh5Zi5jIOWmVpCH6ZRCrKyYCNv55+4bHs=\"}";
+const ENCRYPTED = "{\"salt\":\"mU711i8XsUaAwQ+17k5vXg==\",\"iv\":\"rPpwsTG5vw2CG27n\",\"ct\":\"r/KfA59bvZRSPsIerAsEIZcyf/7tDDHPVRqtm8PsdQeeYk7TnbG10ihT2ZwO71TrAr79ko4AilsdTsmiTb0dfaslViqWDkRTFx3tnXkZ/0FfQucxttWAKTXxDlcdPHXfXH8uGghZDac1nVxWjoe3JN8RM+IOY+5YKgU3bQIEmBbZ0AUsnqXMdId89YckecdOqSqOiXL0NJsVxcpYs8ne4pIE9QI2WCMnsGHT4aMONCud1SAhAdCC1Av1JZOUoEJO2H6oS4Z/9+cB5RolxKXeYQ7cyGTqV2dgpS9iHBg2NcG7t9qryNXoibWztAoD5FY3l9HSctAf/ygzLI7kj1XDw4geI+9OpgTPJfj6vSts9pRGpI8Q95bjHLvnQq2BWAxgmqNWCCPi/Ognzg4ZS6Pz/qGXJTWDLXTdvz1PuTozNvFK1Oqv+5Q=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
