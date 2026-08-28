@@ -442,7 +442,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"uE1u194BQ2i3t3W64oOCYQ==\",\"iv\":\"N6CMjefJlklvMnJ0\",\"ct\":\"9Qsu/5ZJ0lB4++QQpS8mq+x/v9rHvGzPP9N4pznMcWIIJyjB89WxXu9wbw3YNuG6gsrGySlj0Zb1PKUCy19XliU5xcNGgfOik+ZargM4TG3dMdD8M2vTaWP4TZ5gRtuAu00jMIxFe2P84tRLx3qQNGQiIO4HOkKX36QSCA7nuVIPukhFkEwGW3SCaNX8qQZqDbrK/x/g8ugl7Iv0X/JmDYVpaMIr35i7MO8o2LoMWEv1peAnVMN4uiylEAWB8Pbjzc+VmrJv1nnT/18pqXFQRFqAgXPcgysmm3rrxAbR4OyMqHBVqcmQWbSoQfhS7caQXLcANXIrsLoxKXx1qpne797vqtd9DkOcBrIyMLe7ftCxr78KhxiAjOUmU4J3nRKoj3+DzpA++Riw+e8hklq+cEBGKFMG7SXOaV72pv0YyLcj2EAf3PI=\"}";
+const ENCRYPTED = "{\"salt\":\"OysxZkspbfgcTcrs4OnoIA==\",\"iv\":\"RxNg9wnvl8f2VoiQ\",\"ct\":\"/wxILU7dDEG2amJKozKaBGvSwR6KVf/fSfz2Vv9Fzgwwk8C7mK3D/2UIBkwkVem5U8TptvfImpCf0RUTA8gWIdsBfF5m4LiAwFSnskzdlyf17AOZLn76sD3gsYIQ9LR3c7uyWIItDaA2yZf1emluVh64wZujrioa1S+GEfKr/mMuV33nstpLMUxsNym2HdofvGxwoZ/+fhkbLRfKjrFLBUq2ueGRo3n1aaYZlvHKHO10V00EsXFJHsgVXpc0d7SHAPB9u8HekiyzW40CivUvVozoVxZa4Oknu0tIr4dWDwXiflSRAEGcQZiaFT5XpYcPga2B3MhLK9boR0zwzEMiqK7jo/rl/09tVdNq9NzwrJKFQ0LIbpDLJ/Ct08mjfu9v91pgLyKHj8Wb3mbNF5U99VJYGcWw3ZXeF3UKeXFYmmgQr3srGTU=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -656,6 +656,8 @@ function legendFor(names, colors){
   return lg;
 }
 /* コヒーレンス用レーダー（5軸・1〜5）。series = [{name, color, values, fillOpacity?}] */
+// 「発」(Xingkai SC Bold から抽出したアウトライン・フォント座標系Y上向き) — メインレーダーの背景透かし
+const HATSU_GLYPH = {d:"M310 312Q293 325 285.0 333.5Q277 342 276.0 347.0Q275 352 280.5 355.0Q286 358 295 360Q374 382 432.5 395.5Q491 409 517 426Q542 445 564.5 441.5Q587 438 601 422Q618 404 610.5 388.0Q603 372 558 353Q556 336 555.0 312.5Q554 289 553 257Q568 260 582.0 263.0Q596 266 608 270Q668 284 703.5 276.5Q739 269 756 228Q761 215 748.5 205.5Q736 196 722 201Q705 203 688.5 204.0Q672 205 652.5 205.0Q633 205 608.5 203.5Q584 202 552 198Q551 173 550.5 137.5Q550 102 550 77Q549 45 553.5 27.5Q558 10 576 1Q589 -5 601.0 -10.0Q613 -15 628.5 -16.0Q644 -17 666.0 -14.5Q688 -12 721 -3Q762 7 777.5 30.0Q793 53 797 92Q800 127 804.0 130.5Q808 134 816 111Q818 104 822.5 87.5Q827 71 832.0 51.0Q837 31 842.5 10.0Q848 -11 852 -28Q855 -52 852.5 -61.0Q850 -70 828 -76Q759 -96 703.0 -98.0Q647 -100 608 -94Q565 -86 540.0 -75.0Q515 -64 501.5 -47.5Q488 -31 484.0 -6.0Q480 19 480 56Q480 90 480.0 126.0Q480 162 481 185Q446 177 406 167Q383 75 355.5 18.5Q328 -38 300 -70Q284 -90 274.0 -90.5Q264 -91 253 -78Q249 -74 247.5 -67.5Q246 -61 249.0 -48.5Q252 -36 259.5 -16.5Q267 3 282 35Q294 58 300.5 71.5Q307 85 311.0 91.5Q315 98 317.5 98.5Q320 99 323 97Q326 106 330.0 119.5Q334 133 337 150Q312 141 289.5 130.0Q267 119 252 111Q234 102 209.5 103.5Q185 105 169 125Q162 135 161.0 143.5Q160 152 162.0 158.0Q164 164 168.0 166.5Q172 169 177 168Q185 166 196.0 166.5Q207 167 216 172Q220 174 233.5 178.0Q247 182 265.5 187.0Q284 192 305.5 198.5Q327 205 348 211Q352 234 354.5 254.0Q357 274 359 292Q347 292 335.0 297.5Q323 303 310 312ZM564 471Q557 478 546.0 485.5Q535 493 523.0 498.5Q511 504 499.5 507.5Q488 511 481 511Q457 509 440.5 512.0Q424 515 402 527Q392 522 382.5 516.0Q373 510 363.5 499.0Q354 488 343.0 470.5Q332 453 320 426Q309 400 288.0 369.5Q267 339 241.5 310.5Q216 282 189.5 259.0Q163 236 142 225Q136 223 122.5 219.5Q109 216 94 220Q82 222 81.5 233.0Q81 244 95 252Q109 260 123.0 271.5Q137 283 154.5 303.5Q172 324 193.5 355.0Q215 386 244 434Q210 455 162 499Q159 502 164.0 506.5Q169 511 183 511Q201 511 212.5 509.5Q224 508 233.0 504.5Q242 501 250.0 495.5Q258 490 269 482Q280 496 288.0 508.0Q296 520 303 537Q305 545 302.5 552.5Q300 560 290 566Q285 567 277.0 573.5Q269 580 261.5 589.0Q254 598 248.0 607.0Q242 616 241 622Q239 628 242.5 630.5Q246 633 255 628Q261 624 268.5 625.0Q276 626 299 637Q314 645 322.5 649.5Q331 654 336.5 657.5Q342 661 344.5 663.5Q347 666 349 670Q353 675 358.0 676.5Q363 678 377 675Q403 670 413.5 664.0Q424 658 432 638Q437 630 437.5 618.0Q438 606 433 601Q427 592 430 578Q446 582 457.0 586.0Q468 590 479.5 598.0Q491 606 506.5 620.0Q522 634 547 659Q558 672 560.0 678.5Q562 685 558 691Q551 701 550.0 706.5Q549 712 553 711Q567 710 579 716Q584 719 595.5 714.0Q607 709 613 703Q618 695 624.5 690.5Q631 686 651 679Q658 675 657.5 665.5Q657 656 641 644Q625 635 613.5 623.5Q602 612 594 604Q590 601 582.5 595.5Q575 590 566.0 584.0Q557 578 548.5 573.0Q540 568 534 565Q544 557 550.5 551.5Q557 546 568 540Q582 551 597.0 562.5Q612 574 625.0 584.5Q638 595 647.5 603.5Q657 612 660 616Q663 620 667.0 622.5Q671 625 678.0 621.5Q685 618 696.0 607.5Q707 597 724 577Q732 566 730.0 557.0Q728 548 702 540Q689 536 675.0 531.5Q661 527 649.0 522.0Q637 517 628.0 512.0Q619 507 616 503Q651 474 685.5 450.0Q720 426 749.5 408.5Q779 391 802.0 381.0Q825 371 838 371Q844 371 853.5 367.5Q863 364 872.0 359.5Q881 355 888.5 351.0Q896 347 898 345Q901 339 907.5 331.0Q914 323 922 321Q941 305 933.5 291.0Q926 277 898 280Q860 285 831.0 292.5Q802 300 764 310Q750 314 737.5 320.0Q725 326 704.0 342.0Q683 358 650.5 388.0Q618 418 564 471ZM419 228Q435 233 450.5 236.5Q466 240 482 244Q483 267 483.5 286.5Q484 306 485 324Q478 323 471.5 321.0Q465 319 457 316Q449 312 442.5 309.5Q436 307 428 305Q426 282 424.0 264.5Q422 247 419 228ZM320 88Q317 89 315.0 85.0Q313 81 311 66Q309 57 310.0 55.5Q311 54 313 57Q317 65 318.5 74.0Q320 83 320 88Z", bbox:[81.5,-98.5,935.6,717.1]};
 function radarChart(axes, series, maxV=5, opts={}){
   const w = opts.w ?? 360, h = opts.h ?? 300, cx = w/2, cy = h/2 + 6, R = opts.r ?? 100;
   const svg = svgEl("svg", {viewBox:`0 0 ${w} ${h}`, width:"100%", style:`max-width:${opts.maxw ?? 400}px` + (opts.corners ? ";overflow:visible" : "")});
@@ -663,6 +665,14 @@ function radarChart(axes, series, maxV=5, opts={}){
     const a = -Math.PI/2 + 2*Math.PI*i/axes.length, r = R*v/maxV;
     return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
   };
+  if(opts.glyph){
+    const [gx0, gy0, gx1, gy1] = opts.glyph.bbox;
+    const side = R * 1.45, gs = side / Math.max(gx1-gx0, gy1-gy0);
+    const tx2 = cx - gs*(gx0+gx1)/2, ty2 = cy + gs*(gy0+gy1)/2;
+    const gEl = svgEl("g", {transform:`translate(${tx2},${ty2}) scale(${gs},${-gs})`});
+    gEl.appendChild(svgEl("path", {d:opts.glyph.d, fill:css("--ink"), "fill-opacity":0.08}));
+    svg.appendChild(gEl);
+  }
   for(let ring = 1; ring <= maxV; ring++){
     const pts = axes.map((_,i) => pt(i, ring).join(",")).join(" ");
     svg.appendChild(svgEl("polygon", {points:pts, fill:"none", stroke:css(ring === maxV ? "--axis" : "--grid"), "stroke-width":1}));
@@ -938,9 +948,9 @@ function buildCoherenceCard(lesson, cohLessons, opts = {}){
   if(prevC) rSeries.push({name:"previous", color:css("--axis"), values:values(prevC), fillOpacity:0.06});
   rSeries.push({name:"this lesson", color:css("--c5"), values:values(lesson)});
   const mobile = window.matchMedia("(max-width:700px)").matches;
-  const size = mobile ? {w:380, h:352, r:150, f:17, dot:6, corners:true, maxw:420}
-    : opts.compact ? {w:560, h:400, r:145, f:18, lm:1.10, maxw:460, dot:6}
-    : {w:700, h:490, r:180, f:24, lm:1.10, maxw:560, dot:6};
+  const size = mobile ? {w:380, h:352, r:150, f:17, dot:6, corners:true, maxw:420, glyph:HATSU_GLYPH}
+    : opts.compact ? {w:560, h:400, r:145, f:18, lm:1.10, maxw:460, dot:6, glyph:HATSU_GLYPH}
+    : {w:700, h:490, r:180, f:24, lm:1.10, maxw:560, dot:6, glyph:HATSU_GLYPH};
   rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, size));
   row.appendChild(rc);
 
