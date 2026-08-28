@@ -442,7 +442,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"gYgZS9ZtZ4e2JaCxl8ytqw==\",\"iv\":\"pb6ZZgmXNczx0Gl7\",\"ct\":\"9V0JgVChg/7sQASPtbWr0H0e//0K8hmcVJFaWyohv4NUqjHDeEgxghhDpEPYLvYM5+Z6BysCwPuGkGLfHlDGQvrG33EpMyX0XOMWL7HtdRvR/yoI/dMFeLHdFPRBLI4vkE6tNZoJst8E2VwbHpPFuzec+iw2g0TI4C02zhkL9quiM7taDe3xRKElFW9ZWIRcN8hIKXNO6l8q/57/DKqBIejqJgwywbSh8+5+eBrBC+mM80kD2meTt78KCfMYF9Yfg/11tY0X5MjF37z6qX6CJmh882taBrIOiLD7/wOlFIw7/3jgn5N4VtOguEVAIAj38t3lmG6z5ROSDAx9td237kRMo1vmeh8qTQTpbJyUmj4fPdPmeeiPZmKa9aj54uUYOcrJHAiAB/GHM50tsnJ7Aqc1bpVfLRKdvjQ1e4rhwfHmgKqPCUU=\"}";
+const ENCRYPTED = "{\"salt\":\"7xITfPXuW3S8A59CVb7eoA==\",\"iv\":\"tvGhb5+kieFzy+ED\",\"ct\":\"CLfKC1ya9sMomXkOqaNFYKv7mQqXCImTRsRtZGD61Jp6BEpE9se5vkr2ZkRoztl+DWSW7jmc+0Zmh+865W4ytFiP1dPuvmd5yO3WM35NqGVXyeB0EGjkBwYxblrsjgp0KrOmGadLduhIcFdEg3Ao4wCIE1Czohwgsnk3QwnPB5FuUvFqHN1tSGs6wSVM7jDAwZVBf4wqtQDKbTnzDgwsqgbqSr7ALCq3Zkenjx/X5lwevFXw6JuDjGdAQS3Sti/AGQe4puDHgZHOH1cox79ScoBLuWiNaq+73iXuHzi/Ch55/S/yEugPv3B0chPumh+ywjxgyuANTdND+0cQufvNHSuKOwUhvcEWmEsSQlcEo2/mSIuiVZHYoqe+fOADWEqgR3k8DGzKrZtTO+govEglRTEnE55v0fHv+EKEzidfxEYl7UzhB+E=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -674,23 +674,28 @@ function radarChart(axes, series, maxV=5, opts={}){
     const c = Math.cos(a2), sn = Math.sin(a2);
     let tx, ty, anchor;
     if(opts.corners){
-      // スマホ: ラベルをSVGの左右端・上下段に寄せ、チャート本体の幅を最大化する
-      anchor = c < -0.25 ? "start" : c > 0.25 ? "end" : "middle";
-      tx = c < -0.25 ? 6 : c > 0.25 ? w - 6 : cx;
-      ty = sn < 0 ? cy - R - 12 : cy + R*sn + (opts.f ?? CHF) + 8;
+      // スマホ: 各ラベルを自分の頂点のすぐ外側に中央配置（上側の軸は頂点の真上・下側は真下）。
+      // 端からはみ出す分だけ内側へクランプし、グリッドと重なっても読めるよう縁取りを付ける
+      const cf = opts.f ?? CHF;
+      const half = label.length * cf * 0.3;
+      tx = Math.min(Math.max(x, half + 4), w - half - 4);
+      ty = sn < 0 ? y - 12 : y + cf + 6;
+      anchor = "middle";
     } else {
       // 左右のラベルは中央揃えだと五角形側へ食い込む（Developmentが被る）ので外側へ流す
       const [lx, ly] = pt(i, maxV*(opts.lm ?? 1.24));
       anchor = c < -0.25 ? "end" : c > 0.25 ? "start" : "middle";
       tx = lx; ty = ly + CHF*.35;
     }
-    const t2 = svgEl("text", {x:tx, y:ty, "text-anchor":anchor, "font-size":opts.f ?? CHF, "font-weight":600, fill:css("--ink2")});
+    const attrs = {x:tx, y:ty, "text-anchor":anchor, "font-size":opts.f ?? CHF, "font-weight":600, fill:css("--ink2")};
+    if(opts.corners){ attrs["paint-order"] = "stroke"; attrs.stroke = css("--surface"); attrs["stroke-width"] = 4; attrs["stroke-linejoin"] = "round"; }
+    const t2 = svgEl("text", attrs);
     t2.textContent = label; svg.appendChild(t2);
   });
   series.forEach(s => {
     const pts = s.values.map((v,i) => pt(i, v));
     svg.appendChild(svgEl("polygon", {points:pts.map(p => p.join(",")).join(" "),
-      fill:s.color, "fill-opacity":s.fillOpacity ?? 0.14, stroke:s.color, "stroke-width":2.5, "stroke-linejoin":"round"}));
+      fill:s.color, "fill-opacity":s.fillOpacity ?? 0.14, stroke:s.color, "stroke-width":opts.lw ?? 2.5, "stroke-linejoin":"round"}));
     const dotR = opts.dot ?? 4;
     pts.forEach(p => svg.appendChild(svgEl("circle", {cx:p[0], cy:p[1], r:dotR, fill:s.color, stroke:css("--surface"), "stroke-width":dotR >= 4 ? 2 : 1})));
   });
@@ -979,7 +984,7 @@ function buildCoherenceCard(lesson, cohLessons, opts = {}){
         const cell = el("div","coh-trend-cell" + (showing ? " coh-trend-latest" : ""));
         cell.appendChild(radarChart(["","","","",""],
           [{name:"score", color:css("--c5"), values:values(l), fillOpacity:showing ? 0.25 : 0.10}],
-          5, {w:150, h:130, r:52, f:1, lm:1.0, dot:2}));
+          5, {w:150, h:130, r:52, f:1, lm:1.0, dot:2, lw:1.25}));
         cell.appendChild(el("div","coh-trend-cap",
           `<b>${fmt1(l.coherence.overall)}</b><span>${esc(shortDate(l.date))}</span>`));
         cell.onclick = () => {
