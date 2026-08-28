@@ -442,7 +442,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"EvPEBfASP64X+SfXlXR1ww==\",\"iv\":\"AsgXZZc0LnfHmUYO\",\"ct\":\"2Ev564QxZZYYefDGtFSriFu4x8JeWF7d7pUE3OCwOIXlt0a0XVvDA3bDETmRSpr67TUWB5H+3vyPsYxV6Qgn9OLhbh+FR7ncRlRFGqw0ERIwjP1bqQCxxme633oNCPXp/l30QX0QYANBE2v+dVEwbdG8Bk9yrPkVPebuzXFE1xKFrM4S7rGpnfO1Jp1/F5i3QIM5CMs3m9QPguZl5aMAte0snhIli+AiDhVv++H/7BdCoO6Rx0Pm+zC4xR4IrlOBngCk7EkEL1WMjN/3/XP14vYfHo5T4jajNKDV0BjumztKLFdhpD7HU4wJmD5hx5BoBlrit8fLHcUez6sWBDz1bomJUQN43OeFWfPa2yyzesOLhRsN86m/d4+wxS5rmA87HxC7rgVV2Fb/k2r4N3nXK3+2Nf2dhnnKuHPSIBWouA4053LnUilF7U+6lQw=\"}";
+const ENCRYPTED = "{\"salt\":\"l45mjpFgq/v6Yyt7dkTUzQ==\",\"iv\":\"OG4ldFDXVJYo3PFZ\",\"ct\":\"ZFBBhBDP+amq02E1MA+Dpi2UPtG9dNJuVXaWIJhSv8gOsEvk9tOPKjJ971cakqVniiIMo00tbgvR78b7uWwnkRKhIQxp4IoDZn117gGAtczs+LT8/hGM8KR9MSQ+zwaX2CXxRYUzFUcgVEtgc6PyXe9eS9kw4zQv8UBqWL2zaJaB43zk1kupBkKU8EGv3F/klCXBeo4JbrQVhB7aN600VGstiWleR1oe4+pC0GKVcJKV9I4SvWRYgryvGuS6VypaFosVRTV8uZiA2CifbaUSV0gA9yhIlQhv3knYUXbvZz1RwuXoVy2nmtuyKattumXJWIELuCJoT4Pe1fcTs1p1S5FJLXVKR8dqnZPJkHvS3J6E0llXgCJOFD1xj/97kXy2Hc3j1lXjM5AQnYg1D4e/2SEjuJ2BV4CCkdNNabWgF6GbunQODlTXx3fIKeE=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -949,7 +949,6 @@ function buildCoherenceCard(lesson, cohLessons, opts = {}){
   rSeries.push({name:"this lesson", color:css("--c5"), values:values(lesson)});
   const mobile = window.matchMedia("(max-width:700px)").matches;
   const size = mobile ? {w:380, h:352, r:150, f:17, dot:6, corners:true, maxw:420, glyph:HATSU_GLYPH}
-    : opts.compact ? {w:560, h:400, r:145, f:18, lm:1.10, maxw:460, dot:6, glyph:HATSU_GLYPH}
     : {w:700, h:490, r:180, f:24, lm:1.10, maxw:560, dot:6, glyph:HATSU_GLYPH};
   rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, size));
   row.appendChild(rc);
