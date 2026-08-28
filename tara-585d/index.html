@@ -291,7 +291,26 @@ header.mob{display:none}
 @media (max-width:600px){.gr-lrow .cat{display:none}}
 .gw-note{font-size:calc(14px * var(--fs));color:var(--muted);line-height:1.7;margin-bottom:12px}
 @media (max-width:600px){.bk-line{flex-direction:column;gap:0}.bk-lbl{width:auto}}
-/* --- coherence（Growthのレーダー・根拠引用） --- */
+/* --- coherence（Homeサマリー直下・パターンD: レーダー左＋軸別リスト右） --- */
+.coh-d{display:flex;gap:22px;align-items:center;margin-top:4px}
+.coh-d-radar{flex:1;display:flex;justify-content:center;min-width:0}
+.coh-d-list{flex:none;width:260px}
+.coh-d-top{margin-bottom:14px;text-align:center}
+.coh-d-top b{font-size:calc(52px * var(--fs));font-weight:800;color:var(--accent-ink);font-variant-numeric:tabular-nums;line-height:1}
+.coh-d-top span{font-size:calc(18px * var(--fs));color:var(--muted);margin-left:4px}
+.coh-d-top i{display:block;margin-top:8px;font-style:normal;font-weight:700;font-size:calc(15px * var(--fs))}
+.coh-d-top i em{display:block;font-style:normal;font-weight:500;font-size:calc(12px * var(--fs));color:var(--muted);margin-top:2px}
+.coh-d-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--grid);
+  font-size:calc(14px * var(--fs));color:var(--ink2)}
+.coh-d-row span{flex:none;width:108px}
+.coh-d-row em{flex:1;height:7px;background:var(--grid);border-radius:4px;overflow:hidden}
+.coh-d-row u{display:block;height:100%;background:var(--c5);border-radius:4px}
+.coh-d-row b{flex:none;width:38px;text-align:right;font-size:calc(16px * var(--fs));color:var(--ink);font-variant-numeric:tabular-nums}
+@media (max-width:900px){
+  .coh-d{flex-direction:column;gap:6px}
+  .coh-d-list{width:100%}
+}
+/* --- coherence（根拠引用） --- */
 .coh-evtitle{margin-top:14px;font-size:calc(14px * var(--fs));font-weight:700;color:var(--accent-ink);letter-spacing:.06em}
 .coh-ev{display:flex;gap:10px;align-items:baseline;padding:9px 12px;margin-top:8px;background:var(--surface2);
   border:1px solid var(--grid);border-radius:10px;line-height:1.8}
@@ -405,7 +424,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"bYqlXk/XF14hZxMN6VE6pw==\",\"iv\":\"ESMKRgiqWbTvGO7h\",\"ct\":\"eSITkoGR4Q4Do4uKoozHo5Qm3uXWpp5LCrUB+U4Gi7H7FDH/CBZHxZu/WJJ1eRrIMvG0zja2x9THm/ZmBdxbpe4RaH2TC2zVpoQjzRKUKhULu7ovtIshgvPpsEc26e9JWhF6PO9Scr9veK1Fot4/s/7R2V+1W2YohD/Cq40OjzwNZNG/L49ua6tjsB1qzg1UgnHzwMk05+9jmfZFIVjxVCKuNNfrS79gDYAOHpxxzi1Df+i/D6XZY3qRlxaFzGwYeBLZJ/aq06C+F3Vy0TXq/V//r/ffB5YXf6QcNWL7IMEMjhG4pKj4eNTenGEE/fyMdodYNIj7XuImzVf5WSJKpkMCYZmSWDnmr1VQ8FDa5OXvm+AO0Xl75umPzR/OcVZmqZ9jMAvDCjK6gqQlWJ7+VvO+3mUxYoFnndhc3Nu2m70DYNsYWI0=\"}";
+const ENCRYPTED = "{\"salt\":\"s+ibsXDCBDiXdjPiFvpJZw==\",\"iv\":\"W/0vNB5iYPyTLh31\",\"ct\":\"MbbPfjA8+Sjq1lE3lvHhyYn/WHwDhOmvWqN10XU/miz25Y2DaLiG7+Z1+WnbCF3NLQbcBkvb8P11uEWaFQ1TeV3i7eLLQO+3zeAUeE0R2mxuQuggB6H4+r7DV0sUvv3VsT+B89dcFZlQlpePVF5bQB1uI/L/Q/K6Pseu86/y1dwFz2yPy4VkvEKFka/hok5FmgYveQYYGoqzzTKqAzRtbwBT1JPcxfmFViZ641kUsj3ERuH6Q45gZQGm/J7Cly9sQ6RPpCZbBEEs0vL/LjRfg+DPCn2O+3X9twZnf93XjlRei5EtuVNo7cs3kjZAWVTSa5WJ8P1gZbSRPamJNza1O1u9DDlaG11gr3RCVRBu0ZmvO4CsWmWTpppk5k8Jd19L4Xjd7V33m4KLIUIJDL3lTItuUytsaHSjBPeN1T21V0z222IJZdQ=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -496,6 +515,7 @@ CATS.forEach((c,i) => CAT_COLOR[c] = getComputedStyle(document.documentElement).
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const el = (tag, cls, html) => { const n = document.createElement(tag); if(cls) n.className = cls; if(html != null) n.innerHTML = html; return n; };
 const shortDate = d => (d||"").slice(5).replace("-","/");
+const fmt1 = v => Number(v).toFixed(1);   // コヒーレンス表示は0.1刻みで統一
 const lessons = () => (STU.lessons || []).slice().sort((a,b) => a.date < b.date ? -1 : 1);
 // フレーズ → カードの実音声（表現自体にaudioがない場合の保険。ふりがな記法を除いて比較）
 function audioForPhrase(phrase){
@@ -618,8 +638,8 @@ function legendFor(names, colors){
   return lg;
 }
 /* コヒーレンス用レーダー（5軸・1〜5）。series = [{name, color, values, fillOpacity?}] */
-function radarChart(axes, series, maxV=5){
-  const w = 360, h = 300, cx = w/2, cy = h/2 + 6, R = 100;
+function radarChart(axes, series, maxV=5, opts={}){
+  const w = opts.w ?? 360, h = opts.h ?? 300, cx = w/2, cy = h/2 + 6, R = opts.r ?? 100;
   const svg = svgEl("svg", {viewBox:`0 0 ${w} ${h}`, width:"100%", style:"max-width:400px"});
   const pt = (i, v) => {
     const a = -Math.PI/2 + 2*Math.PI*i/axes.length, r = R*v/maxV;
@@ -633,7 +653,7 @@ function radarChart(axes, series, maxV=5){
     const [x, y] = pt(i, maxV);
     svg.appendChild(svgEl("line", {x1:cx, y1:cy, x2:x, y2:y, stroke:css("--grid"), "stroke-width":1}));
     const [lx, ly] = pt(i, maxV*1.24);
-    const t2 = svgEl("text", {x:lx, y:ly+CHF*.35, "text-anchor":"middle", "font-size":CHF, fill:css("--ink2")});
+    const t2 = svgEl("text", {x:lx, y:ly+CHF*.35, "text-anchor":"middle", "font-size":opts.f ?? CHF, "font-weight":600, fill:css("--ink2")});
     t2.textContent = label; svg.appendChild(t2);
   });
   series.forEach(s => {
@@ -646,7 +666,7 @@ function radarChart(axes, series, maxV=5){
     const [x, y] = pt(i, maxV*0.7);
     const hit = svgEl("circle", {cx:x, cy:y, r:34, fill:"transparent"});
     hit.addEventListener("pointermove", e => {
-      const rows = series.map(s => `<div class="tt-row"><i style="background:${s.color}"></i>${esc(s.name)}<b>${s.values[i]}/${maxV}</b></div>`).join("");
+      const rows = series.map(s => `<div class="tt-row"><i style="background:${s.color}"></i>${esc(s.name)}<b>${fmt1(s.values[i])}/${maxV}</b></div>`).join("");
       showTT(`<div class="tt-title">${esc(label)}</div>${rows}`, e.clientX, e.clientY);
     });
     hit.addEventListener("pointerleave", hideTT);
@@ -843,6 +863,53 @@ function grammarCard(){
     薄い=導入あり / 中間=一部練習済み / 濃い=全項目練習済み（ホバーで内訳）</div>`));
   return c;
 }
+/* コヒーレンス（Homeサマリー直下・パターンD）。coherence付きレッスンが無ければ何も出さない */
+const COH_AXES = [
+  ["cohesion","Cohesion"], ["logic","Logic"], ["completeness","Completeness"],
+  ["naturalness","Naturalness"], ["development","Development"]];
+function coherenceHomeCard(ls){
+  const cohLessons = ls.filter(l => l.coherence?.scores);
+  if(!cohLessons.length) return;
+  const latest = cohLessons[cohLessons.length-1], prevC = cohLessons[cohLessons.length-2];
+  const values = l => COH_AXES.map(a => l.coherence.scores[a[0]]?.score ?? 0);
+  const card = el("div","card",`<h2>🧩 COHERENCE (HOW WELL YOUR SPEECH FLOWS)</h2>`);
+
+  const row = el("div","coh-d");
+  const rc = el("div","coh-d-radar");
+  const rSeries = [];
+  if(prevC) rSeries.push({name:"previous", color:css("--axis"), values:values(prevC), fillOpacity:0.06});
+  rSeries.push({name:"latest", color:css("--c5"), values:values(latest)});
+  rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, {w:470, h:380, r:125, f:15}));
+  row.appendChild(rc);
+
+  const list = el("div","coh-d-list");
+  const overall = latest.coherence.overall;
+  const delta = prevC ? overall - prevC.coherence.overall : null;
+  const flat = delta != null && Math.abs(delta) < 0.05;
+  const deltaHtml = delta == null ? "" :
+    flat ? `<i style="color:var(--muted)">± 0.0<em>vs last lesson</em></i>` :
+    `<i style="color:var(${delta >= 0 ? "--good" : "--bad"})">${delta >= 0 ? "▲ +" : "▼ "}${fmt1(Math.abs(delta))}<em>vs last lesson</em></i>`;
+  list.innerHTML = `<div class="coh-d-top"><b>${fmt1(overall)}</b><span>/5</span>${deltaHtml}</div>` +
+    COH_AXES.map(a => {
+      const s = latest.coherence.scores[a[0]];
+      return `<div class="coh-d-row"><span>${a[1]}</span>
+        <em><u style="width:${(s?.score ?? 0)*20}%"></u></em><b>${fmt1(s?.score ?? 0)}</b></div>`;
+    }).join("");
+  row.appendChild(list);
+  card.appendChild(row);
+  if(prevC) card.appendChild(legendFor(["latest","previous"],[css("--c5"),css("--axis")]));
+
+  card.appendChild(el("div","coh-evtitle","🗣 WHAT YOU SAID (EVIDENCE)"));
+  COH_AXES.forEach(a => {
+    const s = latest.coherence.scores[a[0]];
+    if(!s?.evidence) return;
+    card.appendChild(el("div","coh-ev",
+      `<span class="coh-axis">${a[1]} <b>${fmt1(s.score)}</b></span><span class="coh-quote">「${renderJa(s.evidence)}」</span>`));
+  });
+  if(latest.coherence.comment) card.appendChild(el("div","coh-comment",esc(latest.coherence.comment)));
+  view.appendChild(card);
+}
+
 function renderHome(){
   const ls = lessons();
   const sb = statusBanner();
@@ -864,6 +931,7 @@ function renderHome(){
     <div style="font-size:calc(20px * var(--fs));line-height:1.75">${renderJa(cur.summary || "")}</div>
     ${cur.topics?.length ? `<div style="font-size:calc(16px * var(--fs));color:var(--muted);margin-top:10px">Topics: ${cur.topics.map(renderJa).join(" / ")}</div>` : ""}`;
   view.appendChild(head);
+  coherenceHomeCard(ls);
 
   const m = cur.metrics || {}, pm = prev?.metrics || {};
   const talkPct = m.studentTalkSec && m.teacherTalkSec ? Math.round(100*m.studentTalkSec/(m.studentTalkSec+m.teacherTalkSec)) : null;
@@ -873,11 +941,6 @@ function renderHome(){
   if(m.cpm) tiles.appendChild(tile("SPEED", m.cpm, "chars/min", pm.cpm ? m.cpm - pm.cpm : null, false));
   if(talkPct != null) tiles.appendChild(tile("TALK RATIO", talkPct, "%", null));
   if(m.fillers != null) tiles.appendChild(tile("FILLERS", m.fillers, "", pm.fillers != null ? m.fillers - pm.fillers : null, true));
-  if(cur.coherence?.overall != null){
-    const prevC = prev?.coherence?.overall;
-    tiles.appendChild(tile("COHERENCE", cur.coherence.overall, "/5",
-      prevC != null ? Math.round((cur.coherence.overall - prevC)*10)/10 : null, false));
-  }
   view.appendChild(tiles);
 
   // 教科書連動の文法詳細はReportsタブのレポート本文内に集約している（Homeには出さない）
@@ -1847,32 +1910,6 @@ function renderGrowth(){
     view.appendChild(el("div","card","<div class='empty'>Trends unlock after your 2nd lesson 📈</div>"));
   }
 
-  /* コヒーレンス（発話のつながり）。1レッスンでもレーダーと根拠を出す */
-  const cohLessons = ls.filter(l => l.coherence?.scores);
-  if(cohLessons.length){
-    const AXES = [
-      ["cohesion","つながり"], ["logic","論理[ろんり]"], ["completeness","文[ぶん]の完成度[かんせいど]"],
-      ["naturalness","自然[しぜん]さ"], ["development","展開力[てんかいりょく]"]];
-    const axisLabels = AXES.map(a => stripFuri(a[1]));
-    const latest = cohLessons[cohLessons.length-1], prevC = cohLessons[cohLessons.length-2];
-    const card = el("div","card",`<h2>🧩 COHERENCE (HOW WELL YOUR SPEECH FLOWS)</h2>`);
-    const values = l => AXES.map(a => l.coherence.scores[a[0]]?.score ?? 0);
-    const rSeries = [];
-    if(prevC) rSeries.push({name:"previous", color:css("--axis"), values:values(prevC), fillOpacity:0.06});
-    rSeries.push({name:"latest", color:css("--c5"), values:values(latest)});
-    const rc = el("div","chart"); rc.appendChild(radarChart(axisLabels, rSeries)); card.appendChild(rc);
-    if(prevC) card.appendChild(legendFor(["latest","previous"],[css("--c5"),css("--axis")]));
-    /* 軸別の根拠（本人の発話引用）。ふりがなトグル対応 */
-    card.appendChild(el("div","coh-evtitle","🗣 What you said (evidence)"));
-    AXES.forEach(a => {
-      const s = latest.coherence.scores[a[0]];
-      if(!s?.evidence) return;
-      card.appendChild(el("div","coh-ev",
-        `<span class="coh-axis">${renderJa(a[1])} <b>${s.score}/5</b></span><span class="coh-quote">「${renderJa(s.evidence)}」</span>`));
-    });
-    if(latest.coherence.comment) card.appendChild(el("div","coh-comment",esc(latest.coherence.comment)));
-    view.appendChild(card);
-  }
 
   // ④ 克服したパターン
   const conq = conqueredPatterns().slice(0,8);
