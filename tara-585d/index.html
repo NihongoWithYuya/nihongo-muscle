@@ -442,7 +442,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"7xITfPXuW3S8A59CVb7eoA==\",\"iv\":\"tvGhb5+kieFzy+ED\",\"ct\":\"CLfKC1ya9sMomXkOqaNFYKv7mQqXCImTRsRtZGD61Jp6BEpE9se5vkr2ZkRoztl+DWSW7jmc+0Zmh+865W4ytFiP1dPuvmd5yO3WM35NqGVXyeB0EGjkBwYxblrsjgp0KrOmGadLduhIcFdEg3Ao4wCIE1Czohwgsnk3QwnPB5FuUvFqHN1tSGs6wSVM7jDAwZVBf4wqtQDKbTnzDgwsqgbqSr7ALCq3Zkenjx/X5lwevFXw6JuDjGdAQS3Sti/AGQe4puDHgZHOH1cox79ScoBLuWiNaq+73iXuHzi/Ch55/S/yEugPv3B0chPumh+ywjxgyuANTdND+0cQufvNHSuKOwUhvcEWmEsSQlcEo2/mSIuiVZHYoqe+fOADWEqgR3k8DGzKrZtTO+govEglRTEnE55v0fHv+EKEzidfxEYl7UzhB+E=\"}";
+const ENCRYPTED = "{\"salt\":\"uE1u194BQ2i3t3W64oOCYQ==\",\"iv\":\"N6CMjefJlklvMnJ0\",\"ct\":\"9Qsu/5ZJ0lB4++QQpS8mq+x/v9rHvGzPP9N4pznMcWIIJyjB89WxXu9wbw3YNuG6gsrGySlj0Zb1PKUCy19XliU5xcNGgfOik+ZargM4TG3dMdD8M2vTaWP4TZ5gRtuAu00jMIxFe2P84tRLx3qQNGQiIO4HOkKX36QSCA7nuVIPukhFkEwGW3SCaNX8qQZqDbrK/x/g8ugl7Iv0X/JmDYVpaMIr35i7MO8o2LoMWEv1peAnVMN4uiylEAWB8Pbjzc+VmrJv1nnT/18pqXFQRFqAgXPcgysmm3rrxAbR4OyMqHBVqcmQWbSoQfhS7caQXLcANXIrsLoxKXx1qpne797vqtd9DkOcBrIyMLe7ftCxr78KhxiAjOUmU4J3nRKoj3+DzpA++Riw+e8hklq+cEBGKFMG7SXOaV72pv0YyLcj2EAf3PI=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -658,7 +658,7 @@ function legendFor(names, colors){
 /* コヒーレンス用レーダー（5軸・1〜5）。series = [{name, color, values, fillOpacity?}] */
 function radarChart(axes, series, maxV=5, opts={}){
   const w = opts.w ?? 360, h = opts.h ?? 300, cx = w/2, cy = h/2 + 6, R = opts.r ?? 100;
-  const svg = svgEl("svg", {viewBox:`0 0 ${w} ${h}`, width:"100%", style:`max-width:${opts.maxw ?? 400}px`});
+  const svg = svgEl("svg", {viewBox:`0 0 ${w} ${h}`, width:"100%", style:`max-width:${opts.maxw ?? 400}px` + (opts.corners ? ";overflow:visible" : "")});
   const pt = (i, v) => {
     const a = -Math.PI/2 + 2*Math.PI*i/axes.length, r = R*v/maxV;
     return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
@@ -678,7 +678,8 @@ function radarChart(axes, series, maxV=5, opts={}){
       // 端からはみ出す分だけ内側へクランプし、グリッドと重なっても読めるよう縁取りを付ける
       const cf = opts.f ?? CHF;
       const half = label.length * cf * 0.3;
-      tx = Math.min(Math.max(x, half + 4), w - half - 4);
+      // カードの余白へ16pxまでのはみ出しを許して、できるだけ頂点の真上に置く(svgはoverflow:visible)
+      tx = Math.min(Math.max(x, half - 16), w - half + 16);
       ty = sn < 0 ? y - 12 : y + cf + 6;
       anchor = "middle";
     } else {
