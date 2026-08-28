@@ -311,9 +311,14 @@ header.mob{display:none}
   .coh-d-list{width:100%}
 }
 /* --- coherence 過去5回のミニレーダー（E案） --- */
+.coh-viewing{display:inline-block;margin-bottom:10px;padding:6px 12px;border-radius:999px;
+  background:var(--accent-sub);border:1px solid var(--accent);color:var(--accent-ink);
+  font-size:calc(14px * var(--fs));font-weight:600}
+.coh-viewing a{color:var(--accent-ink);text-decoration:underline;cursor:pointer}
 .coh-trend{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:4px}
 .coh-trend-cell{flex:1;min-width:104px;text-align:center;background:var(--surface2);
-  border:1px solid var(--grid);border-radius:12px;padding:8px 4px 10px}
+  border:1px solid var(--grid);border-radius:12px;padding:8px 4px 10px;cursor:pointer}
+.coh-trend-cell:hover{border-color:var(--accent)}
 .coh-trend-latest{border-color:var(--accent);background:var(--accent-sub)}
 .coh-trend-cap b{font-size:calc(20px * var(--fs));font-weight:800;color:var(--accent-ink);font-variant-numeric:tabular-nums}
 .coh-trend-cap span{display:block;font-size:calc(11px * var(--fs));color:var(--muted);margin-top:2px}
@@ -434,7 +439,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"6I0DR9W8u+PwuTAeVuw+Qw==\",\"iv\":\"BdnaPyoEkhtZanad\",\"ct\":\"//5HWDyjOcdwiCh9fWSndSSMsYDuDgXcYuInaimaYacWgmBuxI3mqwsLoDU2LWT/PN081lBUSsRNT/B7jygnaaK2dmeNP23MN/f8b8PhFC8RHSU19Fj+VLgFEg9APiGk55hOg6SOIo9GkBzAlEs9JIOrXSE3hRk4iliWxc8CZy/WO9FYVcCyl1r7/feDOaKMjtdHMFOXHkSL71XuNxkJEq/wjfWHWhMn9Dk0tCt9+vE4unh8qDj4qDAK7C/EuAFdwG8WS18I9et2LGA3JNNEv9dS3hn0iiKRnlKvwpN4UxEtP7IUUlTc+sQhgeRYW5IbKm2caQw5HSl7VkEbXvE9dn+7Ry0IjobEccMT2gvMAy6wRXnddgLsuVGT2TeVPiagJ9mILihZhd6suC8WmRjc9Vx/+B7WPWf8WEk/87poY93Nd73UovLJMko/TH0=\"}";
+const ENCRYPTED = "{\"salt\":\"ForBCAIpvhjDbA5rEZdM2w==\",\"iv\":\"Wq4PEshB9z8PmftI\",\"ct\":\"wE3YcGdimC3bi10t+CNn+Nc960Gic/h1SIP7vw8d91vgAerpO8m2T+58UmKq1ynFCLmYT/N5r4+luZ9JgPEivTKiMSj5e3MjVHw7jvZWl5xZ5wp6/vCa06/Kssxy/jKoIMuBtr4lkZ1yb3A8niONbHgD2QZ29THyhRbzWzY3Mz08MyavnEBrL5dwge1jzurakjqT7uIJxX7v1Y7zGZRDY0fN0l7x/Z/amE7fhldRM45nCVor27Wo9WaLUIMQ3gnVjCz69Oh6WTjneSv5qYOsf7a/ZTCVdsoljt/OJMhwjSbqcBTZ8DeiBaSet5oqULdTNlv+FCY1ollsfcc31TbGsS0yavJ02veVeR2ExDOXNxcK9vt/6ty7bdA0pTXIh/8lKpMgdMxMIi6ZpopsC5lvngBHme/U3zVsW8Ekd/snxczs+s0jJPqR9svZc+4=\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -877,41 +882,56 @@ function grammarCard(){
 const COH_AXES = [
   ["cohesion","Cohesion"], ["logic","Logic"], ["completeness","Completeness"],
   ["naturalness","Naturalness"], ["development","Development"]];
-function coherenceHomeCard(ls){
-  const cohLessons = ls.filter(l => l.coherence?.scores);
-  if(!cohLessons.length) return;
-  const latest = cohLessons[cohLessons.length-1], prevC = cohLessons[cohLessons.length-2];
+/* Homeで表示中のコヒーレンスのレッスン（null=最新）。生徒切替で混ざらないようslugも持つ */
+let cohSelected = null;   // {slug, lessonId} | null
+
+/* コヒーレンスカードを組み立てる（Home と Reports で共用）。
+   opts.compact: Reports用 — トレンド行・Viewingチップ・切替を出さない
+   前回比較は「そのレッスンより前で coherence を持つ直近レッスン」と行う */
+function buildCoherenceCard(lesson, cohLessons, opts = {}){
+  if(!lesson?.coherence?.scores) return null;
+  const idx = cohLessons.findIndex(l => l.lessonId === lesson.lessonId);
+  const prevC = idx > 0 ? cohLessons[idx-1] : null;
+  const isLatest = idx === cohLessons.length-1;
   const values = l => COH_AXES.map(a => l.coherence.scores[a[0]]?.score ?? 0);
-  const card = el("div","card",`<h2>🧩 COHERENCE (HOW WELL YOUR SPEECH FLOWS)</h2>`);
+
+  const card = el("div","card",`<h2>${opts.title ?? "🧩 COHERENCE (HOW WELL YOUR SPEECH FLOWS)"}</h2>`);
+  if(!opts.compact && !isLatest){
+    const chip = el("div","coh-viewing",
+      `Viewing ${esc(shortDate(lesson.date))} · <a href="#">← Back to latest</a>`);
+    chip.querySelector("a").onclick = e => { e.preventDefault(); cohSelected = null; view.innerHTML = ""; renderHome(); };
+    card.appendChild(chip);
+  }
 
   const row = el("div","coh-d");
   const rc = el("div","coh-d-radar");
   const rSeries = [];
   if(prevC) rSeries.push({name:"previous", color:css("--axis"), values:values(prevC), fillOpacity:0.06});
-  rSeries.push({name:"latest", color:css("--c5"), values:values(latest)});
-  rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, {w:580, h:470, r:180, f:20, lm:1.18}));
+  rSeries.push({name:"this lesson", color:css("--c5"), values:values(lesson)});
+  const size = opts.compact ? {w:470, h:390, r:145, f:16, lm:1.18} : {w:580, h:470, r:180, f:20, lm:1.18};
+  rc.appendChild(radarChart(COH_AXES.map(a => a[1]), rSeries, 5, size));
   row.appendChild(rc);
 
   const list = el("div","coh-d-list");
-  const overall = latest.coherence.overall;
+  const overall = lesson.coherence.overall;
   const delta = prevC ? overall - prevC.coherence.overall : null;
   const flat = delta != null && Math.abs(delta) < 0.05;
   const deltaHtml = delta == null ? "" :
-    flat ? `<i style="color:var(--muted)">± 0.0<em>vs last lesson</em></i>` :
-    `<i style="color:var(${delta >= 0 ? "--good" : "--bad"})">${delta >= 0 ? "▲ +" : "▼ "}${fmt1(Math.abs(delta))}<em>vs last lesson</em></i>`;
+    flat ? `<i style="color:var(--muted)">± 0.0<em>vs previous lesson</em></i>` :
+    `<i style="color:var(${delta >= 0 ? "--good" : "--bad"})">${delta >= 0 ? "▲ +" : "▼ "}${fmt1(Math.abs(delta))}<em>vs previous lesson</em></i>`;
   list.innerHTML = `<div class="coh-d-top"><b>${fmt1(overall)}</b><span>/5</span>${deltaHtml}</div>` +
     COH_AXES.map(a => {
-      const s = latest.coherence.scores[a[0]];
+      const s = lesson.coherence.scores[a[0]];
       return `<div class="coh-d-row"><span>${a[1]}</span>
         <em><u style="width:${(s?.score ?? 0)*20}%"></u></em><b>${fmt1(s?.score ?? 0)}</b></div>`;
     }).join("");
   row.appendChild(list);
   card.appendChild(row);
-  if(prevC) card.appendChild(legendFor(["latest","previous"],[css("--c5"),css("--axis")]));
+  if(prevC) card.appendChild(legendFor(["this lesson","previous"],[css("--c5"),css("--axis")]));
 
   card.appendChild(el("div","coh-evtitle","🗣 WHAT YOU SAID & HOW TO LEVEL UP"));
   COH_AXES.forEach(a => {
-    const s = latest.coherence.scores[a[0]];
+    const s = lesson.coherence.scores[a[0]];
     if(!s?.evidence) return;
     // 引用 → 何が起きていたか(feedback) → 模範の言い直し(improved・弱い軸のみ)
     card.appendChild(el("div","coh-ev",
@@ -920,26 +940,43 @@ function coherenceHomeCard(ls){
        ${s.feedback ? `<div class="coh-fb">${esc(s.feedback)}</div>` : ""}
        ${s.improved ? `<div class="coh-improved">✅ Try: 「${renderJa(s.improved)}」</div>` : ""}`));
   });
-  if(latest.coherence.comment) card.appendChild(el("div","coh-comment",esc(latest.coherence.comment)));
+  if(lesson.coherence.comment) card.appendChild(el("div","coh-comment",esc(lesson.coherence.comment)));
 
-  /* 過去5回のミニレーダー（E案）。比較なので2レッスン以上あるときだけ */
-  const recent = cohLessons.slice(-5);
-  if(recent.length >= 2){
-    card.appendChild(el("div","coh-evtitle","📈 LAST " + recent.length + " LESSONS"));
-    const row = el("div","coh-trend");
-    recent.forEach((l, i) => {
-      const vals = values(l);
-      const cell = el("div","coh-trend-cell" + (i === recent.length-1 ? " coh-trend-latest" : ""));
-      cell.appendChild(radarChart(["","","","",""],
-        [{name:"score", color:css("--c5"), values:vals, fillOpacity:i === recent.length-1 ? 0.25 : 0.10}],
-        5, {w:150, h:130, r:52, f:1, lm:1.0}));
-      cell.appendChild(el("div","coh-trend-cap",
-        `<b>${fmt1(l.coherence.overall)}</b><span>${esc(shortDate(l.date))}</span>`));
-      row.appendChild(cell);
-    });
-    card.appendChild(row);
+  /* 過去5回のミニレーダー（E案）。クリックでその回の表示に切り替え */
+  if(!opts.compact){
+    const recent = cohLessons.slice(-5);
+    if(recent.length >= 2){
+      card.appendChild(el("div","coh-evtitle","📈 LAST " + recent.length + " LESSONS · tap to view"));
+      const trend = el("div","coh-trend");
+      recent.forEach(l => {
+        const showing = l.lessonId === lesson.lessonId;
+        const cell = el("div","coh-trend-cell" + (showing ? " coh-trend-latest" : ""));
+        cell.appendChild(radarChart(["","","","",""],
+          [{name:"score", color:css("--c5"), values:values(l), fillOpacity:showing ? 0.25 : 0.10}],
+          5, {w:150, h:130, r:52, f:1, lm:1.0}));
+        cell.appendChild(el("div","coh-trend-cap",
+          `<b>${fmt1(l.coherence.overall)}</b><span>${esc(shortDate(l.date))}</span>`));
+        cell.onclick = () => {
+          const last = cohLessons[cohLessons.length-1];
+          cohSelected = l.lessonId === last.lessonId ? null : {slug: STU.info?.slug, lessonId: l.lessonId};
+          view.innerHTML = ""; renderHome();
+        };
+        trend.appendChild(cell);
+      });
+      card.appendChild(trend);
+    }
   }
-  view.appendChild(card);
+  return card;
+}
+
+function coherenceHomeCard(ls){
+  const cohLessons = ls.filter(l => l.coherence?.scores);
+  if(!cohLessons.length) return;
+  if(cohSelected && cohSelected.slug !== STU.info?.slug) cohSelected = null;   // 生徒切替でリセット
+  const shown = (cohSelected && cohLessons.find(l => l.lessonId === cohSelected.lessonId))
+    || cohLessons[cohLessons.length-1];
+  const card = buildCoherenceCard(shown, cohLessons);
+  if(card) view.appendChild(card);
 }
 
 function renderHome(){
@@ -1173,6 +1210,14 @@ function renderReports(){
       grammar.classList.add("card", "md");
       const at = sections.findIndex(s => /recurring mistakes/i.test(s.textContent || ""));
       sections.splice(at < 0 ? sections.length : at, 0, grammar);
+    }
+    // そのレッスンのコヒーレンス（過去回も見られるように。無い回は出さない）
+    const cohAll = lessons().filter(l => l.coherence?.scores);
+    const cohCard = buildCoherenceCard(byLessonId.get(d), cohAll,
+      {compact:true, title:"🧩 COHERENCE IN THIS LESSON"});
+    if(cohCard){
+      const at2 = sections.findIndex(s => /recurring mistakes/i.test(s.textContent || ""));
+      sections.splice(at2 < 0 ? sections.length : at2, 0, cohCard);
     }
     sections.forEach(s => body.appendChild(s));
     wireReportAudio(body, d);
