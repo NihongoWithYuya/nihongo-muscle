@@ -1,0 +1,2181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F8FAFC">
+<title>Nihongo Muscle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* InsightDeck design system (designmd.ai/chef/insightdeck) — light, presentation-ready analytics */
+:root{
+  color-scheme: light;
+  --fs:1;
+  --page:#F8FAFC; --nav:#FFFFFF; --surface:#FFFFFF; --surface2:#F1F5F9;
+  --ink:#0F172A; --ink2:#475569; --muted:#94A3B8;
+  --grid:#E2E8F0; --axis:#CBD5E1; --border:#E2E8F0; --border-sub:#EDF2F7;
+  --accent:#0D9488; --accent-hov:#0F766E; --accent-sub:#CCFBF1; --accent-ink:#0F766E;
+  --good:#10B981; --bad:#EF4444; --warn:#D97706;
+  --c1:#0D9488; --c2:#9333EA; --c3:#D97706; --c4:#2563EB; --c5:#DB2777; --c6:#65A30D; --c7:#A85B32;
+  --font-display:"Inter","Hiragino Sans",sans-serif;
+  --sidew:288px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Inter","Hiragino Sans","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  background:var(--page);color:var(--ink);font-size:calc(22px * var(--fs));
+  -webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;transition:all .15s ease-out}
+a{color:var(--accent-ink)}
+ruby rt{font-size:.5em;color:var(--ink2);letter-spacing:0;user-select:none}
+/* ===== layout: sidebar + main ===== */
+#side{position:fixed;left:0;top:0;bottom:0;width:var(--sidew);z-index:40;
+  background:var(--nav);border-right:1px solid var(--border-sub);
+  display:flex;flex-direction:column;padding:22px 14px calc(16px + env(safe-area-inset-bottom));overflow-y:auto}
+#side .brand{display:flex;align-items:center;gap:12px;padding:2px 8px 22px}
+#side h1{font-family:var(--font-display);font-size:calc(20px * var(--fs));font-weight:700;letter-spacing:.04em;line-height:1.15}
+#side h1 span{color:var(--accent)}
+#side .sub2{font-size:calc(11px * var(--fs));color:var(--muted);letter-spacing:.22em;margin-top:4px;font-weight:500}
+#side nav{display:flex;flex-direction:column;gap:3px}
+#side nav button{display:flex;align-items:center;gap:13px;padding:14px 14px;border-radius:12px;
+  color:var(--ink2);font-size:calc(19px * var(--fs));font-weight:500;text-align:left;border-left:3px solid transparent}
+#side nav button .ico{font-size:calc(22px * var(--fs));line-height:1;filter:grayscale(1) opacity(.55);width:26px;text-align:center}
+#side nav button:hover{background:var(--surface)}
+#side nav button.on{background:var(--accent-sub);color:var(--accent-ink);font-weight:700;border-left-color:var(--accent)}
+#side nav button.on .ico{filter:none}
+#side .foot{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding:14px 4px 0}
+#stuSelWrap{padding:0 8px 16px;display:none}
+#stuSel{width:100%;padding:12px;border-radius:12px;border:1px solid var(--grid);background:var(--surface);
+  color:var(--ink);font:inherit;font-size:calc(17px * var(--fs))}
+#furiBtn{display:flex;align-items:center;gap:9px;justify-content:center;padding:13px;border-radius:12px;
+  border:1px solid var(--grid);background:var(--surface);font-size:calc(18px * var(--fs));font-weight:600;color:var(--ink2)}
+#furiBtn.on{color:var(--accent-ink);border-color:var(--accent);background:var(--accent-sub)}
+#genAt{font-size:calc(14px * var(--fs));color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.06em}
+#scrim{position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:30;display:none}
+.main{margin-left:var(--sidew)}
+.wrap{max-width:1000px;margin:0 auto;padding:26px 28px 70px}
+/* mobile header */
+header.mob{display:none}
+@media (max-width:900px){
+  :root{--fs:0.8}
+  #side{transform:translateX(-100%);transition:transform .22s ease-out;box-shadow:8px 0 32px rgba(15,23,42,.16)}
+  #side.open{transform:translateX(0)}
+  #scrim.show{display:block}
+  .main{margin-left:0}
+  .wrap{padding:16px 15px 70px}
+  header.mob{display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:20;
+    background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-sub);
+    padding:13px 15px;padding-top:calc(13px + env(safe-area-inset-top))}
+  header.mob .burger{font-size:calc(26px * var(--fs));padding:6px 12px;border:1px solid var(--grid);border-radius:10px;background:var(--surface);min-height:44px}
+  header.mob .t{font-family:var(--font-display);font-size:calc(19px * var(--fs));font-weight:700;letter-spacing:.05em}
+  header.mob .t span{color:var(--accent)}
+  header.mob #furiBtnM{margin-left:auto;font-size:calc(15px * var(--fs));color:var(--muted);border:1px solid var(--border);
+    border-radius:999px;padding:8px 14px;min-height:44px}
+  header.mob #furiBtnM.on{color:var(--accent);border-color:var(--accent)}
+}
+/* --- status banner (admin) --- */
+.status-banner{display:flex;align-items:center;gap:14px;padding:15px 17px;border-radius:14px;
+  background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);margin-bottom:16px;font-size:calc(19px * var(--fs))}
+.status-banner.run{border-left-color:var(--warn)}
+.status-banner.err{border-left-color:var(--bad)}
+.status-banner .st-ico{font-size:calc(26px * var(--fs))}
+.status-banner .st-msg{font-weight:600}
+.status-banner .st-sub{font-size:calc(15px * var(--fs));color:var(--muted);margin-top:3px}
+/* --- cards --- */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+.card h2{font-size:calc(16px * var(--fs));font-weight:600;color:var(--muted);letter-spacing:.1em;margin-bottom:14px}
+.bigbtn{display:block;width:100%;text-align:center;padding:16px;border-radius:12px;
+  background:var(--accent);color:#fff;font-weight:700;font-size:calc(20px * var(--fs));margin-top:14px;letter-spacing:.02em;box-shadow:0 2px 8px rgba(13,148,136,.25)}
+.bigbtn:active{background:var(--accent-hov)}
+.ghostbtn{display:inline-block;padding:12px 20px;border-radius:12px;border:1px solid var(--grid);
+  color:var(--accent);font-size:calc(19px * var(--fs));font-weight:600;background:var(--surface2);min-height:44px}
+.ghostbtn:active{border-color:var(--accent)}
+/* --- lock screen --- */
+#lock{max-width:420px;margin:18vh auto 0;text-align:center;padding:26px}
+#lock h1{font-family:var(--font-display);font-size:calc(26px * var(--fs));letter-spacing:.05em;margin-bottom:6px}
+#lock p{font-size:calc(17px * var(--fs));color:var(--muted);margin-bottom:24px;letter-spacing:.05em}
+#lock input{width:100%;padding:16px;border:1px solid var(--grid);border-radius:12px;font-size:calc(22px * var(--fs));
+  background:var(--surface);color:var(--ink);text-align:center;outline:none}
+#lock input:focus{border-color:var(--accent)}
+#lock button{width:100%;margin-top:12px;padding:16px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;font-size:calc(20px * var(--fs))}
+#lockErr{color:var(--bad);font-size:calc(18px * var(--fs));margin-top:14px;min-height:1em}
+/* --- stat tiles --- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:14px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.tile .lbl{font-size:calc(14px * var(--fs));color:var(--muted);margin-bottom:8px;letter-spacing:.12em;font-weight:500}
+.tile .val{font-family:var(--font-display);font-size:calc(30px * var(--fs));font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.tile .val small{font-size:calc(17px * var(--fs));font-weight:500;color:var(--muted);font-family:"Inter","Hiragino Sans",sans-serif}
+.tile .delta{font-size:calc(15px * var(--fs));margin-top:8px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.tile .delta.up{color:var(--good)}
+.tile .delta.down{color:var(--bad)}
+/* --- lists / badges --- */
+.repeat li{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--border-sub);list-style:none;font-size:calc(20px * var(--fs))}
+.repeat li:last-child{border-bottom:none}
+.badge{min-width:52px;text-align:center;font-size:calc(16px * var(--fs));font-weight:700;border-radius:8px;padding:5px 11px;
+  background:var(--bad);color:#fff;font-variant-numeric:tabular-nums}
+.badge.low{background:var(--surface2);border:1px solid var(--grid);color:var(--ink2)}
+.repeat .cat{font-size:calc(15px * var(--fs));color:var(--muted);margin-left:auto;white-space:nowrap}
+/* --- legend / charts --- */
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px}
+.legend span{display:flex;align-items:center;gap:8px;font-size:calc(16px * var(--fs));color:var(--ink2)}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.chart{width:100%;overflow-x:auto}
+.chart svg{display:block}
+.chart text{font-family:"Inter",sans-serif}
+/* Statsだけを約70%の密度にする。ほかのタブのサイズは変えない */
+#tooltip{position:fixed;z-index:50;pointer-events:none;background:var(--surface2);border:1px solid var(--grid);
+  border-radius:10px;padding:11px 14px;font-size:calc(18px * var(--fs));box-shadow:0 8px 24px rgba(15,23,42,.14);display:none;max-width:320px}
+#tooltip .tt-title{font-weight:600;margin-bottom:5px}
+#tooltip .tt-row{display:flex;align-items:center;gap:8px;color:var(--ink2)}
+#tooltip .tt-row i{width:11px;height:11px;border-radius:3px;display:inline-block}
+#tooltip .tt-row b{margin-left:auto;color:var(--ink);font-variant-numeric:tabular-nums}
+/* --- add student form (admin) --- */
+.adm-form label{display:block;font-size:calc(13px * var(--fs));font-weight:700;letter-spacing:.06em;color:var(--ink2);margin:14px 0 5px}
+.adm-form input[type=text],.adm-form input[type=email]{width:100%;padding:11px 13px;border:1px solid var(--grid);border-radius:9px;font:inherit;background:var(--surface)}
+.adm-form input[type=text]:focus,.adm-form input[type=email]:focus{outline:2px solid var(--accent-sub);border-color:var(--accent)}
+.adm-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+/* .adm-form label の見出しスタイルより詳細度を上げて、選択肢・チェック行のレイアウトを守る */
+.adm-form label.adm-opt{flex:1;min-width:96px;position:relative;margin:0;letter-spacing:0}
+.adm-opt input{position:absolute;opacity:0}
+.adm-opt span{display:block;text-align:center;padding:10px 6px;border:1.5px solid var(--grid);border-radius:9px;font-weight:600;cursor:pointer;color:var(--ink2);font-size:calc(15px * var(--fs))}
+.adm-opt input:checked + span{background:var(--accent-sub);border-color:var(--accent);color:var(--accent-ink)}
+.adm-form label.adm-chk{display:flex;align-items:center;gap:9px;margin:14px 0 0;font-size:calc(15px * var(--fs));font-weight:500;letter-spacing:0;color:var(--ink2);cursor:pointer}
+.adm-chk input{flex:none;width:18px;height:18px;accent-color:var(--accent);margin:0}
+.adm-status{font-size:calc(13px * var(--fs));font-weight:700;border-radius:999px;padding:4px 12px;display:inline-block}
+.adm-status.ok{background:#D1FAE5;color:#065F46}
+.adm-status.ng{background:#FEE2E2;color:#991B1B}
+.kv2{margin:10px 0;padding:12px;background:var(--surface2);border-radius:9px}
+.kv2 .k{font-size:calc(11px * var(--fs));font-weight:700;letter-spacing:.1em;color:var(--muted)}
+.kv2 .v{font-size:calc(17px * var(--fs));font-weight:700;word-break:break-all;user-select:all}
+/* --- selection translate popup --- */
+#selPop{position:fixed;z-index:61;display:none;background:var(--surface);border:1px solid var(--grid);border-radius:12px;
+  padding:13px 15px;max-width:min(360px,86vw);box-shadow:0 8px 24px rgba(15,23,42,.16);font-size:calc(16px * var(--fs));line-height:1.7}
+#selPop .sp-src{color:var(--muted);font-size:calc(13px * var(--fs));margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#selPop .sp-tr{font-weight:600}
+#selPop .sp-note{color:var(--muted);font-size:calc(11px * var(--fs));margin-top:8px}
+#selPop a{font-size:calc(14px * var(--fs))}
+/* --- category totals (sorted horizontal bars) --- */
+.catbars{display:grid;gap:9px}
+.catbar{display:grid;grid-template-columns:minmax(96px,auto) 1fr 36px;align-items:center;gap:10px;font-size:calc(16px * var(--fs))}
+.cb-name{color:var(--ink2);white-space:nowrap}
+.cb-track{background:var(--surface2);border-radius:4px;height:14px;overflow:hidden}
+.cb-track i{display:block;height:100%;border-radius:0 4px 4px 0}
+.cb-val{font-variant-numeric:tabular-nums;color:var(--ink);text-align:right;font-weight:600}
+/* --- reports --- */
+.datebar{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;margin-bottom:10px}
+.datebar button{white-space:nowrap;padding:9px 18px;border-radius:999px;border:1px solid var(--grid);font-size:calc(18px * var(--fs));
+  color:var(--ink2);font-variant-numeric:tabular-nums;background:var(--surface);min-height:44px}
+.datebar button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.md{font-size:calc(20px * var(--fs));line-height:1.9}
+.md h1{font-family:var(--font-display);font-size:calc(25px * var(--fs));margin:16px 0 10px;letter-spacing:.02em}
+.md h2{font-size:calc(21px * var(--fs));margin:22px 0 8px;padding-bottom:7px;border-bottom:1px solid var(--grid);color:var(--accent-ink);font-weight:700}
+.md h3{font-size:calc(20px * var(--fs));margin:14px 0 5px}
+.md p{margin:8px 0}
+.md ul{margin:8px 0 8px 26px}
+.md code{background:var(--surface2);border:1px solid var(--grid);border-radius:6px;padding:1px 7px;font-size:calc(18px * var(--fs))}
+.md .tblwrap{overflow-x:auto;margin:10px 0;border:1px solid var(--grid);border-radius:10px}
+.md table{border-collapse:separate;border-spacing:0;font-size:calc(18px * var(--fs));min-width:100%}
+.md th,.md td{border-bottom:1px solid var(--grid);padding:12px 15px;text-align:left;vertical-align:top}
+.md th{background:var(--surface2);color:var(--accent-ink);font-weight:700;white-space:nowrap;
+  border-bottom:2px solid var(--accent-sub);position:sticky;top:0}
+.md tbody tr:nth-child(odd){background:var(--surface2)}
+.md tr:last-child td{border-bottom:none}
+.md td b{color:var(--accent-ink)}
+/* スマホではミス詳細テーブルを縦積みカードにする */
+@media (max-width:600px){
+  .md .tblwrap{border:none}
+  .md table, .md tbody, .md tr, .md td{display:block;width:100%}
+  .md thead{display:none}
+  .md tr{border:1px solid var(--grid);border-radius:10px;margin-bottom:10px;background:var(--surface2);overflow:hidden}
+  .md td{border-bottom:1px solid var(--border-sub)}
+  .md tr:last-child td{border-bottom:1px solid var(--border-sub)}
+  .md td:last-child{border-bottom:none}
+  .md td::before{content:attr(data-label);display:block;font-size:calc(13px * var(--fs));
+    color:var(--muted);letter-spacing:.08em;margin-bottom:4px;font-weight:600}
+}
+/* --- flashcards --- */
+.fc-stage{perspective:1000px;margin-bottom:14px;max-width:640px}
+.fc-card{position:relative;width:100%;min-height:320px;transform-style:preserve-3d;transition:transform .45s;cursor:pointer}
+.fc-card.flip{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:var(--surface);border:1px solid var(--grid);border-radius:18px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px;text-align:center}
+.fc-face.back{transform:rotateY(180deg);background:var(--surface2)}
+.fc-front-text{font-family:var(--font-display);font-size:calc(34px * var(--fs));font-weight:700;line-height:1.6}
+.fc-back-text{font-size:calc(21px * var(--fs));line-height:1.75;white-space:pre-wrap}
+.fc-tag{position:absolute;top:16px;left:18px;font-size:calc(14px * var(--fs));color:var(--muted);letter-spacing:.08em}
+.fc-hint{position:absolute;bottom:16px;font-size:calc(15px * var(--fs));color:var(--muted)}
+.fc-speak{position:absolute;top:10px;right:12px;font-size:calc(28px * var(--fs));padding:10px;min-width:44px;min-height:44px}
+.fc-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:640px}
+.fc-btns button{padding:16px 0;border-radius:12px;border:1px solid var(--grid);font-size:calc(19px * var(--fs));font-weight:700;background:var(--surface);min-height:52px}
+.fc-btns button:active{background:var(--surface2)}
+.fc-btns .b-again{color:var(--bad)} .fc-btns .b-hard{color:var(--warn)}
+.fc-btns .b-good{color:var(--accent-ink)} .fc-btns .b-easy{color:var(--good)}
+.fc-btns .iv{display:block;font-size:calc(12px * var(--fs));color:var(--muted);font-weight:400;margin-top:3px;letter-spacing:.04em}
+.fc-meta{font-size:calc(16px * var(--fs));color:var(--muted);margin-bottom:12px;letter-spacing:.08em;font-variant-numeric:tabular-nums;max-width:640px;text-align:center}
+.fc-done{text-align:center;padding:52px 12px 24px;color:var(--ink2);font-size:calc(21px * var(--fs));line-height:2}
+/* --- cards mode toggle --- */
+.fc-modetabs{display:flex;gap:8px;margin-bottom:14px}
+.fc-modetabs button{flex:1;padding:11px 0;border-radius:12px;border:1px solid var(--grid);background:var(--surface);
+  color:var(--ink2);font-size:calc(15px * var(--fs));font-weight:600;min-height:44px}
+.fc-modetabs button.on{background:var(--accent-sub);border-color:var(--accent);color:var(--accent-ink)}
+/* --- browse list --- */
+.browse-list{max-width:640px}
+.browse-item{border:1px solid var(--border);border-radius:12px;background:var(--surface);margin-bottom:8px;overflow:hidden}
+.browse-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;min-height:52px}
+.browse-item.open .browse-head{border-bottom:1px solid var(--border-sub)}
+.browse-speak{font-size:calc(20px * var(--fs));flex:none;padding:8px;min-width:44px;min-height:44px}
+.browse-front{font-family:var(--font-display);font-weight:700;font-size:calc(18px * var(--fs));flex:1;line-height:1.6}
+.browse-meta{font-size:calc(11px * var(--fs));color:var(--muted);white-space:nowrap;flex:none}
+.browse-item.open .browse-meta{display:none}
+.browse-chev{color:var(--muted);font-size:calc(14px * var(--fs));flex:none;transition:transform .15s}
+.browse-item.open .browse-chev{transform:rotate(90deg);color:var(--accent-ink)}
+.browse-back{padding:14px 16px;font-size:calc(15px * var(--fs));line-height:1.75;color:var(--ink2);white-space:pre-wrap;background:var(--surface2)}
+.browse-hint{font-size:calc(12px * var(--fs));color:var(--muted);margin-bottom:12px;text-align:center}
+.empty{color:var(--muted);font-size:calc(19px * var(--fs));text-align:center;padding:32px 10px;line-height:1.9}
+.hidden{display:none!important}
+/* --- growth tab --- */
+.gw-comment{font-size:calc(20px * var(--fs));line-height:1.9;color:var(--ink)}
+.gw-chips{display:flex;flex-wrap:wrap;gap:8px}
+.gw-chip{padding:8px 14px;border-radius:999px;border:1px solid var(--grid);background:var(--surface2);
+  color:var(--muted);font-size:calc(14px * var(--fs));font-weight:600;line-height:1.5}
+.gw-chip b{color:var(--ink2);font-variant-numeric:tabular-nums;margin-left:4px}
+.gw-chip.hit{background:var(--accent-sub);border-color:var(--accent);color:var(--accent-ink)}
+.badge.gw-good{background:var(--accent-sub);color:var(--accent-ink)}
+.gw-hist{padding:12px 0;border-bottom:1px solid var(--border-sub)}
+.gw-hist:last-child{border-bottom:none}
+.gw-hist-date{font-size:calc(12px * var(--fs));font-weight:700;letter-spacing:.1em;color:var(--muted);margin-bottom:4px}
+.gw-hist-row{font-size:calc(17px * var(--fs));line-height:1.8;color:var(--ink2);margin:3px 0}
+/* --- textbook (Home) --- */
+.bk-ref{display:inline-block;background:var(--accent-sub);color:var(--accent-ink);border-radius:999px;
+  padding:5px 14px;font-size:calc(14px * var(--fs));font-weight:700;margin-bottom:12px}
+.bk-row{padding:11px 0;border-bottom:1px solid var(--border-sub)}
+.bk-row:last-child{border-bottom:none}
+.bk-line{display:flex;gap:12px;align-items:baseline;font-size:calc(18px * var(--fs));line-height:1.8;margin:2px 0}
+.bk-lbl{flex:none;width:96px;font-size:calc(12px * var(--fs));font-weight:700;letter-spacing:.06em;
+  color:var(--muted);text-transform:uppercase}
+.bk-model{color:var(--accent-ink)}
+.bk-page{display:inline-block;margin-left:8px;font-size:calc(12px * var(--fs));color:var(--muted);font-weight:600}
+/* --- レポート: セクションごとに1カード --- */
+.card.md > :first-child{margin-top:0}
+.rep-title{font-family:var(--font-display);font-size:calc(24px * var(--fs));font-weight:750;
+  margin:6px 0 14px;letter-spacing:.02em;color:var(--ink)}
+/* --- today's grammar（レポート内の1セクション。1項目=1カード） --- */
+.gr-section .bk-ref{margin-top:4px}
+/* 親（レポート本文）が白なので、項目カードは薄いグレー地にして枠を目立たせる */
+.gr-item{background:var(--surface2);border:1px solid var(--grid);border-radius:12px;
+  padding:16px 18px;margin:12px 0}
+.gr-item .bk-line{margin:4px 0}
+.gr-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:2px}
+.gr-name{font-family:var(--font-display);font-weight:750;font-size:calc(20px * var(--fs));line-height:1.5}
+.gr-badge{flex:none;font-size:calc(11px * var(--fs));font-weight:800;letter-spacing:.08em;
+  padding:3px 10px;border-radius:999px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+.gr-badge.ok{background:#D1FAE5;color:#047857}
+.gr-badge.mid{background:var(--accent-sub);color:var(--accent-ink)}
+.gr-badge.new{background:#FEF3C7;color:#B45309}
+.gr-gloss{font-size:calc(15px * var(--fs));color:var(--muted);line-height:1.7;margin-bottom:7px}
+.gr-fix span:last-child{color:var(--ink2)}
+.gr-fix b{color:var(--accent-ink)}
+.gr-roster{margin-top:14px;padding-top:14px;border-top:1px solid var(--grid)}
+.gr-roster-head{font-size:calc(13px * var(--fs));font-weight:700;letter-spacing:.04em;color:var(--ink2);margin:14px 0 10px}
+.gr-list{display:flex;flex-direction:column}
+.gr-lrow{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border-sub)}
+.gr-lrow:last-child{border-bottom:none}
+.gr-lrow > div{flex:1;min-width:0}
+.gr-lrow .gr-badge{padding:3px 8px}
+.gr-lname{font-weight:700;font-size:calc(17px * var(--fs));line-height:1.6}
+.gr-lgloss{font-size:calc(14px * var(--fs));color:var(--muted);line-height:1.7}
+.gr-lrow .cat{flex:none;font-size:calc(12px * var(--fs));color:var(--muted);white-space:nowrap}
+@media (max-width:600px){.gr-lrow .cat{display:none}}
+.gw-note{font-size:calc(14px * var(--fs));color:var(--muted);line-height:1.7;margin-bottom:12px}
+@media (max-width:600px){.bk-line{flex-direction:column;gap:0}.bk-lbl{width:auto}}
+/* --- coherence（Growthのレーダー・根拠引用） --- */
+.coh-evtitle{margin-top:14px;font-size:calc(14px * var(--fs));font-weight:700;color:var(--accent-ink);letter-spacing:.06em}
+.coh-ev{display:flex;gap:10px;align-items:baseline;padding:9px 12px;margin-top:8px;background:var(--surface2);
+  border:1px solid var(--grid);border-radius:10px;line-height:1.8}
+.coh-axis{flex:none;font-size:calc(14px * var(--fs));color:var(--ink2);min-width:9.5em}
+.coh-axis b{color:var(--accent-ink)}
+.coh-quote{font-size:calc(16px * var(--fs));color:var(--ink)}
+.coh-comment{margin-top:12px;padding:12px 14px;border-left:3px solid var(--c5);background:var(--surface2);
+  border-radius:8px;font-size:calc(15px * var(--fs));color:var(--ink2);line-height:1.8}
+/* --- vocabulary tab（PCは表・スマホはカード型） --- */
+.vocab-search{width:100%;padding:13px 16px;margin-bottom:12px;border-radius:12px;border:1px solid var(--grid);
+  background:var(--surface);color:var(--ink);font:inherit;font-size:calc(18px * var(--fs));min-height:48px}
+.vocab-search:focus{outline:none;border-color:var(--accent)}
+.vocab-count{color:var(--muted);font-size:calc(15px * var(--fs));margin-bottom:10px;letter-spacing:.06em}
+.vocab-wrap{overflow-x:auto;border:1px solid var(--grid);border-radius:10px}
+table.vocab{border-collapse:separate;border-spacing:0;font-size:calc(18px * var(--fs));min-width:100%}
+table.vocab th,table.vocab td{border-bottom:1px solid var(--grid);padding:12px 15px;text-align:left;vertical-align:top}
+table.vocab th{background:var(--surface2);color:var(--accent-ink);font-weight:700;white-space:nowrap;
+  border-bottom:2px solid var(--accent-sub)}
+table.vocab tbody tr:nth-child(odd){background:var(--surface2)}
+table.vocab tr:last-child td{border-bottom:none}
+/* 単語が「地球に優/しい」のように途中で折り返さない幅を確保する */
+table.vocab th:first-child,table.vocab .v-ja{min-width:230px}
+table.vocab .v-ja{font-size:calc(20px * var(--fs));line-height:1.6}
+table.vocab .v-ex{color:var(--ink2);line-height:1.8}
+table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.v-play,.v-explay{margin-right:8px;font-size:1em;vertical-align:middle;cursor:pointer;
+  min-width:40px;min-height:40px;border:1px solid var(--grid);border-radius:10px;background:var(--surface)}
+.v-play:hover,.v-explay:hover{border-color:var(--accent)}
+@media (max-width:900px){
+  .vocab-wrap{border:none}
+  table.vocab, table.vocab tbody, table.vocab tr, table.vocab td{display:block;width:100%}
+  table.vocab th:first-child,table.vocab .v-ja{min-width:0}
+  table.vocab thead{display:none}
+  table.vocab tr{border:1px solid var(--grid);border-radius:12px;margin-bottom:10px;background:var(--surface2);overflow:hidden}
+  table.vocab td{border-bottom:1px solid var(--border-sub)}
+  table.vocab td:last-child{border-bottom:none}
+  table.vocab tr:last-child td{border-bottom:1px solid var(--border-sub)}
+  table.vocab tr:last-child td:last-child{border-bottom:none}
+  table.vocab td:empty{display:none}
+  table.vocab td::before{content:attr(data-label);display:block;font-size:calc(13px * var(--fs));
+    color:var(--muted);letter-spacing:.08em;margin-bottom:4px;font-weight:600}
+}
+/* --- quiz mode --- */
+.qz-meta{font-size:calc(15px * var(--fs));color:var(--muted);margin-bottom:12px;letter-spacing:.06em;text-align:center;max-width:640px;font-variant-numeric:tabular-nums}
+.qz-wrap{max-width:640px}
+.qz-q{font-size:calc(20px * var(--fs));line-height:1.9;margin-bottom:16px}
+.qz-choices{display:flex;flex-direction:column;gap:10px}
+.qz-choices button{user-select:none;-webkit-user-select:none;text-align:left;padding:14px 16px;border-radius:12px;
+  border:1.5px solid var(--grid);background:var(--surface);font-size:calc(19px * var(--fs));line-height:1.7;
+  color:var(--ink);min-height:52px;cursor:pointer}
+.qz-choices button:not(:disabled):hover{border-color:var(--accent)}
+.qz-choices button.correct{background:var(--accent-sub);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.qz-choices button.wrong{background:#FEF2F2;border-color:var(--bad);color:var(--bad)}
+.qz-choices button.dim{opacity:.55}
+.qz-fb{margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--surface2);
+  font-size:calc(17px * var(--fs));line-height:1.8;color:var(--ink2)}
+.qz-fb .qz-verdict{font-weight:700;font-size:calc(19px * var(--fs));margin-bottom:4px}
+.qz-fb .qz-verdict.ok{color:var(--accent-ink)}
+.qz-fb .qz-verdict.ng{color:var(--bad)}
+.qz-end{text-align:center;padding:24px 10px}
+.qz-end .qz-score{font-family:var(--font-display);font-size:52px;font-weight:700}
+.qz-recap{max-width:640px;margin:14px auto 0;text-align:left}
+.qz-recap div{padding:7px 0;border-bottom:1px solid var(--border-sub);font-size:calc(16px * var(--fs));line-height:1.7;color:var(--ink2)}
+.qz-recap div:last-child{border-bottom:none}
+.qz-lessons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.qz-lessons button{padding:8px 14px;border-radius:999px;border:1px solid var(--grid);background:var(--surface);
+  color:var(--ink2);font-size:calc(14px * var(--fs));font-weight:600;min-height:40px}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <h1>NIHONGO <span style="color:var(--accent)">MUSCLE</span></h1>
+  <p id="lockSub">JAPANESE LESSON REVIEW · PRIVATE</p>
+  <input id="pass" type="password" autocomplete="current-password" placeholder="passphrase">
+  <button id="unlock">Unlock</button>
+  <div id="lockErr"></div>
+</div>
+
+<div id="app" class="hidden">
+  <div id="scrim"></div>
+  <aside id="side">
+    <div class="brand">
+      <div><h1>NIHONGO <span>MUSCLE</span></h1><div class="sub2" id="brandSub">LESSON REVIEW</div></div>
+    </div>
+    <div id="stuSelWrap"><select id="stuSel"></select></div>
+    <nav>
+      <button data-tab="home" class="on"><span class="ico">📊</span><span class="lbl">Home</span></button>
+      <button data-tab="reports"><span class="ico">📝</span><span class="lbl">Reports</span></button>
+      <button data-tab="cards"><span class="ico">🃏</span><span class="lbl">Flashcards</span></button>
+      <button data-tab="vocab"><span class="ico">📚</span><span class="lbl">Vocabulary</span></button>
+      <button data-tab="growth"><span class="ico">🌱</span><span class="lbl">Growth</span></button>
+      <button data-tab="addstu" id="navAddStu" class="hidden"><span class="ico">🧑‍🎓</span><span class="lbl">Add Student</span></button>
+    </nav>
+    <div class="foot">
+      <button id="furiBtn">ふりがな <span id="furiLbl">ON</span></button>
+      <div id="genAt"></div>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="mob">
+      <button class="burger" id="burger">☰</button>
+      <span class="t">NIHONGO <span>MUSCLE</span></span>
+      <button id="furiBtnM">ふりがな</button>
+    </header>
+    <div class="wrap"><main id="view"></main></div>
+  </div>
+</div>
+<div id="tooltip"></div>
+<div id="selPop"></div>
+
+<script>
+"use strict";
+const ENCRYPTED = "{\"salt\":\"LwbWtuKZVcTsRkTIOTgAWQ==\",\"iv\":\"kRLQNVHojUXPevDj\",\"ct\":\"RN04NM9Nqab+Fm2SeM8gPkYUCm14t1PgjnrmbreVMX4cj5PCBpmZQ17zXjsCKNMOXakWOVtRtDj8uIspCie+/haAMT2dE5f1KjC9S7gUdszmWSaS3a/71kvMLT04UeF+cvHwxpVKuB9h8ZlOBPmqGU9Oh7nIAu5XgIEw/MntGmndM/69cNzl1N83GgKp9CcQNkn82djiW34IuFiOUER9f367ru6419n0I1BmUvXRQvksje8OJDux43Lm7SQuaty70DH7NWgFSxfNEEpYBrt6+H49yPjHpuI+cm69Q5dMf2QkeNjRf+BO4tBFoNeFnRettu1pOhwhOhQs35OCe7Und1Acd9IjfXeKaK0M2d2Q+opBF6ZFl2EsCcgAppuIQoa/XLWvCpHL0LMmUcUB720Oh4VNqoBIYqhsaNoAV5772V6prbH/XNznQIL+QKU=\"}";
+const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
+let DB = null;      // 復号済みペイロード全体
+let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
+let FURI = true;    // ふりがな表示
+let currentTab = "home";
+
+/* ============ 復号 ============ */
+const passKey = () => MODE === "admin" ? "nm-admin-pass" : "nm-pass-" + location.pathname;
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function decrypt(passphrase){
+  const blob = JSON.parse(ENCRYPTED);
+  const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt:b64d(blob.salt), iterations:250000, hash:"SHA-256"},
+    km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64d(blob.iv)}, key, b64d(blob.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+async function tryUnlock(passphrase, silent){
+  const err = document.getElementById("lockErr");
+  try{
+    document.getElementById("unlock").textContent = "...";
+    DB = await decrypt(passphrase);
+    localStorage.setItem(passKey(), passphrase);
+    document.getElementById("lock").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    boot();
+  }catch(e){
+    document.getElementById("unlock").textContent = "Unlock";
+    if(!silent) err.textContent = "Wrong passphrase";
+    localStorage.removeItem(passKey());
+  }
+}
+document.getElementById("unlock").onclick = () => tryUnlock(document.getElementById("pass").value);
+document.getElementById("pass").addEventListener("keydown", e => { if(e.key === "Enter") tryUnlock(e.target.value); });
+if(ENCRYPTED === "__ENCRYPTED_PAYLOAD__"){
+  document.getElementById("lockErr").textContent = "（未ビルドのテンプレートです。build_dashboard.mjs を実行してください）";
+}else{
+  const saved = localStorage.getItem(passKey());
+  if(saved) tryUnlock(saved, true);
+}
+
+/* ============ ふりがな（漢字[かんじ] → ルビ） ============ */
+const RUBY_RE = /([一-鿿㐀-䶿々-〇々〆ヶ]+)\[([^\]\[]+)\]/g;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+// 日本語文字列をエスケープしつつ、ふりがな記法をルビ（またはOFF時は漢字のみ）に変換する
+const renderJa = s => FURI
+  ? esc(s).replace(RUBY_RE, "<ruby>$1<rt>$2</rt></ruby>")
+  : esc(s).replace(RUBY_RE, "$1");
+// 比較・読み上げ用: ふりがな記法を除いたプレーン文字列
+const stripFuri = s => String(s ?? "").replace(RUBY_RE, "$1");
+// DOMノードからルビの読みを除いたテキストを得る（レポート内の照合用）
+function plainText(node){
+  const c = node.cloneNode(true);
+  c.querySelectorAll("rt").forEach(r => r.remove());
+  return c.textContent.trim();
+}
+function applyFuri(){
+  document.getElementById("furiLbl").textContent = FURI ? "ON" : "OFF";
+  document.getElementById("furiBtn").classList.toggle("on", FURI);
+  document.getElementById("furiBtnM").classList.toggle("on", FURI);
+}
+function toggleFuri(){
+  FURI = !FURI;
+  localStorage.setItem(furiKey(), FURI ? "1" : "0");
+  applyFuri();
+  view.innerHTML = ""; RENDER[currentTab]();
+}
+const furiKey = () => "nm-furi-" + (STU?.info?.slug || "x");
+document.getElementById("furiBtn").onclick = toggleFuri;
+document.getElementById("furiBtnM").onclick = toggleFuri;
+
+/* ============ 共通ヘルパー ============ */
+const CATS = ["助詞","活用","語彙","語順","敬語・丁寧さ","発音","その他"];
+const CAT_EN = {"助詞":"Particles","活用":"Conjugation","語彙":"Vocabulary","語順":"Word order",
+  "敬語・丁寧さ":"Politeness","発音":"Pronunciation","その他":"Other"};
+const catName = c => CAT_EN[c] || c;
+// 累積ミスの見出し。recurrenceLabel が無い古いデータは英語スラッグがそのまま
+// 入っている（"vocab heatwave neppa"）ので、せめて文らしく見せる
+const mistakeLabel = mi => {
+  const raw = String(mi.label || "").trim();
+  if(!raw) return "—";
+  if(/[ぁ-んァ-ン一-龯]/.test(raw)) return raw;      // 日本語ラベルはそのまま
+  return raw.charAt(0).toUpperCase() + raw.slice(1);
+};
+const CAT_COLOR = {};
+CATS.forEach((c,i) => CAT_COLOR[c] = getComputedStyle(document.documentElement).getPropertyValue(`--c${i+1}`).trim());
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const el = (tag, cls, html) => { const n = document.createElement(tag); if(cls) n.className = cls; if(html != null) n.innerHTML = html; return n; };
+const shortDate = d => (d||"").slice(5).replace("-","/");
+const lessons = () => (STU.lessons || []).slice().sort((a,b) => a.date < b.date ? -1 : 1);
+// フレーズ → カードの実音声（表現自体にaudioがない場合の保険。ふりがな記法を除いて比較）
+function audioForPhrase(phrase){
+  const p = stripFuri(phrase);
+  const c = (STU.cards?.cards || []).find(c => stripFuri(c.front) === p && c.audio);
+  return c?.audio;
+}
+/* 音声再生（事前生成した実音声/TTSのみ。ブラウザ内蔵TTSは使わない） */
+let clipPlayer = null;
+function speak(audioDataUri){
+  if(!audioDataUri) return;
+  if(clipPlayer) clipPlayer.pause();
+  clipPlayer = new Audio(audioDataUri);
+  clipPlayer.play();
+}
+
+/* ---- tooltip ---- */
+const tt = document.getElementById("tooltip");
+function showTT(html, x, y){
+  tt.innerHTML = html; tt.style.display = "block";
+  const r = tt.getBoundingClientRect();
+  tt.style.left = Math.min(Math.max(6, x - r.width/2), innerWidth - r.width - 6) + "px";
+  tt.style.top = (y - r.height - 12 < 6 ? y + 16 : y - r.height - 12) + "px";
+}
+function hideTT(){ tt.style.display = "none"; }
+document.addEventListener("scroll", hideTT, true);
+
+/* ============ SVGチャート ============ */
+const NS = "http://www.w3.org/2000/svg";
+const CHF = 14;
+function svgEl(tag, attrs){ const n = document.createElementNS(NS, tag); for(const k in attrs) n.setAttribute(k, attrs[k]); return n; }
+function chartFrame(w, h, pad, yMax, yTicks, fontSize=CHF, fracTicks=false){
+  const svg = svgEl("svg", {viewBox:`0 0 ${w} ${h}`, width:"100%"});
+  const plotW = w - pad.l - pad.r, plotH = h - pad.t - pad.b;
+  for(let i = 0; i <= yTicks; i++){
+    const v = yMax * i / yTicks, y = pad.t + plotH - plotH * i / yTicks;
+    if(i > 0) svg.appendChild(svgEl("line", {x1:pad.l, x2:pad.l+plotW, y1:y, y2:y, stroke:css("--grid"), "stroke-width":1}));
+    const lbl = svgEl("text", {x:pad.l-8, y:y+fontSize*.35, "text-anchor":"end", "font-size":fontSize, fill:css("--muted")});
+    lbl.textContent = fracTicks ? Math.round(v*10)/10 : Math.round(v); svg.appendChild(lbl);
+  }
+  svg.appendChild(svgEl("line", {x1:pad.l, x2:pad.l+plotW, y1:pad.t+plotH, y2:pad.t+plotH, stroke:css("--axis"), "stroke-width":1}));
+  return {svg, plotW, plotH};
+}
+function xLabels(svg, xs, labels, y, fontSize=CHF){
+  const step = Math.ceil(labels.length / 8);
+  labels.forEach((l, i) => {
+    if(i % step) return;
+    const t2 = svgEl("text", {x:xs(i), y:y, "text-anchor":"middle", "font-size":fontSize, fill:css("--muted")});
+    t2.textContent = l; svg.appendChild(t2);
+  });
+}
+function stackedBar(rows, cats){
+  const pad = {l:44, r:10, t:12, b:28}, w = Math.max(380, rows.length*56 + pad.l + pad.r), h = 250;
+  const yMax = Math.max(4, ...rows.map(r => cats.reduce((s,c) => s + (r.parts[c]||0), 0)));
+  const {svg, plotW, plotH} = chartFrame(w, h, pad, yMax, yMax <= 5 ? yMax : 4);
+  const bw = Math.min(32, plotW / rows.length * .6);
+  const xs = i => pad.l + plotW * (i + .5) / rows.length;
+  rows.forEach((r, i) => {
+    let acc = 0;
+    const total = cats.reduce((s,c) => s + (r.parts[c]||0), 0);
+    cats.forEach(c => {
+      const v = r.parts[c] || 0; if(!v) return;
+      const y0 = pad.t + plotH - plotH*acc/yMax, hgt = plotH*v/yMax;
+      const isTop = acc + v === total;
+      svg.appendChild(svgEl("rect", {x:xs(i)-bw/2, y:y0-hgt, width:bw, height:Math.max(hgt,1.5),
+        fill:CAT_COLOR[c] || css("--c7"), stroke:css("--surface"), "stroke-width":2, rx:isTop?4:0}));
+      acc += v;
+    });
+    if(total > 0){
+      const lbl = svgEl("text", {x:xs(i), y:Math.max(CHF, pad.t + plotH - plotH*total/yMax - 6), "text-anchor":"middle",
+        "font-size":CHF, "font-weight":600, fill:css("--ink2")});
+      lbl.textContent = total; svg.appendChild(lbl);
+    }
+    const hit = svgEl("rect", {x:xs(i)-plotW/rows.length/2, y:pad.t, width:plotW/rows.length, height:plotH, fill:"transparent"});
+    hit.addEventListener("pointermove", e => {
+      const items = cats.filter(c => r.parts[c]).map(c =>
+        `<div class="tt-row"><i style="background:${CAT_COLOR[c]}"></i>${esc(catName(c))}<b>${r.parts[c]}</b></div>`).join("");
+      showTT(`<div class="tt-title">${esc(r.label)}</div>${items || "No mistakes 🎉"}`, e.clientX, e.clientY);
+    });
+    hit.addEventListener("pointerleave", hideTT);
+    svg.appendChild(hit);
+  });
+  xLabels(svg, xs, rows.map(r => r.label), h - 8);
+  return svg;
+}
+function lineChart(labels, series, unit, opts){
+  // opts.yMax: 有界スコア（コヒーレンス0〜5等）用の固定上限。省略時は従来の自動計算
+  const pad = {l:50, r:16, t:14, b:28}, w = Math.max(380, labels.length*52 + pad.l + pad.r), h = 240;
+  const yMax = opts?.yMax ?? Math.ceil(Math.max(4, ...series.flatMap(s => s.values.filter(v => v != null))) * 1.15);
+  const {svg, plotW, plotH} = chartFrame(w, h, pad, yMax, yMax <= 5 ? yMax : 4, CHF, !!opts?.fracTicks);
+  const xs = i => pad.l + (labels.length === 1 ? plotW/2 : plotW * i / (labels.length-1));
+  const ys = v => pad.t + plotH - plotH * v / yMax;
+  series.forEach(s => {
+    const pts = s.values.map((v,i) => v == null ? null : [xs(i), ys(v)]).filter(Boolean);
+    if(pts.length > 1)
+      svg.appendChild(svgEl("path", {d:"M" + pts.map(p => p.join(",")).join("L"), fill:"none", stroke:s.color, "stroke-width":2.5, "stroke-linejoin":"round"}));
+    pts.forEach(p => svg.appendChild(svgEl("circle", {cx:p[0], cy:p[1], r:5, fill:s.color, stroke:css("--surface"), "stroke-width":2})));
+    const lastIdx = s.values.length - 1, lastV = s.values[lastIdx];
+    if(lastV != null){
+      const t2 = svgEl("text", {x:xs(lastIdx), y:ys(lastV)-10, "text-anchor":"middle", "font-size":CHF, "font-weight":600, fill:css("--ink2")});
+      t2.textContent = lastV; svg.appendChild(t2);
+    }
+  });
+  labels.forEach((l, i) => {
+    const hit = svgEl("rect", {x:xs(i)-plotW/Math.max(labels.length,1)/2, y:pad.t, width:plotW/Math.max(labels.length,1), height:plotH, fill:"transparent"});
+    hit.addEventListener("pointermove", e => {
+      const rows = series.map(s => s.values[i] == null ? "" :
+        `<div class="tt-row"><i style="background:${s.color}"></i>${esc(s.name)}<b>${s.values[i]}${unit||""}</b></div>`).join("");
+      showTT(`<div class="tt-title">${esc(l)}</div>${rows}`, e.clientX, e.clientY);
+    });
+    hit.addEventListener("pointerleave", hideTT);
+    svg.appendChild(hit);
+  });
+  xLabels(svg, xs, labels, h - 8);
+  return svg;
+}
+function legendFor(names, colors){
+  const lg = el("div", "legend");
+  names.forEach((n,i) => { const s = el("span"); s.innerHTML = `<i style="background:${colors[i]}"></i>${esc(n)}`; lg.appendChild(s); });
+  return lg;
+}
+/* コヒーレンス用レーダー（5軸・1〜5）。series = [{name, color, values, fillOpacity?}] */
+function radarChart(axes, series, maxV=5){
+  const w = 360, h = 300, cx = w/2, cy = h/2 + 6, R = 100;
+  const svg = svgEl("svg", {viewBox:`0 0 ${w} ${h}`, width:"100%", style:"max-width:400px"});
+  const pt = (i, v) => {
+    const a = -Math.PI/2 + 2*Math.PI*i/axes.length, r = R*v/maxV;
+    return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  };
+  for(let ring = 1; ring <= maxV; ring++){
+    const pts = axes.map((_,i) => pt(i, ring).join(",")).join(" ");
+    svg.appendChild(svgEl("polygon", {points:pts, fill:"none", stroke:css(ring === maxV ? "--axis" : "--grid"), "stroke-width":1}));
+  }
+  axes.forEach((label, i) => {
+    const [x, y] = pt(i, maxV);
+    svg.appendChild(svgEl("line", {x1:cx, y1:cy, x2:x, y2:y, stroke:css("--grid"), "stroke-width":1}));
+    const [lx, ly] = pt(i, maxV*1.24);
+    const t2 = svgEl("text", {x:lx, y:ly+CHF*.35, "text-anchor":"middle", "font-size":CHF, fill:css("--ink2")});
+    t2.textContent = label; svg.appendChild(t2);
+  });
+  series.forEach(s => {
+    const pts = s.values.map((v,i) => pt(i, v));
+    svg.appendChild(svgEl("polygon", {points:pts.map(p => p.join(",")).join(" "),
+      fill:s.color, "fill-opacity":s.fillOpacity ?? 0.14, stroke:s.color, "stroke-width":2.5, "stroke-linejoin":"round"}));
+    pts.forEach(p => svg.appendChild(svgEl("circle", {cx:p[0], cy:p[1], r:4, fill:s.color, stroke:css("--surface"), "stroke-width":2})));
+  });
+  axes.forEach((label, i) => {
+    const [x, y] = pt(i, maxV*0.7);
+    const hit = svgEl("circle", {cx:x, cy:y, r:34, fill:"transparent"});
+    hit.addEventListener("pointermove", e => {
+      const rows = series.map(s => `<div class="tt-row"><i style="background:${s.color}"></i>${esc(s.name)}<b>${s.values[i]}/${maxV}</b></div>`).join("");
+      showTT(`<div class="tt-title">${esc(label)}</div>${rows}`, e.clientX, e.clientY);
+    });
+    hit.addEventListener("pointerleave", hideTT);
+    svg.appendChild(hit);
+  });
+  return svg;
+}
+
+/* ============ ナビ・生徒切替（admin） ============ */
+const view = document.getElementById("view");
+const RENDER = {home:renderHome, reports:renderReports, cards:renderCards, vocab:renderVocab, growth:renderGrowth, addstu:renderAddStudent};
+const side = document.getElementById("side");
+const scrim = document.getElementById("scrim");
+function closeDrawer(){ side.classList.remove("open"); scrim.classList.remove("show"); }
+document.getElementById("burger").onclick = () => { side.classList.add("open"); scrim.classList.add("show"); };
+scrim.onclick = closeDrawer;
+function goTab(name){ document.querySelector(`#side nav button[data-tab="${name}"]`).click(); }
+document.querySelectorAll("#side nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#side nav button").forEach(x => x.classList.toggle("on", x === b));
+  currentTab = b.dataset.tab;
+  hideTT(); closeDrawer(); view.innerHTML = ""; RENDER[currentTab]();
+});
+function setStudent(stu){
+  STU = stu;
+  // adminは先生専用なのでふりがな不要（常時OFF・トグルも非表示）
+  const savedFuri = localStorage.getItem(furiKey());
+  FURI = MODE === "admin" ? false : (savedFuri != null ? savedFuri === "1" : !(stu.info?.kanjiOk));
+  applyFuri();
+  document.getElementById("brandSub").textContent =
+    MODE === "admin" ? "ADMIN · " + (stu.info?.displayName || "").toUpperCase() : ("FOR " + (stu.info?.displayName || "YOU")).toUpperCase();
+  view.innerHTML = ""; RENDER[currentTab]();
+}
+function boot(){
+  document.getElementById("genAt").textContent = "Updated " + (DB?.generated || "").slice(0,10);
+  if(MODE === "admin"){
+    document.getElementById("navAddStu").classList.remove("hidden");
+    document.getElementById("furiBtn").classList.add("hidden");
+    document.getElementById("furiBtnM").classList.add("hidden");
+    const wrapSel = document.getElementById("stuSelWrap");
+    wrapSel.style.display = "block";
+    const sel = document.getElementById("stuSel");
+    sel.innerHTML = (DB.students || []).map((s,i) => `<option value="${i}">${esc(s.info?.name || s.info?.slug)}</option>`).join("");
+    sel.onchange = () => setStudent(DB.students[+sel.value]);
+    setStudent(DB.students[0] || {info:{}, lessons:[], mistakes:{}, cards:{cards:[]}, reports:{}});
+  }else{
+    setStudent(DB.student);
+  }
+}
+
+/* ============ ホーム ============ */
+function tile(lbl, val, unit, delta, goodWhenDown){
+  const t2 = el("div", "tile");
+  let d = "";
+  if(delta != null && isFinite(delta) && delta !== 0){
+    const better = goodWhenDown ? delta < 0 : delta > 0;
+    d = `<div class="delta ${better ? "up" : "down"}">${delta > 0 ? "+" : ""}${delta} vs last</div>`;
+  } else if(delta === 0){ d = `<div class="delta">±0 vs last</div>`; }
+  t2.innerHTML = `<div class="lbl">${esc(lbl)}</div><div class="val">${esc(val)}<small> ${unit||""}</small></div>${d}`;
+  return t2;
+}
+/* そのレッスンで勉強した文法のカード（Home＝最新レッスン / Reports＝選んだ過去レッスン で共用）。
+   表示するものが無ければ null を返す。 */
+const GR_STATUS = {
+  mastered:  {icon:"✅", label:"MASTERED",  cls:"ok"},
+  practiced: {icon:"🔄", label:"PRACTICED", cls:"mid"},
+  introduced:{icon:"📘", label:"INTRODUCED",cls:"new"},
+};
+function lessonGrammarCard(lesson, title){
+  if(!lesson) return null;
+  const worked = lesson.grammarWorked || [];
+  const loose = (lesson.mistakes || []).filter(x => x.bookModel && x.bookModel.ja && !x.grammarId);
+  const roster = lesson.grammarRoster;
+  if(!worked.length && !loose.length && !lesson.bookRefLabel) return null;
+
+  // レポート本文(.md)の中に差し込むので、カード枠ではなく素のセクションにする。
+  // 見出しは .md h2 のスタイルが自動で当たり、他の見出しと揃う。
+  const bk = el("div","gr-section",`<h2>${title}</h2>`);
+  if(lesson.bookRefLabel) bk.appendChild(el("div","bk-ref", esc(lesson.bookRefLabel)));
+
+  worked.forEach(g => {
+    const st = GR_STATUS[g.status] || GR_STATUS.introduced;
+    const item = el("div","gr-item");
+    let html = `<div class="gr-head">
+        <span class="gr-name">${renderJa(g.name)}</span>
+        <span class="gr-badge ${st.cls}">${st.icon} ${st.label}</span>
+      </div>`;
+    if(g.gloss) html += `<div class="gr-gloss">${renderJa(g.gloss)}</div>`;
+    if(g.model?.ja) html += `<div class="bk-line bk-model"><span class="bk-lbl">📖 Textbook</span><span>${renderJa(g.model.ja)}${
+      g.model.printedPage ? `<span class="bk-page">p.${g.model.printedPage}</span>` : ""}</span></div>`;
+    if(g.evidence) html += `<div class="bk-line"><span class="bk-lbl">🗣 You</span><span>${renderJa(g.evidence)}</span></div>`;
+    (g.mistakes||[]).forEach(m => {
+      html += `<div class="bk-line gr-fix"><span class="bk-lbl">⚠️ Fixed</span><span>${renderJa(m.original)} → <b>${renderJa(m.corrected)}</b></span></div>`;
+    });
+    item.innerHTML = html;
+    bk.appendChild(item);
+  });
+
+  // 文法idが付いていないが教科書モデル文があるミス（保険）
+  loose.forEach(x => {
+    const item = el("div","gr-item");
+    item.innerHTML = `<div class="bk-line"><span class="bk-lbl">You said</span><span>${renderJa(x.original)}</span></div>
+      <div class="bk-line"><span class="bk-lbl">Corrected</span><span>${renderJa(x.corrected)}</span></div>
+      <div class="bk-line bk-model"><span class="bk-lbl">📖 Textbook</span><span>${renderJa(x.bookModel.ja)}
+        <span class="bk-page">${esc(x.bookModel.label)}</span></span></div>`;
+    bk.appendChild(item);
+  });
+
+  // その課の文法項目一覧（どこまで進んだか）
+  if(roster && roster.items.length){
+    const done = roster.items.filter(i => i.status).length;
+    const rc = el("div","gr-roster");
+    rc.innerHTML = `<div class="gr-roster-head">${esc(roster.label)} grammar — ${done} of ${roster.items.length} covered so far</div>`;
+    const chips = el("div","gw-chips");
+    const MARK = {mastered:"✅", practiced:"🔄", introduced:"📘"};
+    roster.items.forEach(i => {
+      const c = el("span", "gw-chip" + (i.status ? " hit" : ""));
+      c.innerHTML = `${i.status ? MARK[i.status] : "⬜"} ${renderJa(i.name)}`;
+      chips.appendChild(c);
+    });
+    rc.appendChild(chips);
+    bk.appendChild(rc);
+  }
+  return bk;
+}
+function statusBanner(){
+  const s = DB.status;
+  if(!s || MODE !== "admin") return null;
+  const icons = {ok:"🤖", needs_review:"👀", running:"⏳", error:"⚠️", warn:"⚠️"};
+  const cls = s.state === "error" ? " err" : (s.state === "running" || s.state === "warn" ? " run" : "");
+  const b = el("div", "status-banner" + cls);
+  b.innerHTML = `<span class="st-ico">${icons[s.state] || "ℹ️"}</span>
+    <div><div class="st-msg">${esc(s.message || "")}</div>
+    <div class="st-sub">${esc(s.time || "")}</div></div>`;
+  return b;
+}
+function unassignedCard(){
+  if(MODE !== "admin") return null;
+  const rows = DB.unassignedRecordings?.recordings || [];
+  if(!rows.length) return null;
+  const c = el("div","card","<h2>⚠️ NEEDS STUDENT ASSIGNMENT</h2>");
+  const ul = el("ul","repeat");
+  rows.forEach(r => {
+    const names = (r.observedNames||[]).join(", ") || "(no participant name detected)";
+    const li = el("li");
+    li.innerHTML = `<div><div><b>${esc(names)}</b></div>
+      <div style="font-size:calc(15px * var(--fs));color:var(--muted)">${esc(r.recordingName||"")} · seen ${esc(String(r.seenCount||1))}×</div></div>`;
+    ul.appendChild(li);
+  });
+  c.appendChild(ul);
+  c.appendChild(el("div","",`<div style="font-size:calc(15px * var(--fs));color:var(--muted);margin-top:10px">
+    Terminal: <code>python3 scripts/assign_recording.py --list</code> then <code>--id &lt;id&gt; --slug &lt;student&gt;</code></div>`));
+  return c;
+}
+function karteCard(){
+  if(MODE !== "admin") return null;
+  const entries = STU.karte?.entries || [];
+  if(!entries.length) return null;
+  const k = entries[entries.length-1];
+  const row = (label, html) => html ? `<div style="margin-top:8px"><span style="color:var(--muted);font-size:calc(14px * var(--fs))">${label}</span><div style="font-size:calc(17px * var(--fs));line-height:1.7">${html}</div></div>` : "";
+  const list = arr => (arr||[]).map(x => renderJa(x)).join(" ・ ");
+  const c = el("div","card",`<h2>📋 前回の引き継ぎ · ${esc(k.date||"")}</h2>`);
+  c.appendChild(el("div","",
+    row("話したこと", list(k.topics)) +
+    row("どこまで", k.stoppedAt ? renderJa(k.stoppedAt) : "") +
+    row("約束・宿題", list(k.promises)) +
+    row("メモ", k.teacherNotes ? renderJa(k.teacherNotes) : "") +
+    row("次回の重点", list(k.nextFocus))
+  ));
+  return c;
+}
+function grammarCard(){
+  if(MODE !== "admin") return null;
+  const gp = STU.grammarProgress;
+  if(!gp || !gp.lessons?.length) return null;
+  const c = el("div","card",`<h2>📚 教科書進捗 · ${esc((gp.curriculum||"").toUpperCase())}</h2>`);
+  const wrap = el("div");
+  wrap.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-top:12px";
+  gp.lessons.forEach(l => {
+    const covered = l.total ? (l.practiced + l.mastered) / l.total : 0;
+    const touched = l.total ? (l.introduced + l.practiced + l.mastered) / l.total : 0;
+    const bg = covered >= 1 ? "var(--accent)"
+      : covered > 0 ? "rgba(13,148,136,.35)"
+      : touched > 0 ? "rgba(13,148,136,.14)"
+      : "var(--surface2)";
+    const ink = covered >= 1 ? "#fff" : "var(--ink)";
+    const box = el("span");
+    box.style.cssText = `min-width:40px;text-align:center;padding:6px 4px;border-radius:6px;background:${bg};color:${ink};font-size:12px;cursor:default`;
+    box.title = `L${l.lesson}: 定着${l.mastered} / 練習${l.practiced} / 導入${l.introduced} / 全${l.total}項目`;
+    box.textContent = (l.book === 2 ? "II-" : "I-") + l.lesson;
+    wrap.appendChild(box);
+  });
+  c.appendChild(wrap);
+  c.appendChild(el("div","",`<div style="font-size:calc(13px * var(--fs));color:var(--muted);margin-top:10px">
+    薄い=導入あり / 中間=一部練習済み / 濃い=全項目練習済み（ホバーで内訳）</div>`));
+  return c;
+}
+function renderHome(){
+  const ls = lessons();
+  const sb = statusBanner();
+  if(sb) view.appendChild(sb);
+  const ua = unassignedCard();
+  if(ua) view.appendChild(ua);
+  const kc = karteCard();
+  if(kc) view.appendChild(kc);
+  const gc = grammarCard();
+  if(gc) view.appendChild(gc);
+  if(!ls.length){
+    view.appendChild(el("div","card","<div class='empty'>No lesson data yet.<br>After your next lesson, your review will appear here automatically ✨</div>"));
+    return;
+  }
+  const cur = ls[ls.length-1], prev = ls[ls.length-2];
+
+  const head = el("div", "card");
+  head.innerHTML = `<h2>LATEST LESSON · ${esc(cur.date)}</h2>
+    <div style="font-size:calc(20px * var(--fs));line-height:1.75">${renderJa(cur.summary || "")}</div>
+    ${cur.topics?.length ? `<div style="font-size:calc(16px * var(--fs));color:var(--muted);margin-top:10px">Topics: ${cur.topics.map(renderJa).join(" / ")}</div>` : ""}`;
+  view.appendChild(head);
+
+  const m = cur.metrics || {}, pm = prev?.metrics || {};
+  const talkPct = m.studentTalkSec && m.teacherTalkSec ? Math.round(100*m.studentTalkSec/(m.studentTalkSec+m.teacherTalkSec)) : null;
+  const tiles = el("div", "tiles");
+  tiles.appendChild(tile("MISTAKES", m.mistakeCount ?? (cur.mistakes||[]).length, "",
+    pm.mistakeCount != null ? (m.mistakeCount ?? 0) - pm.mistakeCount : null, true));
+  if(m.cpm) tiles.appendChild(tile("SPEED", m.cpm, "chars/min", pm.cpm ? m.cpm - pm.cpm : null, false));
+  if(talkPct != null) tiles.appendChild(tile("TALK RATIO", talkPct, "%", null));
+  if(m.fillers != null) tiles.appendChild(tile("FILLERS", m.fillers, "", pm.fillers != null ? m.fillers - pm.fillers : null, true));
+  if(cur.coherence?.overall != null){
+    const prevC = prev?.coherence?.overall;
+    tiles.appendChild(tile("COHERENCE", cur.coherence.overall, "/5",
+      prevC != null ? Math.round((cur.coherence.overall - prevC)*10)/10 : null, false));
+  }
+  view.appendChild(tiles);
+
+  // 教科書連動の文法詳細はReportsタブのレポート本文内に集約している（Homeには出さない）
+
+  // 「繰り返している」ミスなので2回以上のものだけ。1回だけのものを並べると
+  //  見出しと中身が食い違い、直すべき癖が埋もれる（2026-08-02修正）
+  const rep = el("div", "card", "<h2>⚠️ TOP 5 RECURRING MISTAKES</h2>");
+  const top = Object.values(STU.mistakes || {})
+    .filter(mi => (mi.count || 0) >= 2)
+    .sort((a,b) => b.count - a.count).slice(0,5);
+  if(top.length){
+    const ul = el("ul", "repeat");
+    top.forEach(mi => {
+      const li = el("li");
+      li.innerHTML = `<span class="badge">×${mi.count}</span>
+        <div><div>${esc(mistakeLabel(mi))}</div>
+        <div style="font-size:calc(16px * var(--fs));color:var(--muted)">${renderJa((mi.examples||[])[0] || "")}</div></div>
+        <span class="cat">${esc(catName(mi.category))} · ${esc(shortDate(mi.lastSeen||""))}</span>`;
+      ul.appendChild(li);
+    });
+    rep.appendChild(ul);
+  } else {
+    const seen = Object.keys(STU.mistakes || {}).length;
+    rep.appendChild(el("div","empty", seen
+      ? "Nothing repeated yet — every mistake so far has come up only once. Nice."
+      : "No data accumulated yet"));
+  }
+  view.appendChild(rep);
+
+  const trend = el("div", "card", "<h2>MISTAKE CATEGORIES OVER TIME</h2>");
+  const rows = ls.slice(-10).map(l => {
+    const parts = {};
+    (l.mistakes||[]).forEach(x => { const c = CATS.includes(x.category) ? x.category : "その他"; parts[c] = (parts[c]||0)+1; });
+    return {label: shortDate(l.date), parts};
+  });
+  const usedCats = CATS.filter(c => rows.some(r => r.parts[c]));
+  const cw = el("div", "chart"); cw.appendChild(stackedBar(rows, usedCats)); trend.appendChild(cw);
+  if(usedCats.length) trend.appendChild(legendFor(usedCats.map(catName), usedCats.map(c => CAT_COLOR[c])));
+  view.appendChild(trend);
+
+  // 全期間のカテゴリ別合計（多い順の横棒。色は推移チャートと同じカテゴリ色）
+  const totals = {};
+  ls.forEach(l => (l.mistakes||[]).forEach(x => {
+    const c = CATS.includes(x.category) ? x.category : "その他";
+    totals[c] = (totals[c]||0) + 1;
+  }));
+  const order = Object.entries(totals).sort((a,b) => b[1]-a[1]);
+  if(order.length){
+    const tot = el("div","card","<h2>MISTAKE CATEGORIES · TOTAL</h2>");
+    const maxV = order[0][1];
+    const wrap = el("div","catbars");
+    order.forEach(([c,v]) => {
+      const row = el("div","catbar");
+      row.innerHTML = `<span class="cb-name">${esc(catName(c))}</span>
+        <span class="cb-track"><i style="width:${Math.max(4, Math.round(v/maxV*100))}%;background:${CAT_COLOR[c]}"></i></span>
+        <b class="cb-val">${v}</b>`;
+      wrap.appendChild(row);
+    });
+    tot.appendChild(wrap);
+    view.appendChild(tot);
+  }
+
+  // 今日の復習カード（ミスのグラフを見たあとに練習へ誘導する位置）
+  const due = dueCards().length;
+  if(due > 0){
+    const cardRev = el("div","card","<h2>🃏 TODAY'S REVIEW</h2>");
+    cardRev.appendChild(el("div","",
+      `<div style="font-family:var(--font-display);font-size:44px;font-weight:700">${due} <small style="font-size:19px;font-weight:400;color:var(--muted)">cards due</small></div>`));
+    const b = el("button","bigbtn","Start flashcards →");
+    b.onclick = () => goTab("cards");
+    cardRev.appendChild(b);
+    view.appendChild(cardRev);
+  }
+
+  if(cur.nextFocus?.length){
+    const nf = el("div","card","<h2>🎯 FOCUS FOR NEXT LESSON</h2>");
+    nf.appendChild(el("ul","", cur.nextFocus.map(a => `<li style="margin:6px 0 6px 26px;font-size:calc(20px * var(--fs));line-height:1.7">${renderJa(a)}</li>`).join("")));
+    view.appendChild(nf);
+  }
+  if(cur.advice?.length){
+    const adv = el("div","card","<h2>💡 ADVICE</h2>");
+    adv.appendChild(el("ul","", cur.advice.map(a => `<li style="margin:6px 0 6px 26px;font-size:calc(20px * var(--fs));line-height:1.7">${renderJa(a)}</li>`).join("")));
+    view.appendChild(adv);
+  }
+}
+
+/* ============ レポート ============ */
+function miniMd(src){
+  const lines = src.split("\n"); let html = "", inUl = false, tbl = [];
+  const inline = s => renderJa(s)
+    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
+  const flushTbl = () => {
+    if(!tbl.length) return;
+    const head = tbl[0], body = tbl.slice(1).filter(r => !/^[\s|:-]+$/.test(r.join("")));
+    html += `<div class="tblwrap"><table><thead><tr>${head.map(c => `<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>` +
+      body.map(r => `<tr>${r.map((c,i) => `<td data-label="${esc(stripFuri(head[i]||""))}">${inline(c)}</td>`).join("")}</tr>`).join("") + "</tbody></table></div>";
+    tbl = [];
+  };
+  const closeUl = () => { if(inUl){ html += "</ul>"; inUl = false; } };
+  for(const raw of lines){
+    const line = raw.replace(/\s+$/, "");
+    if(/^\s*\|.*\|\s*$/.test(line)){ closeUl(); tbl.push(line.trim().slice(1,-1).split("|").map(c => c.trim())); continue; }
+    flushTbl();
+    let mh;
+    if((mh = line.match(/^(#{1,3})\s+(.*)/))){ closeUl(); html += `<h${mh[1].length}>${inline(mh[2])}</h${mh[1].length}>`; }
+    else if(/^\s*[-*]\s+/.test(line)){ if(!inUl){ html += "<ul>"; inUl = true; } html += `<li>${inline(line.replace(/^\s*[-*]\s+/,""))}</li>`; }
+    else if(line.trim() === ""){ closeUl(); }
+    else if(/^\s*>\s?/.test(line)){ closeUl(); html += `<p style="color:var(--muted);font-size:calc(17px * var(--fs))">${inline(line.replace(/^\s*>\s?/,""))}</p>`; }
+    else { closeUl(); html += `<p>${inline(line)}</p>`; }
+  }
+  flushTbl(); closeUl();
+  return html;
+}
+// レポート本文（ミス詳細テーブル・今日の表現リスト）に再生ボタンを後付けする
+function speakerBtn(audio){
+  const btn = document.createElement("button");
+  btn.textContent = "🎧";
+  btn.setAttribute("aria-label", "play audio");
+  btn.style.cssText = "margin-right:6px;font-size:1em;vertical-align:middle;cursor:pointer;min-width:40px;min-height:40px";
+  btn.onclick = (e) => { e.stopPropagation(); speak(audio); };
+  return btn;
+}
+function wireReportAudio(container, key){
+  const lesson = (STU.lessons || []).find(l => l.lessonId === key || l.date === key);
+  if(!lesson) return;
+  // ミス詳細テーブル: ヘッダーで Corrected / More natural 列を特定し、行番号で mistakes[] と対応付け
+  container.querySelectorAll("table").forEach(table => {
+    const headers = [...table.querySelectorAll("th")].map(th => plainText(th));
+    const correctedIdx = headers.findIndex(h => /^(修正|Corrected)/i.test(h));
+    const betterIdx = headers.findIndex(h => /(より自然|More natural)/i.test(h));
+    if(correctedIdx < 0 && betterIdx < 0) return;
+    table.querySelectorAll("tbody tr").forEach((tr, i) => {
+      const m = lesson.mistakes?.[i];
+      if(!m) return;
+      const tds = tr.querySelectorAll("td");
+      if(correctedIdx >= 0 && m.correctedAudio && tds[correctedIdx])
+        tds[correctedIdx].insertBefore(speakerBtn(m.correctedAudio), tds[correctedIdx].firstChild);
+      if(betterIdx >= 0 && m.betterAudio && tds[betterIdx])
+        tds[betterIdx].insertBefore(speakerBtn(m.betterAudio), tds[betterIdx].firstChild);
+    });
+  });
+  // 今日の表現リスト: 見出し直後のULの太字部分を expressions[].phrase と突き合わせる
+  container.querySelectorAll("h2").forEach(h2 => {
+    if(!/today's (expressions|words)|今日の表現/i.test(h2.textContent)) return;
+    const ul = h2.nextElementSibling;
+    if(!ul || ul.tagName !== "UL") return;
+    ul.querySelectorAll("li").forEach(li => {
+      const b = li.querySelector("b");
+      if(!b) return;
+      const bText = plainText(b);
+      const exp = lesson.expressions?.find(x => stripFuri(x.phrase) === bText);
+      const audio = exp?.audio || (exp && audioForPhrase(exp.phrase));
+      if(audio) li.insertBefore(speakerBtn(audio), li.firstChild);
+    });
+  });
+}
+/* レポートのMarkdownを見出し(h1/h2)ごとに切って、セクション1つ=カード1枚にする。
+   見出しだけで中身が無いもの（「# Lesson Review — 日付」等の表題）はカードにせず表題として置く。 */
+function splitReportSections(html){
+  const tmp = el("div", "", html);
+  const out = [];
+  let group = [];
+  const flush = () => {
+    if(!group.length) return;
+    const onlyHeading = group.length === 1 && group[0].nodeType === 1 && /^H[12]$/.test(group[0].tagName);
+    if(onlyHeading){
+      group[0].classList.add("rep-title");
+      out.push(group[0]);
+    } else {
+      const card = el("div", "card md");
+      group.forEach(n => card.appendChild(n));
+      out.push(card);
+    }
+    group = [];
+  };
+  [...tmp.childNodes].forEach(node => {
+    if(node.nodeType === 1 && /^H[12]$/.test(node.tagName)) flush();
+    group.push(node);
+  });
+  flush();
+  return out;
+}
+function renderReports(){
+  const dates = Object.keys(STU.reports || {}).sort().reverse();
+  if(!dates.length){ view.appendChild(el("div","card","<div class='empty'>No reports yet</div>")); return; }
+  const bar = el("div", "datebar");
+  const body = el("div");   // セクションごとのカードを入れる器
+  const byLessonId = new Map(lessons().map(l => [l.lessonId, l]));
+  const show = d => {
+    bar.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.d === d));
+    body.innerHTML = "";
+    const sections = splitReportSections(miniMd(STU.reports[d]));
+
+    // 文法セクションも1枚のカードにして、Summaryと⚠️ Recurring mistakesの間へ差し込む
+    const grammar = lessonGrammarCard(byLessonId.get(d), "📖 GRAMMAR IN THIS LESSON");
+    if(grammar){
+      grammar.classList.add("card", "md");
+      const at = sections.findIndex(s => /recurring mistakes/i.test(s.textContent || ""));
+      sections.splice(at < 0 ? sections.length : at, 0, grammar);
+    }
+    sections.forEach(s => body.appendChild(s));
+    wireReportAudio(body, d);
+    body.scrollIntoView({block:"nearest"});
+  };
+  // タブは日付だけ。ただし同じ日に2レッスンある場合だけ、区別のため時刻を付ける
+  const dayOf = d => (d.match(/^(\d{4}-\d{2}-\d{2})/) || [])[1] || d;
+  const dayCount = {};
+  dates.forEach(d => { dayCount[dayOf(d)] = (dayCount[dayOf(d)] || 0) + 1; });
+  const label = d => {
+    const m = d.match(/^(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})\d{2}-/);
+    if(!m) return d;
+    return dayCount[m[1]] > 1 ? `${m[1]} ${m[2]}:${m[3]}` : m[1];
+  };
+  dates.forEach(d => { const b = el("button","",esc(label(d))); b.dataset.d = d; b.onclick = () => show(d); bar.appendChild(b); });
+  view.appendChild(bar); view.appendChild(body);
+  show(dates[0]);
+}
+
+/* ============ フラッシュカード (SRS: Anki式) ============
+   新規カードは分単位の学習ステップ(1分→10分)を卒業してから日単位の復習へ。
+   復習でAgainするとease-0.20のペナルティ付きで再学習(10分)に戻る。
+   新規は1日20枚まで。進捗はlocalStorage(端末ごと)。 */
+const SRS_CFG = {
+  learningStepsMin: [1, 10],  // 新規カードの学習ステップ（分）
+  relearnStepsMin: [10],      // 復習失敗後の再学習ステップ（分）
+  graduateDays: 1,            // 学習卒業時の間隔
+  easyDays: 4,                // 学習中Easyの卒業間隔
+  lapseDays: 1,               // 再学習卒業時の間隔
+  newPerDay: 20,              // 1日の新規カード上限
+  learnAheadMin: 20,          // 待ちが無いとき学習カードを先取り表示する上限（分）
+  maxIntervalDays: 365,
+  minEase: 1.3,
+};
+const srsKey = () => "nm-srs-" + (STU?.info?.slug || "x");
+const srsLoad = () => JSON.parse(localStorage.getItem(srsKey()) || "{}");
+const srsSave = s => localStorage.setItem(srsKey(), JSON.stringify(s));
+const today = () => new Date().toISOString().slice(0,10);
+function cardState(st, id){ // 旧形式 {interval, ease, due} からの移行も担当
+  let s = st[id];
+  if(!s) return null;
+  if(!s.phase){
+    s = s.interval > 0
+      ? {phase:"review", interval:s.interval, ease:s.ease || 2.5, due:s.due}
+      : {phase:"learning", step:0, ease:s.ease || 2.5, dueMs:Date.now()};
+    st[id] = s;
+  }
+  return s;
+}
+function srsMeta(st){
+  const t2 = today();
+  if(!st._meta || st._meta.day !== t2) st._meta = {day:t2, newCount:0};
+  return st._meta;
+}
+function srsQueues(){
+  const st = srsLoad();
+  const meta = srsMeta(st);
+  const now = Date.now(), t2 = today();
+  const learn = [], review = [], fresh = [], ahead = [];
+  for(const c of (STU.cards?.cards || [])){
+    const s = cardState(st, c.id);
+    if(!s){ fresh.push(c); continue; }
+    if(s.phase === "review"){ if(s.due <= t2) review.push(c); }
+    else if(s.dueMs <= now) learn.push([s.dueMs, c]);
+    else if(s.dueMs <= now + SRS_CFG.learnAheadMin * 60000) ahead.push([s.dueMs, c]);
+  }
+  learn.sort((a,b) => a[0]-b[0]); ahead.sort((a,b) => a[0]-b[0]);
+  const newAllowed = Math.max(0, SRS_CFG.newPerDay - meta.newCount);
+  srsSave(st);
+  return {
+    learn: learn.map(x => x[1]), review, fresh: fresh.slice(0, newAllowed), ahead: ahead.map(x => x[1]),
+    counts: {learn: learn.length + ahead.length, review: review.length, fresh: Math.min(fresh.length, newAllowed)},
+  };
+}
+function dueCards(){
+  const q = srsQueues();
+  return [...q.learn, ...q.review, ...q.fresh];
+}
+function scheduleDays(s, days){
+  s.interval = Math.min(SRS_CFG.maxIntervalDays, days);
+  const d = new Date(); d.setDate(d.getDate() + s.interval);
+  s.due = d.toISOString().slice(0,10);
+  delete s.dueMs; delete s.step;
+}
+function graduate(s, days){ s.phase = "review"; scheduleDays(s, days); }
+function rate(card, grade){ // 0=Again 1=Hard 2=Good 3=Easy
+  const st = srsLoad();
+  const meta = srsMeta(st);
+  let s = cardState(st, card.id);
+  const now = Date.now();
+  if(!s){ meta.newCount += 1; s = {phase:"learning", step:0, ease:2.5}; st[card.id] = s; }
+  if(s.phase === "review"){
+    if(grade === 0){ // lapse: easeペナルティ→再学習へ
+      s.ease = Math.max(SRS_CFG.minEase, (s.ease || 2.5) - 0.20);
+      s.phase = "relearn"; s.step = 0;
+      s.dueMs = now + SRS_CFG.relearnStepsMin[0] * 60000;
+      s.interval = SRS_CFG.lapseDays;
+      delete s.due;
+    } else {
+      if(grade === 1) s.ease = Math.max(SRS_CFG.minEase, (s.ease || 2.5) - 0.15);
+      if(grade === 3) s.ease = (s.ease || 2.5) + 0.15;
+      const mult = grade === 1 ? 1.2 : (grade === 3 ? s.ease * 1.3 : s.ease);
+      scheduleDays(s, Math.max(s.interval + 1, Math.round(s.interval * mult)));
+    }
+  } else {
+    const steps = s.phase === "learning" ? SRS_CFG.learningStepsMin : SRS_CFG.relearnStepsMin;
+    if(grade === 0){ s.step = 0; s.dueMs = now + steps[0] * 60000; }
+    else if(grade === 1){ s.dueMs = now + steps[Math.min(s.step || 0, steps.length - 1)] * 60000; }
+    else if(grade === 3){ graduate(s, s.phase === "learning" ? SRS_CFG.easyDays : SRS_CFG.lapseDays + 1); }
+    else { // Good: 次のステップへ、最後なら卒業
+      const next = (s.step || 0) + 1;
+      if(next < steps.length){ s.step = next; s.dueMs = now + steps[next] * 60000; }
+      else graduate(s, s.phase === "learning" ? SRS_CFG.graduateDays : (s.interval || SRS_CFG.lapseDays));
+    }
+  }
+  st[card.id] = s; srsSave(st);
+}
+function fmtIv(days){
+  if(days >= 30) return Math.round(days / 30) + "mo";
+  return Math.round(days) + "d";
+}
+function previews(card){ // 各ボタンの「次に出るまで」プレビュー（Anki風）
+  const st = srsLoad();
+  const s = cardState(st, card.id);
+  if(!s || s.phase !== "review"){
+    const learning = !s || s.phase === "learning";
+    const steps = learning ? SRS_CFG.learningStepsMin : SRS_CFG.relearnStepsMin;
+    const step = s ? (s.step || 0) : 0;
+    const next = step + 1;
+    return [
+      steps[0] + "m",
+      steps[Math.min(step, steps.length - 1)] + "m",
+      next < steps.length ? steps[next] + "m" : fmtIv(learning ? SRS_CFG.graduateDays : SRS_CFG.lapseDays),
+      fmtIv(learning ? SRS_CFG.easyDays : SRS_CFG.lapseDays + 1),
+    ];
+  }
+  const ease = s.ease || 2.5;
+  const cap = d => Math.min(SRS_CFG.maxIntervalDays, Math.max(s.interval + 1, Math.round(d)));
+  return [
+    SRS_CFG.relearnStepsMin[0] + "m",
+    fmtIv(cap(s.interval * 1.2)),
+    fmtIv(cap(s.interval * ease)),
+    fmtIv(cap(s.interval * ease * 1.3)),
+  ];
+}
+let cardsMode = "review"; // "review" | "browse" | "quiz"
+function switchCardsMode(mode){
+  cardsMode = mode;
+  view.innerHTML = "";
+  renderCards();
+}
+function renderCards(){
+  const all = STU.cards?.cards || [];
+
+  const tabs = el("div", "fc-modetabs");
+  const bReview = el("button", cardsMode === "review" ? "on" : "", "🔁 Review");
+  const bBrowse = el("button", cardsMode === "browse" ? "on" : "", "📋 Browse");
+  const bQuiz = el("button", cardsMode === "quiz" ? "on" : "", "🎯 Quiz");
+  bReview.onclick = () => switchCardsMode("review");
+  bBrowse.onclick = () => switchCardsMode("browse");
+  bQuiz.onclick = () => switchCardsMode("quiz");
+  tabs.appendChild(bReview); tabs.appendChild(bBrowse); tabs.appendChild(bQuiz);
+  view.appendChild(tabs);
+
+  if(cardsMode === "quiz"){ renderQuizMode(); return; }
+  // クイズはカード0枚でもミスから出題できるが、Review/Browseはカードが必要
+  if(!all.length){ view.appendChild(el("div","card","<div class='empty'>No cards yet</div>")); return; }
+
+  if(cardsMode === "browse"){ renderCardsBrowse(all); return; }
+
+  const meta = el("div","fc-meta");
+  const stage = el("div","fc-stage");
+  const btns = el("div","fc-btns");
+  btns.innerHTML = `<button class="b-again">Again<span class="iv"></span></button><button class="b-hard">Hard<span class="iv"></span></button>
+    <button class="b-good">Good<span class="iv"></span></button><button class="b-easy">Easy<span class="iv"></span></button>`;
+  view.appendChild(meta); view.appendChild(stage); view.appendChild(btns);
+
+  let current = null, redrawTimer = null;
+  function draw(){
+    if(redrawTimer){ clearTimeout(redrawTimer); redrawTimer = null; }
+    stage.innerHTML = "";
+    const q = srsQueues();
+    current = q.learn[0] || q.review[0] || q.fresh[0] || q.ahead[0] || null;
+    meta.textContent = `New ${q.counts.fresh} · Learning ${q.counts.learn} · Review ${q.counts.review}`;
+    btns.style.visibility = current ? "visible" : "hidden";
+    if(!current){
+      const st = srsLoad();
+      let nextMs = Infinity;
+      for(const key in st){
+        if(key.startsWith("_")) continue;
+        const s = st[key];
+        if(s && s.dueMs && s.dueMs > Date.now()) nextMs = Math.min(nextMs, s.dueMs);
+      }
+      if(isFinite(nextMs)){
+        const mins = Math.max(1, Math.ceil((nextMs - Date.now()) / 60000));
+        stage.appendChild(el("div","fc-done",`⏳ Learning cards return in ~${mins} min`));
+        redrawTimer = setTimeout(draw, Math.min(nextMs - Date.now() + 500, 60000));
+      } else {
+        stage.appendChild(el("div","fc-done","🎉 Done for today!"));
+      }
+      const b = el("button","bigbtn","📋 Browse all cards");
+      b.style.maxWidth = "360px"; b.style.margin = "0 auto";
+      b.onclick = () => switchCardsMode("browse");
+      stage.appendChild(b);
+      return;
+    }
+    const c = current;
+    const cardNode = el("div","fc-card");
+    cardNode.innerHTML = `
+      <div class="fc-face">
+        <span class="fc-tag">${esc((c.tags||[]).join(" · "))} · ${esc(c.date||"")}</span>
+        ${c.audio ? '<button class="fc-speak" aria-label="play audio">🎧</button>' : ""}
+        <div class="fc-front-text">${renderJa(c.front)}</div>
+        <span class="fc-hint">${c.audio ? "🎧 = real audio · " : ""}Tap to reveal</span>
+      </div>
+      <div class="fc-face back">
+        ${c.audio ? '<button class="fc-speak" aria-label="play audio">🎧</button>' : ""}
+        <div class="fc-back-text">${renderJa(c.back)}</div>
+      </div>`;
+    cardNode.onclick = e => { if(e.target.closest(".fc-speak")) return; cardNode.classList.toggle("flip"); };
+    cardNode.querySelectorAll(".fc-speak").forEach(b => b.onclick = () => speak(c.audio));
+    stage.appendChild(cardNode);
+    const iv = previews(c);
+    btns.querySelectorAll(".iv").forEach((node, i) => node.textContent = iv[i]);
+  }
+  btns.querySelectorAll("button").forEach((b, grade) => b.onclick = () => {
+    if(!current) return;
+    rate(current, grade);
+    draw();
+  });
+  draw();
+}
+// 一覧モード: 表面（日本語）だけを並べ、タップした1件だけ答えを開く
+function renderCardsBrowse(all){
+  if(!all.length){ view.appendChild(el("div","empty","No cards yet")); return; }
+  view.appendChild(el("div","browse-hint","Tap to reveal the answer (doesn't count as a review)"));
+  const list = el("div","browse-list");
+  const sorted = all.slice().sort((a,b) => (b.date||"").localeCompare(a.date||""));
+  sorted.forEach(c => {
+    const item = el("div","browse-item");
+    const head = el("div","browse-head");
+    if(c.audio){
+      const speakBtn = el("button","browse-speak","🎧");
+      speakBtn.onclick = e => { e.stopPropagation(); speak(c.audio); };
+      head.appendChild(speakBtn);
+    }
+    head.appendChild(el("div","browse-front",renderJa(c.front)));
+    head.appendChild(el("div","browse-meta",esc((c.tags||[]).join(" · ")) + (c.date ? " · " + esc(shortDate(c.date)) : "")));
+    head.appendChild(el("span","browse-chev","▸"));
+    const back = el("div","browse-back",renderJa(c.back));
+    back.style.display = "none";
+    head.onclick = () => {
+      const open = item.classList.toggle("open");
+      back.style.display = open ? "block" : "none";
+    };
+    item.appendChild(head); item.appendChild(back);
+    list.appendChild(item);
+  });
+  view.appendChild(list);
+}
+
+/* ============ クイズ ============
+   ミス・表現・カードからブラウザ内で問題を組み立てる（過去レッスン全対応）。
+   最新レッスンにAI製quizItemsがあればそれを先頭に使う。
+   進捗はSRS(nm-srs-)とは完全に別のlocalStorage(nm-quiz-)。rate()は呼ばない。 */
+const quizKey = () => "nm-quiz-" + (STU?.info?.slug || "x");
+const quizLoad = () => JSON.parse(localStorage.getItem(quizKey()) || "{}");
+const quizSave = s => localStorage.setItem(quizKey(), JSON.stringify(s));
+// クイズ用の同一判定: ふりがな・空白だけ無視（normJaと違い長音「ー」は残す。
+// サフィン→サーフィンのような長音ミスを「同じ」と誤判定しないため。Python側のnormalize_private_textと同じ）
+const normQz = s => stripFuri(String(s || "")).replace(/\s+/g, "").toLowerCase();
+// シード付き乱数: 同じ日は同じ問題セット（リロードで問題を引き直せない）
+function hashStr(str){
+  let h = 1779033703 ^ str.length;
+  for(let i = 0; i < str.length; i++){
+    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  return h >>> 0;
+}
+function makeRng(seed){
+  let a = seed;
+  return () => {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t2 = Math.imul(a ^ (a >>> 15), 1 | a);
+    t2 = (t2 + Math.imul(t2 ^ (t2 >>> 7), 61 | t2)) ^ t2;
+    return ((t2 ^ (t2 >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffled(arr, rand){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(rand() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+// AI製quizItem → セッション用の問題（choicesは毎回シャッフルし直す）
+function aiQuizItem(lesson, qi, rand){
+  const correctText = qi.choices[qi.answerIndex];
+  const choices = shuffled(qi.choices, rand);
+  let audio = null;
+  const m = /^(mistake|expression):(\d+)$/.exec(qi.source || "");
+  if(m){
+    const idx = +m[2];
+    if(m[1] === "mistake"){
+      const mk = (lesson.mistakes || [])[idx];
+      audio = mk?.correctedAudio || null;
+    } else {
+      const ex = (lesson.expressions || [])[idx];
+      audio = ex?.audio || audioForPhrase(ex?.phrase || "") || null;
+    }
+  }
+  return {question: qi.question, choices, answerIndex: choices.indexOf(correctText),
+    explanation: qi.explanation || "", audio, key: normQz(correctText)};
+}
+// ミス問:「どっちが正しい？」（original vs corrected の2択）
+function mistakeQuizItem(lesson, mk, rand){
+  const choices = shuffled([mk.original, mk.corrected], rand);
+  let explanation = mk.explanation || "";
+  if(mk.better) explanation += ` Even better: ${mk.better}`;
+  return {question: `One of these is from your ${shortDate(lesson.date)} lesson — which is correct?`,
+    choices, answerIndex: choices.indexOf(mk.corrected),
+    explanation, audio: mk.correctedAudio || null, key: normQz(mk.corrected)};
+}
+// 表現問: phrase→meaning（またはその逆）の多肢選択
+function expressionQuizItem(entry, allMeanings, allPhrases, rand, reverse){
+  const pool = reverse ? allPhrases : allMeanings;
+  const correct = reverse ? entry.phrase : entry.meaning;
+  const distractors = shuffled(pool.filter(t2 => normQz(t2) !== normQz(correct)), rand).slice(0, 3);
+  if(distractors.length < 2) return null;
+  const choices = shuffled([correct, ...distractors], rand);
+  return {
+    question: reverse ? `Which phrase means “${entry.meaning}”?` : `What does ${entry.phrase} mean?`,
+    choices, answerIndex: choices.indexOf(correct),
+    explanation: entry.example ? `Example: ${entry.example}` : "",
+    audio: entry.audio || audioForPhrase(entry.phrase) || null, key: normQz(correct)};
+}
+function buildQuizSession(attempt, onlyLesson){
+  const rand = makeRng(hashStr((STU.info?.slug || "") + "|" + today() + "|" + attempt));
+  const items = [], used = new Set();
+  const push = it => {
+    if(!it || it.answerIndex < 0 || used.has(it.key)) return;
+    used.add(it.key); items.push(it);
+  };
+
+  if(onlyLesson){ // レッスン別復習: そのレッスンのAI製問題だけ
+    (onlyLesson.quizItems || []).forEach(qi => push(aiQuizItem(onlyLesson, qi, rand)));
+    return items;
+  }
+
+  // 1) 最新レッスンのAI製問題を先頭に
+  const ls = lessons();
+  const withAI = ls.filter(l => (l.quizItems || []).length);
+  if(withAI.length){
+    const newest = withAI[withAI.length - 1];
+    newest.quizItems.forEach(qi => push(aiQuizItem(newest, qi, rand)));
+  }
+
+  // 2) ミス問プール（再発回数が多い順 → 新しい順）
+  const mPool = [];
+  ls.forEach(l => (l.mistakes || []).forEach(mk => {
+    if(!mk.original || !mk.corrected) return;
+    if(normQz(mk.original) === normQz(mk.corrected)) return;
+    mPool.push({l, mk});
+  }));
+  mPool.sort((a,b) => {
+    const ca = STU.mistakes?.[a.mk.recurrenceKey]?.count || 1;
+    const cb = STU.mistakes?.[b.mk.recurrenceKey]?.count || 1;
+    return cb !== ca ? cb - ca : (b.l.date || "").localeCompare(a.l.date || "");
+  });
+
+  // 3) 表現問プール（全レッスンの表現 + vocabカード。新しい順で優先）
+  const ePool = [];
+  ls.slice().reverse().forEach(l => (l.expressions || []).forEach(ex => {
+    if(ex.phrase && ex.meaning) ePool.push({phrase: ex.phrase, meaning: ex.meaning, example: ex.example || "", audio: ex.audio || null});
+  }));
+  (STU.cards?.cards || []).forEach(c => {
+    const meaning = (c.back || "").split("\n")[0].trim();
+    if(c.front && meaning && !ePool.some(e => normQz(e.phrase) === normQz(c.front)))
+      ePool.push({phrase: c.front, meaning, example: "", audio: c.audio || null});
+  });
+  const allMeanings = ePool.map(e => e.meaning), allPhrases = ePool.map(e => e.phrase);
+
+  // 4) 8問までM/E交互に充填（プールが尽きたら残った方だけ）
+  let mi = 0, ei = 0, wantM = true;
+  while(items.length < 8 && (mi < mPool.length || ei < ePool.length)){
+    if((wantM && mi < mPool.length) || ei >= ePool.length){
+      const {l, mk} = mPool[mi++];
+      push(mistakeQuizItem(l, mk, rand));
+    } else {
+      const entry = ePool[ei++];
+      push(expressionQuizItem(entry, allMeanings, allPhrases, rand, rand() < 0.4));
+    }
+    wantM = !wantM;
+  }
+  return items;
+}
+function quizRecordAnswer(correct){
+  const st = quizLoad(), t2 = today();
+  st.days = st.days || {};
+  st.days[t2] = st.days[t2] || {answered: 0, correct: 0};
+  st.days[t2].answered++; if(correct) st.days[t2].correct++;
+  st.totals = st.totals || {answered: 0, correct: 0};
+  st.totals.answered++; if(correct) st.totals.correct++;
+  const keys = Object.keys(st.days).sort();
+  while(keys.length > 60) delete st.days[keys.shift()];
+  quizSave(st);
+}
+function quizRecordSession(){
+  const st = quizLoad(), t2 = today();
+  st.streak = st.streak || {current: 0, best: 0, lastDay: ""};
+  if(st.streak.lastDay !== t2){
+    const y = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+    st.streak.current = st.streak.lastDay === y ? st.streak.current + 1 : 1;
+    st.streak.best = Math.max(st.streak.best, st.streak.current);
+    st.streak.lastDay = t2;
+  }
+  quizSave(st);
+}
+let QZ = null; // 進行中セッション {slug, items, idx, answers[], attempt, done}
+function startQuiz(attempt, onlyLesson){
+  const items = buildQuizSession(attempt, onlyLesson);
+  if(!items.length) return;
+  QZ = {slug: STU.info?.slug, items, idx: 0, answers: new Array(items.length).fill(null), attempt, done: false};
+  view.innerHTML = ""; renderCards();
+}
+function renderQuizMode(){
+  const wrap = el("div","qz-wrap");
+  view.appendChild(wrap);
+  if(QZ && QZ.slug !== STU.info?.slug) QZ = null; // admin: 生徒切替でリセット
+
+  if(!QZ){ // スタート画面
+    const st = quizLoad();
+    const d = st.days?.[today()], streak = st.streak?.current || 0;
+    const card = el("div","card","<h2>🎯 QUIZ</h2>");
+    card.appendChild(el("div","qz-q","Answer questions made from <b>your own lessons</b> — the mistakes you made and the expressions you learned."));
+    const stat = [];
+    if(d) stat.push(`Today: ${d.correct}/${d.answered} correct`);
+    if(streak > 1) stat.push(`🔥 ${streak}-day streak`);
+    if(stat.length) card.appendChild(el("div","qz-meta", esc(stat.join(" · "))));
+    const preview = buildQuizSession(0, null);
+    if(preview.length < 2){
+      card.appendChild(el("div","empty","Not enough material yet — quizzes unlock as your lessons build up!"));
+    } else {
+      const b = el("button","bigbtn",`▶ Start today's quiz (${preview.length} questions)`);
+      b.onclick = () => startQuiz(0, null);
+      card.appendChild(b);
+    }
+    wrap.appendChild(card);
+    // AI製問題があるレッスンの復習チップ
+    const withAI = lessons().filter(l => (l.quizItems || []).length);
+    if(withAI.length){
+      const lc = el("div","card","<h2>📅 LESSON QUIZZES</h2>");
+      const row = el("div","qz-lessons");
+      withAI.slice().reverse().forEach(l => {
+        const b = el("button","",`${esc(shortDate(l.date))} (${l.quizItems.length})`);
+        b.onclick = () => startQuiz(0, l);
+        row.appendChild(b);
+      });
+      lc.appendChild(row);
+      wrap.appendChild(lc);
+    }
+    return;
+  }
+
+  if(QZ.done){ // 結果画面
+    const score = QZ.answers.filter((a,i) => a === QZ.items[i].answerIndex).length;
+    const card = el("div","card qz-end");
+    card.innerHTML = `<h2>🎯 QUIZ COMPLETE</h2>
+      <div class="qz-score">${score}<small style="font-size:22px;color:var(--muted)"> / ${QZ.items.length}</small></div>
+      <div class="qz-meta">${score === QZ.items.length ? "Perfect! 🎉" : score >= QZ.items.length*0.7 ? "Great job! 💪" : "Keep practicing — these come from your own lessons!"}</div>`;
+    const recap = el("div","qz-recap");
+    QZ.items.forEach((it, i) => {
+      const ok = QZ.answers[i] === it.answerIndex;
+      recap.appendChild(el("div","", `${ok ? "✅" : "❌"} ${renderJa(it.choices[it.answerIndex])}`));
+    });
+    card.appendChild(recap);
+    const again = el("button","bigbtn","Practice again");
+    const attempt = QZ.attempt + 1;
+    again.onclick = () => startQuiz(attempt, null);
+    card.appendChild(again);
+    const back = el("button","ghostbtn","Back to flashcards");
+    back.onclick = () => { QZ = null; switchCardsMode("review"); };
+    card.appendChild(back);
+    wrap.appendChild(card);
+    return;
+  }
+
+  // 出題画面
+  const it = QZ.items[QZ.idx];
+  const answered = QZ.answers[QZ.idx] != null;
+  wrap.appendChild(el("div","qz-meta",`Question ${QZ.idx + 1} / ${QZ.items.length}`));
+  const card = el("div","card");
+  card.appendChild(el("div","qz-q", renderJa(it.question)));
+  const box = el("div","qz-choices");
+  it.choices.forEach((c, i) => {
+    const b = el("button","", renderJa(c));
+    if(answered){
+      b.disabled = true;
+      if(i === it.answerIndex) b.classList.add("correct");
+      else if(i === QZ.answers[QZ.idx]) b.classList.add("wrong");
+      else b.classList.add("dim");
+    } else {
+      b.onclick = () => {
+        QZ.answers[QZ.idx] = i;
+        quizRecordAnswer(i === it.answerIndex);
+        if(QZ.idx === QZ.items.length - 1) quizRecordSession();
+        view.innerHTML = ""; renderCards();
+      };
+    }
+    box.appendChild(b);
+  });
+  card.appendChild(box);
+  if(answered){
+    const ok = QZ.answers[QZ.idx] === it.answerIndex;
+    const fb = el("div","qz-fb");
+    let html = `<div class="qz-verdict ${ok ? "ok" : "ng"}">${ok ? "Correct! 🎉" : "Not quite —"}</div>`;
+    if(!ok) html += `<div>The answer is: <b>${renderJa(it.choices[it.answerIndex])}</b></div>`;
+    if(it.explanation) html += `<div style="margin-top:6px">${renderJa(it.explanation)}</div>`;
+    fb.innerHTML = html;
+    if(it.audio){
+      const sb = el("button","browse-speak","🎧");
+      sb.onclick = () => speak(it.audio);
+      fb.appendChild(sb);
+    }
+    card.appendChild(fb);
+    const next = el("button","bigbtn", QZ.idx === QZ.items.length - 1 ? "See results →" : "Next →");
+    next.onclick = () => {
+      if(QZ.idx === QZ.items.length - 1) QZ.done = true;
+      else QZ.idx++;
+      view.innerHTML = ""; renderCards();
+    };
+    card.appendChild(next);
+  }
+  wrap.appendChild(card);
+}
+
+/* ============ 単語帳 (Vocabulary) ============
+   レッスンで実際に出た語だけを一覧にする（教科書の課ごとの語彙リストは入れない）。
+   音声は先生の実音声のみ。ペイロードに既に入っているものを参照するだけなので、
+   このタブを足してもページ容量は増えない（data URIをコピーしないこと）。 */
+
+// カードの back は "to help\nExample: 手伝[てつだ]いましょうか。" の形
+function splitCardBack(back){
+  const text = String(back || "");
+  const i = text.indexOf("\nExample:");
+  if(i < 0) return {meaning: text.trim(), example: ""};
+  return {meaning: text.slice(0, i).trim(), example: text.slice(i + "\nExample:".length).trim()};
+}
+
+/* 表現とカードを重複排除して単語帳の行を作る。表現を優先（意味と例文が分かれているため） */
+function vocabItems(){
+  const out = [];
+  const seen = new Set();
+  const add = (row) => {
+    const key = normQz(row.phrase);
+    if(!key || seen.has(key)) return;
+    seen.add(key);
+    out.push(row);
+  };
+  // ① レッスンの表現（新しい順に見て、同じ語は初出＝最新のレッスンのものを採る）
+  for(const lesson of lessons().slice().reverse()){
+    for(const ex of lesson.expressions || []){
+      if(!ex?.phrase) continue;
+      add({
+        phrase: ex.phrase,
+        meaning: ex.meaning || "",
+        example: ex.example || "",
+        date: lesson.date || "",
+        audio: ex.audio || audioForPhrase(ex.phrase) || null,
+        exampleAudio: null,   // 例文単体の音声は今のところ作っていない
+      });
+    }
+  }
+  // ② 表現に無い語をカードから補う（語彙・表現タグのみ。文法カードは単語帳に入れない）
+  const cards = (STU.cards?.cards || []).slice().sort((a,b) => (b.date||"").localeCompare(a.date||""));
+  for(const c of cards){
+    if(!c?.front) continue;
+    const tags = c.tags || [];
+    if(!tags.includes("vocab") && !tags.includes("expression")) continue;
+    const parts = splitCardBack(c.back);
+    add({
+      phrase: c.front,
+      meaning: parts.meaning,
+      example: parts.example,
+      date: c.date || "",
+      audio: c.audio || null,
+      exampleAudio: null,
+    });
+  }
+  return out.sort((a,b) => (b.date || "").localeCompare(a.date || ""));
+}
+
+function renderVocab(){
+  const items = vocabItems();
+  if(!items.length){
+    view.appendChild(el("div","card","<div class='empty'>No vocabulary yet. Words from your lessons will appear here.</div>"));
+    return;
+  }
+
+  const search = el("input","vocab-search");
+  search.type = "search";
+  search.placeholder = "🔍 Search (Japanese, reading, or English)";
+  view.appendChild(search);
+
+  const months = [...new Set(items.map(v => (v.date || "").slice(0,7)).filter(Boolean))].sort().reverse();
+  let curMonth = months[0] || "";
+  const bar = el("div","datebar");
+  view.appendChild(bar);
+
+  const count = el("div","vocab-count");
+  view.appendChild(count);
+
+  const wrap = el("div","vocab-wrap");
+  view.appendChild(wrap);
+
+  function apply(){
+    // 検索はふりがな記法を残したまま照合するので、「漢字」でも「かんじ」でもヒットする
+    const q = search.value.trim().toLowerCase();
+    let hits = curMonth ? items.filter(v => (v.date || "").startsWith(curMonth)) : items;
+    if(q) hits = hits.filter(v =>
+      String(v.phrase).toLowerCase().includes(q) ||
+      String(v.meaning).toLowerCase().includes(q) ||
+      String(v.example).toLowerCase().includes(q) ||
+      stripFuri(v.phrase).toLowerCase().includes(q));
+
+    count.textContent = `${hits.length} ${hits.length === 1 ? "word" : "words"}`;
+    wrap.innerHTML = `<table class="vocab">
+      <thead><tr><th>Word</th><th>Meaning</th><th>Example</th><th>Learned</th></tr></thead>
+      <tbody>${hits.map(v => `<tr>
+        <td class="v-ja" data-label="Word">${v.audio ? '<button class="v-play" aria-label="play word">🎧</button>' : ""}${renderJa(v.phrase)}</td>
+        <td class="v-en" data-label="Meaning">${renderJa(v.meaning)}</td>
+        <td class="v-ex" data-label="Example">${v.exampleAudio ? '<button class="v-explay" aria-label="play example">🔉</button>' : ""}${renderJa(v.example)}</td>
+        <td class="v-date" data-label="Learned">${esc(shortDate(v.date))}</td>
+      </tr>`).join("")}</tbody></table>`;
+
+    // innerHTML の書き換えでハンドラが消えるので、hits の並び順で貼り直す
+    wrap.querySelectorAll("tbody tr").forEach((tr, i) => {
+      const v = hits[i];
+      if(!v) return;
+      const p = tr.querySelector(".v-play");
+      if(p) p.onclick = () => speak(v.audio);
+      const ep = tr.querySelector(".v-explay");
+      if(ep) ep.onclick = () => speak(v.exampleAudio);
+    });
+  }
+
+  function drawBar(){
+    bar.innerHTML = "";
+    const mk = (label, value) => {
+      const b = el("button", curMonth === value ? "on" : "", label);
+      b.onclick = () => { curMonth = value; drawBar(); apply(); };
+      bar.appendChild(b);
+    };
+    for(const m of months) mk(`${Number(m.slice(5,7))}/${m.slice(0,4)}`, m);
+    mk("All", "");
+  }
+
+  search.oninput = apply;
+  drawBar();
+  apply();
+}
+
+/* ============ 統計 ============ */
+/* ============ 成長 (Growth) ============
+   旧Statsタブは2026-07-27にここへ統合（数字タイル・スピード・表現累積を移設。
+   生のミス数はHomeのカテゴリ別推移と重複、フィラー数はWhisperノイズで不安定なため廃止） */
+// 「克服したパターン」= 2回以上出たミスで、最後に出て以降クリーンなレッスンが3回以上続いたもの
+function conqueredPatterns(){
+  const ls = lessons();
+  return Object.entries(STU.mistakes || {})
+    .map(([key, m]) => ({...m, key, clean: ls.filter(l => (l.date||"") > (m.lastSeen||"")).length}))
+    .filter(m => m.count >= 2 && m.clean >= 3)
+    .sort((a,b) => b.count - a.count);
+}
+function growthTotals(){
+  const ls = lessons();
+  return {
+    lessons: ls.length,
+    talkHours: ls.reduce((s,l) => s + (l.metrics?.studentTalkSec || 0), 0) / 3600,
+    chars: ls.reduce((s,l) => s + (l.metrics?.studentChars || 0), 0),
+    expressions: ls.reduce((s,l) => s + (l.expressions||[]).length, 0),
+    conquered: conqueredPatterns().length,
+    mastered: STU.grammarSummary?.counts?.mastered || 0,
+  };
+}
+function renderGrowth(){
+  const ls = lessons();
+  if(!ls.length){ view.appendChild(el("div","card","<div class='empty'>No lesson data yet</div>")); return; }
+  const t = growthTotals();
+
+  // ① 最新の成長コメント（AIが過去推移を見て書いたもの。無いレッスンしか無ければ非表示）
+  const withComment = ls.filter(l => (l.growthComment||"").trim());
+  if(withComment.length){
+    const latest = withComment[withComment.length-1];
+    const c = el("div","card",`<h2>🌱 YOUR GROWTH · ${esc(shortDate(latest.date))}</h2>`);
+    c.appendChild(el("div","gw-comment", renderJa(latest.growthComment)));
+    view.appendChild(c);
+  }
+
+  // ①' 数字タイル（旧Statsから移設）
+  const tiles = el("div","tiles");
+  tiles.appendChild(tile("LESSONS", ls.length, ""));
+  tiles.appendChild(tile("CARDS", (STU.cards?.cards || []).length, ""));
+  tiles.appendChild(tile("MISTAKES", ls.reduce((s,l) => s + (l.mistakes||[]).length, 0), ""));
+  view.appendChild(tiles);
+
+  // ② マイルストーン
+  const defs = [
+    {icon:"🎌", label:"First lesson", cur:t.lessons, target:1},
+    {icon:"📚", label:"5 lessons", cur:t.lessons, target:5},
+    {icon:"📚", label:"10 lessons", cur:t.lessons, target:10},
+    {icon:"🏆", label:"25 lessons", cur:t.lessons, target:25},
+    {icon:"🗣", label:"1 hour spoken", cur:t.talkHours, target:1},
+    {icon:"🗣", label:"5 hours spoken", cur:t.talkHours, target:5},
+    {icon:"🎤", label:"10 hours spoken", cur:t.talkHours, target:10},
+    {icon:"✍️", label:"10,000 characters", cur:t.chars, target:10000},
+    {icon:"✍️", label:"50,000 characters", cur:t.chars, target:50000},
+    {icon:"💬", label:"50 expressions", cur:t.expressions, target:50},
+    {icon:"💬", label:"100 expressions", cur:t.expressions, target:100},
+    {icon:"✅", label:"First conquered pattern", cur:t.conquered, target:1},
+    {icon:"✅", label:"5 conquered patterns", cur:t.conquered, target:5},
+  ];
+  if(STU.grammarSummary){
+    defs.push({icon:"📖", label:"First grammar mastered", cur:t.mastered, target:1});
+    defs.push({icon:"📖", label:"25 grammar mastered", cur:t.mastered, target:25});
+  }
+  const fmtN = n => n >= 10000 ? Math.round(n/1000) + "k" : (Number.isInteger(n) ? n : n.toFixed(1));
+  const ms = el("div","card","<h2>🏅 MILESTONES</h2>");
+  const chips = el("div","gw-chips");
+  defs.filter(d => d.cur >= d.target).forEach(d =>
+    chips.appendChild(el("span","gw-chip hit",`${d.icon} ${esc(d.label)}`)));
+  defs.filter(d => d.cur < d.target).slice(0,3).forEach(d =>
+    chips.appendChild(el("span","gw-chip",`${d.icon} ${esc(d.label)} <b>${fmtN(d.cur)}/${fmtN(d.target)}</b>`)));
+  ms.appendChild(chips);
+  view.appendChild(ms);
+
+  // ③ トレンド（2レッスン以上で解放）
+  if(ls.length >= 2){
+    const labels = ls.map(l => shortDate(l.date));
+    const add = (title, series, unit, opts) => {
+      const c = el("div","card",`<h2>${title}</h2>`);
+      const cw = el("div","chart"); cw.appendChild(lineChart(labels, series, unit, opts)); c.appendChild(cw);
+      view.appendChild(c);
+    };
+    if(ls.some(l => l.metrics?.cpm))
+      add("SPEAKING SPEED (CHARS/MIN)", [{name:"chars/min", color:css("--c1"), values:ls.map(l => l.metrics?.cpm ?? null)}], "");
+    add("TALK SHARE (% OF LESSON YOU SPOKE)", [{name:"talk share", color:css("--c4"), values:ls.map(l => {
+      const m = l.metrics || {};
+      return m.studentTalkSec && m.teacherTalkSec ? Math.round(100*m.studentTalkSec/(m.studentTalkSec+m.teacherTalkSec)) : null;
+    })}], "%");
+    const cum = []; let acc = 0;
+    ls.forEach(l => { acc += (l.expressions||[]).length; cum.push(acc); });
+    add("EXPRESSIONS LEARNED (CUMULATIVE)", [{name:"expressions", color:css("--c2"), values:cum}], "");
+    /* コヒーレンスの推移（レーダーは下の coherenceCard() が1レッスンでも出す） */
+    if(ls.filter(l => l.coherence?.overall != null).length >= 2){
+      add("COHERENCE SCORE OVER TIME", [{name:"overall", color:css("--c5"),
+        values:ls.map(l => l.coherence?.overall ?? null)}], "/5", {yMax:5, fracTicks:true});
+    }
+    /* 機械計算の接続表現密度（AI不関与・ブレない指標） */
+    if(ls.filter(l => l.coherenceMetrics).length >= 2){
+      add("CONNECTIVES PER 100 CHARS (でも・だから・ので…)", [{name:"connectives", color:css("--c6"),
+        values:ls.map(l => l.coherenceMetrics?.connectivesPer100 ?? null)}], "");
+    }
+  } else {
+    view.appendChild(el("div","card","<div class='empty'>Trends unlock after your 2nd lesson 📈</div>"));
+  }
+
+  /* コヒーレンス（発話のつながり）。1レッスンでもレーダーと根拠を出す */
+  const cohLessons = ls.filter(l => l.coherence?.scores);
+  if(cohLessons.length){
+    const AXES = [
+      ["cohesion","つながり"], ["logic","論理[ろんり]"], ["completeness","文[ぶん]の完成度[かんせいど]"],
+      ["naturalness","自然[しぜん]さ"], ["development","展開力[てんかいりょく]"]];
+    const axisLabels = AXES.map(a => stripFuri(a[1]));
+    const latest = cohLessons[cohLessons.length-1], prevC = cohLessons[cohLessons.length-2];
+    const card = el("div","card",`<h2>🧩 COHERENCE (HOW WELL YOUR SPEECH FLOWS)</h2>`);
+    const values = l => AXES.map(a => l.coherence.scores[a[0]]?.score ?? 0);
+    const rSeries = [];
+    if(prevC) rSeries.push({name:"previous", color:css("--axis"), values:values(prevC), fillOpacity:0.06});
+    rSeries.push({name:"latest", color:css("--c5"), values:values(latest)});
+    const rc = el("div","chart"); rc.appendChild(radarChart(axisLabels, rSeries)); card.appendChild(rc);
+    if(prevC) card.appendChild(legendFor(["latest","previous"],[css("--c5"),css("--axis")]));
+    /* 軸別の根拠（本人の発話引用）。ふりがなトグル対応 */
+    card.appendChild(el("div","coh-evtitle","🗣 What you said (evidence)"));
+    AXES.forEach(a => {
+      const s = latest.coherence.scores[a[0]];
+      if(!s?.evidence) return;
+      card.appendChild(el("div","coh-ev",
+        `<span class="coh-axis">${renderJa(a[1])} <b>${s.score}/5</b></span><span class="coh-quote">「${renderJa(s.evidence)}」</span>`));
+    });
+    if(latest.coherence.comment) card.appendChild(el("div","coh-comment",esc(latest.coherence.comment)));
+    view.appendChild(card);
+  }
+
+  // ④ 克服したパターン
+  const conq = conqueredPatterns().slice(0,8);
+  const cq = el("div","card","<h2>✅ CONQUERED PATTERNS</h2>");
+  if(conq.length){
+    const ul = el("ul","repeat");
+    conq.forEach(m => {
+      const li = el("li");
+      li.innerHTML = `<span class="badge gw-good">×${m.count}</span>
+        <div><div>${esc(m.label)}</div>
+        <div style="font-size:calc(16px * var(--fs));color:var(--muted)">${renderJa((m.examples||[])[0] || "")}</div></div>
+        <span class="cat">clean for ${m.clean} lessons 🎉</span>`;
+      ul.appendChild(li);
+    });
+    cq.appendChild(ul);
+  } else {
+    cq.appendChild(el("div","empty","Patterns you stop repeating will appear here. Keep going!"));
+  }
+  view.appendChild(cq);
+
+  // ⑤ 文法進捗（genki/quartetの生徒のみ。集計値だけを表示）
+  const gs = STU.grammarSummary;
+  if(gs && gs.total){
+    const g = el("div","card",`<h2>📚 GRAMMAR PROGRESS · ${esc((gs.curriculum||"").toUpperCase())}</h2>`);
+    const tiles = el("div","tiles");
+    tiles.appendChild(tile("MASTERED", gs.counts?.mastered || 0, `/ ${gs.total}`));
+    tiles.appendChild(tile("PRACTICED", gs.counts?.practiced || 0, ""));
+    tiles.appendChild(tile("INTRODUCED", gs.counts?.introduced || 0, ""));
+    g.appendChild(tiles);
+    if((gs.timeline||[]).length >= 2){
+      const cw = el("div","chart");
+      cw.appendChild(lineChart(gs.timeline.map(p => shortDate(p.date)),
+        [{name:"encountered", color:css("--c2"), values:gs.timeline.map(p => p.cumulative)}], ""));
+      g.appendChild(cw);
+    }
+    // 学習した文法を新しい順に一覧（名前・意味・到達状況・自分の文）
+    const MARK = {mastered:{i:"✅",c:"ok"}, practiced:{i:"🔄",c:"mid"}, introduced:{i:"📘",c:"new"}};
+    const byId = new Map();
+    ls.slice().reverse().forEach(l => (l.grammarWorked||[]).forEach(x => { if(!byId.has(x.id)) byId.set(x.id, {...x, date:l.date}); }));
+    if(byId.size){
+      const rank = {mastered:0, practiced:1, introduced:2};
+      const rows = [...byId.values()].sort((a,b) =>
+        (rank[a.status]??3) - (rank[b.status]??3) || (b.date||"").localeCompare(a.date||""));
+      const list = el("div","gr-list");
+      rows.forEach(x => {
+        const m = MARK[x.status] || MARK.introduced;
+        const row = el("div","gr-lrow");
+        row.innerHTML = `<span class="gr-badge ${m.c}">${m.i}</span>
+          <div><div class="gr-lname">${renderJa(x.name)}</div>
+          <div class="gr-lgloss">${renderJa(x.gloss || "")}${x.evidence ? " · 🗣 " + renderJa(x.evidence) : ""}</div></div>
+          <span class="cat">L${x.lesson} · ${esc(shortDate(x.date))}</span>`;
+        list.appendChild(row);
+      });
+      g.appendChild(el("div","gr-roster-head","Grammar you've studied"));
+      g.appendChild(list);
+    }
+    view.appendChild(g);
+  }
+
+  // ⑤' 教科書の語彙カバレッジ（実際に口に出せた語。点数ではなく「使えた語」として見せる）
+  const vc = STU.vocabCoverage;
+  if(vc && (vc.lessons||[]).length){
+    const card = el("div","card",`<h2>📖 TEXTBOOK VOCABULARY · ${esc((vc.curriculum||"").toUpperCase())}</h2>`);
+    card.appendChild(el("div","gw-note","Words from your textbook that you've actually said out loud in a lesson."));
+    const wrap = el("div","catbars");
+    vc.lessons.forEach(row => {
+      const pct = row.total ? Math.round(row.used / row.total * 100) : 0;
+      const bar = el("div","catbar");
+      bar.innerHTML = `<span class="cb-name">${esc(row.label)} L${row.lesson}</span>
+        <span class="cb-track"><i style="width:${Math.max(3, pct)}%;background:var(--accent)"></i></span>
+        <b class="cb-val">${row.used}/${row.total}</b>`;
+      wrap.appendChild(bar);
+    });
+    card.appendChild(wrap);
+    view.appendChild(card);
+  }
+
+  // ⑥ アドバイス・フォーカス履歴（直近5レッスン・新しい順）
+  const hist = el("div","card","<h2>🕘 ADVICE & FOCUS HISTORY</h2>");
+  let histCount = 0;
+  ls.slice(-5).reverse().forEach(l => {
+    if(!(l.advice||[]).length && !(l.nextFocus||[]).length && !(l.growthComment||"").trim()) return;
+    histCount++;
+    const b = el("div","gw-hist");
+    let html = `<div class="gw-hist-date">${esc(shortDate(l.date))}</div>`;
+    if((l.growthComment||"").trim()) html += `<div class="gw-hist-row">🌱 ${renderJa(l.growthComment)}</div>`;
+    (l.advice||[]).forEach(a => html += `<div class="gw-hist-row">💡 ${renderJa(a)}</div>`);
+    (l.nextFocus||[]).forEach(a => html += `<div class="gw-hist-row">🎯 ${renderJa(a)}</div>`);
+    b.innerHTML = html;
+    hist.appendChild(b);
+  });
+  if(histCount) view.appendChild(hist);
+}
+
+/* ============ 生徒追加タブ（admin専用・Mac上のローカル登録サービスへ接続） ============ */
+async function pingAdminLocal(base, token){
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 2500);
+  try{
+    const res = await fetch(`${base}/ping?token=${encodeURIComponent(token)}`, {signal: ctrl.signal});
+    return res.ok;
+  }catch(e){ return false; }
+  finally{ clearTimeout(timer); }
+}
+function renderAddStudent(){
+  if(MODE !== "admin") return;
+  const AL = DB.adminLocal;
+  const head = el("div","card","<h2>🧑‍🎓 生徒追加</h2>");
+  view.appendChild(head);
+  if(!AL || !AL.port || !AL.token){
+    head.appendChild(el("div","empty",
+      "登録サービスが未設定です。Macのターミナルで<br><code>bash ~/AI_projects/nihongo-muscle-data/scripts/setup_admin_service.sh</code><br>を1回実行し、adminページを公開し直してください。"));
+    return;
+  }
+  const base = `http://127.0.0.1:${AL.port}`;
+  const status = el("div","", '<span class="adm-status ng">接続確認中…</span>');
+  head.appendChild(status);
+
+  const form = el("div","card adm-form");
+  form.innerHTML = `
+    <label>氏名（名簿用・フルネーム）</label><input type="text" id="asName" placeholder="例: Craig Simmons">
+    <label>生徒画面の表示名（空欄なら氏名の最初の単語）</label><input type="text" id="asDisp">
+    <label>メールアドレス（任意・後から scripts/set_email.py でも可）</label><input type="email" id="asMail">
+    <label>レベル</label>
+    <div class="adm-row">
+      <label class="adm-opt"><input type="radio" name="asLevel" value="N5" checked><span>N5</span></label>
+      <label class="adm-opt"><input type="radio" name="asLevel" value="N4"><span>N4</span></label>
+      <label class="adm-opt"><input type="radio" name="asLevel" value="N3"><span>N3</span></label>
+      <label class="adm-opt"><input type="radio" name="asLevel" value="N2"><span>N2</span></label>
+      <label class="adm-opt"><input type="radio" name="asLevel" value="N1"><span>N1</span></label>
+    </div>
+    <label>コース</label>
+    <div class="adm-row">
+      <label class="adm-opt"><input type="radio" name="asCur" value="genki"><span>げんき</span></label>
+      <label class="adm-opt"><input type="radio" name="asCur" value="quartet"><span>カルテット</span></label>
+      <label class="adm-opt"><input type="radio" name="asCur" value="free" checked><span>フリー</span></label>
+    </div>
+    <label class="adm-chk"><input type="checkbox" id="asKanji">ふりがななしでも漢字を読める</label>
+    <label class="adm-chk"><input type="checkbox" id="asCal">Macカレンダーの予定からレッスンを探す（Zoom直接予約の生徒向け）</label>
+    <button class="bigbtn" id="asSubmit">この内容で登録する</button>
+    <div id="asMsg" style="min-height:1.4em;color:var(--bad);font-weight:600;margin-top:8px;font-size:calc(15px * var(--fs))"></div>`;
+  view.appendChild(form);
+  const result = el("div","card hidden");
+  view.appendChild(result);
+
+  pingAdminLocal(base, AL.token).then(ok => {
+    if(ok){
+      status.innerHTML = '<span class="adm-status ok">✅ Macの登録サービスに接続OK</span>';
+    } else {
+      status.innerHTML = '<span class="adm-status ng">⚠️ Macの登録サービスに接続できません</span>' +
+        `<div style="font-size:calc(14px * var(--fs));color:var(--muted);margin-top:8px;line-height:1.8">このタブは自分のMacのブラウザでだけ使えます（スマホや他のPCからは不可）。Macでセットアップ（setup_admin_service.sh）が済んでいるか確認してください。代わりに scripts/register_student.command のダブルクリックでも登録できます。</div>`;
+      form.querySelector("#asSubmit").disabled = true;
+    }
+  });
+
+  form.querySelector("#asSubmit").onclick = async () => {
+    const btn = form.querySelector("#asSubmit");
+    const msg = form.querySelector("#asMsg");
+    btn.disabled = true; msg.textContent = "";
+    const body = {
+      name: form.querySelector("#asName").value,
+      displayName: form.querySelector("#asDisp").value,
+      email: form.querySelector("#asMail").value,
+      level: form.querySelector('input[name="asLevel"]:checked').value,
+      curriculum: form.querySelector('input[name="asCur"]:checked').value,
+      kanjiOk: form.querySelector("#asKanji").checked,
+      checkMacCalendar: form.querySelector("#asCal").checked,
+    };
+    try{
+      const res = await fetch(`${base}/register?token=${encodeURIComponent(AL.token)}`, {
+        method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || "登録に失敗しました");
+      form.classList.add("hidden");
+      result.classList.remove("hidden");
+      result.innerHTML = `<h2>✅ 登録しました</h2>
+        <div class="kv2"><div class="k">生徒URL（メール記載OK）</div><div class="v">${esc(data.url)}</div></div>
+        <div class="kv2"><div class="k">初回パスフレーズ（メール禁止・別経路で本人へ）</div><div class="v">${esc(data.passphrase)}</div></div>
+        <div style="font-size:calc(14px * var(--fs));color:var(--warn);line-height:1.7;margin-top:6px">⚠️ パスフレーズはこの画面にしか表示されません。今すぐ控えてください。</div>
+        <button class="bigbtn" id="asPub">ダッシュボードをビルドして公開する</button>
+        <div id="asPubMsg" style="font-size:calc(14px * var(--fs));color:var(--ink2);margin-top:8px;white-space:pre-wrap"></div>`;
+      result.querySelector("#asPub").onclick = async () => {
+        const pb = result.querySelector("#asPub"), pm = result.querySelector("#asPubMsg");
+        pb.disabled = true; pm.textContent = "ビルド・公開中…（30秒ほどかかります）";
+        try{
+          const r2 = await fetch(`${base}/publish?token=${encodeURIComponent(AL.token)}`, {
+            method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({slug: data.slug})});
+          const d2 = await r2.json();
+          if(!r2.ok) throw new Error(d2.error || "公開に失敗しました");
+          pm.textContent = "✅ 公開しました。数分後に生徒URLが有効になります。";
+        }catch(e){ pm.textContent = "❌ " + e.message + "\n（登録自体は完了しています。公開は次回の承認時でもOK）"; pb.disabled = false; }
+      };
+    }catch(e){ msg.textContent = e.message; btn.disabled = false; }
+  };
+}
+
+/* ============ 選択テキストの翻訳ポップアップ（全タブ共通・選択で直接表示） ============
+   ①レッスンデータの事前生成訳（mistakes[].translationEn / expressions[].meaning）に
+     一致すれば通信ゼロで即表示。
+   ②なければDeepLプロキシ（TRANSLATE_PROXY設定時）→ 未設定ならGoogle翻訳へ
+     選択部分のみ送信。失敗時はDeepLリンク。
+   フォーム入力中（Add Studentタブ等）は反応しない。 */
+const TRANSLATE_PROXY = "https://nihongo-translate.yuya-h0710.workers.dev"; // build時に .translate.json から注入（未設定なら空）
+const selPop = document.getElementById("selPop");
+let selTimer = null;
+let selSeq = 0;
+const selCache = new Map();
+function selectionInMd(){
+  const sel = window.getSelection();
+  if(!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+  const node = sel.anchorNode;
+  const elm = node && (node.nodeType === 1 ? node : node.parentElement);
+  if(!elm || !elm.closest("#view")) return null;
+  if(elm.closest(".adm-form, input, textarea")) return null;
+  return sel;
+}
+function selNoRuby(sel){
+  const frag = sel.getRangeAt(0).cloneContents();
+  frag.querySelectorAll("rt").forEach(n => n.remove());
+  return (frag.textContent || "").replace(/\s+/g, " ").trim();
+}
+function placeNear(node, rect){
+  node.style.visibility = "hidden";
+  node.style.display = "block";
+  const w = node.offsetWidth || 300;
+  const h = node.offsetHeight || 80;
+  const x = Math.min(Math.max(rect.left + rect.width / 2 - w / 2, 8), innerWidth - w - 8);
+  const y = rect.bottom + 10 + h > innerHeight - 8 ? Math.max(8, rect.top - h - 10) : rect.bottom + 10;
+  node.style.left = x + "px";
+  node.style.top = y + "px";
+  node.style.visibility = "visible";
+}
+const normJa = s => stripFuri(String(s||"")).replace(/[\s、。！？!?・,.…「」『』（）()〜ー―\-]+/g, "");
+function localTranslation(text){
+  const key = normJa(text);
+  if(key.length < 2) return null;
+  for(const l of lessons()){
+    for(const m of (l.mistakes || [])){
+      if(!m.translationEn) continue;
+      for(const cand of [m.corrected, m.original, m.better]){
+        const ck = normJa(cand);
+        if(!ck) continue;
+        // 文全体（またはそれを含む選択）か、文の大部分（半分以上かつ4文字以上）だけヒット。
+        // 単語レベルの部分選択は文全体の訳とズレるのでDeepLへ回す。
+        const wholeCovered = key.includes(ck);
+        const mostOfSentence = ck.includes(key) && key.length >= Math.max(4, Math.ceil(ck.length * 0.5));
+        if(ck === key || wholeCovered || mostOfSentence) return {tr: m.translationEn, src: "レッスンデータ"};
+      }
+    }
+    for(const x of (l.expressions || [])){
+      const pk = normJa(x.phrase);
+      if(pk && x.meaning && pk === key) return {tr: x.meaning, src: "レッスンデータ"};
+    }
+  }
+  return null;
+}
+function showPop(rect, srcText, trHtml, note){
+  selPop.innerHTML = `<div class="sp-src">${esc(srcText)}</div><div class="sp-tr">${trHtml}</div>` +
+    (note ? `<div class="sp-note">${note}</div>` : "");
+  placeNear(selPop, rect);
+}
+async function remoteTranslation(text){
+  if(selCache.has(text)) return selCache.get(text);
+  let result;
+  if(TRANSLATE_PROXY){
+    const res = await fetch(TRANSLATE_PROXY, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({text})});
+    if(!res.ok) throw new Error("proxy " + res.status);
+    const data = await res.json();
+    result = {tr: data.translation || "(no result)", src: "DeepL"};
+  } else {
+    const res = await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=" + encodeURIComponent(text));
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    result = {tr: (data[0] || []).filter(Boolean).map(x => x[0]).join("") || "(no result)", src: "Google翻訳"};
+  }
+  selCache.set(text, result);
+  return result;
+}
+document.addEventListener("selectionchange", () => {
+  clearTimeout(selTimer);
+  const seq = ++selSeq;
+  selTimer = setTimeout(async () => {
+    const sel = selectionInMd();
+    if(!sel){ selPop.style.display = "none"; return; }
+    const text = selNoRuby(sel);
+    if(!text || text.length < 2 || text.length > 300){ selPop.style.display = "none"; return; }
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    const local = localTranslation(text);
+    if(local){ showPop(rect, text, esc(local.tr), local.src + "（オフライン）"); return; }
+    showPop(rect, text, "…", null);
+    try{
+      const r = await remoteTranslation(text);
+      if(seq !== selSeq) return; // 選択が変わっていたら破棄
+      showPop(rect, text, esc(r.tr), r.src + " — 選択した部分だけが送信されます");
+    }catch(err){
+      if(seq !== selSeq) return;
+      showPop(rect, text,
+        `翻訳を取得できませんでした。<a href="https://www.deepl.com/translator#ja/en/${encodeURIComponent(text)}" target="_blank" rel="noopener">DeepLで開く →</a>`, null);
+    }
+  }, 500);
+});
+document.addEventListener("mousedown", e => { if(!selPop.contains(e.target)) selPop.style.display = "none"; });
+addEventListener("scroll", () => { selPop.style.display = "none"; }, true);
+</script>
+</body>
+</html>
