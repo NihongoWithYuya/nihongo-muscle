@@ -337,6 +337,38 @@ header.mob{display:none}
   border-radius:8px;font-size:calc(18px * var(--fs));color:var(--ink)}
 .coh-comment{margin-top:12px;padding:12px 14px;border-left:3px solid var(--c5);background:var(--surface2);
   border-radius:8px;font-size:calc(17px * var(--fs));color:var(--ink2);line-height:1.8}
+/* --- 診断シート（体験レッスン） --- */
+.diag-headrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.diag-print{padding:8px 14px;border:1px solid var(--grid);border-radius:10px;background:var(--surface2);
+  color:var(--ink2);font-size:calc(14px * var(--fs));font-weight:600;cursor:pointer}
+.diag-print:hover{border-color:var(--accent);color:var(--accent-ink)}
+.diag-levels{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px}
+.diag-level{text-align:center;padding:12px 22px;background:var(--accent-sub);border:1px solid var(--accent);border-radius:14px}
+.diag-level span{display:block;font-size:calc(12px * var(--fs));font-weight:700;letter-spacing:.08em;color:var(--accent-ink)}
+.diag-level b{font-size:calc(40px * var(--fs));font-weight:800;color:var(--accent-ink);line-height:1.2}
+.diag-level b small{font-size:calc(16px * var(--fs));font-weight:600;color:var(--ink2)}
+.diag-prog{font-size:calc(17px * var(--fs));font-weight:700;color:var(--ink)}
+.diag-prog small{font-size:calc(13px * var(--fs));font-weight:600;color:var(--muted)}
+.diag-prog em{display:block;font-style:normal;font-size:calc(12px * var(--fs));font-weight:500;color:var(--muted);margin-top:2px}
+.diag-rationale{margin-top:12px;font-size:calc(17px * var(--fs));color:var(--ink2);line-height:1.75}
+.diag-goal{display:flex;gap:12px;align-items:flex-start;margin-top:12px;font-size:calc(17px * var(--fs));line-height:1.7}
+.diag-goal span{flex:none;padding:4px 10px;border-radius:8px;background:var(--accent-sub);color:var(--accent-ink);
+  font-size:calc(12px * var(--fs));font-weight:700;letter-spacing:.08em;margin-top:2px}
+.diag-target{color:var(--accent-ink);margin-left:6px}
+.diag-steps{margin:14px 0 0;padding-left:26px}
+.diag-steps li{margin-bottom:12px;font-size:calc(17px * var(--fs));line-height:1.7}
+.diag-steps li b{color:var(--ink)}
+.diag-steps li div{font-size:calc(16px * var(--fs));color:var(--ink2);margin-top:2px}
+.diag-tip{margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--accent-sub);
+  color:var(--accent-ink);font-size:calc(16px * var(--fs));line-height:1.7}
+/* 印刷（🖨 Save as PDF）: 診断シートをそのままPDFに保存できるように */
+@media print{
+  #side, header.mob, #scrim, #tooltip, #selPop, .datebar, .diag-print, #furiBtn{display:none !important}
+  .main{margin:0 !important}
+  .wrap{max-width:none !important;padding:0 !important}
+  .card{box-shadow:none !important;border:1px solid #ddd !important;break-inside:avoid}
+  body{background:#fff !important}
+}
 /* --- vocabulary tab（PCは表・スマホはカード型） --- */
 .vocab-search{width:100%;padding:13px 16px;margin-bottom:12px;border-radius:12px;border:1px solid var(--grid);
   background:var(--surface);color:var(--ink);font:inherit;font-size:calc(18px * var(--fs));min-height:48px}
@@ -421,6 +453,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
       <button data-tab="cards"><span class="ico">🃏</span><span class="lbl">Flashcards</span></button>
       <button data-tab="vocab"><span class="ico">📚</span><span class="lbl">Vocabulary</span></button>
       <button data-tab="growth"><span class="ico">🌱</span><span class="lbl">Growth</span></button>
+      <button data-tab="diag" id="navDiag" class="hidden"><span class="ico">🩺</span><span class="lbl">Diagnostic</span></button>
       <button data-tab="addstu" id="navAddStu" class="hidden"><span class="ico">🧑‍🎓</span><span class="lbl">Add Student</span></button>
     </nav>
     <div class="foot">
@@ -442,7 +475,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"l45mjpFgq/v6Yyt7dkTUzQ==\",\"iv\":\"OG4ldFDXVJYo3PFZ\",\"ct\":\"ZFBBhBDP+amq02E1MA+Dpi2UPtG9dNJuVXaWIJhSv8gOsEvk9tOPKjJ971cakqVniiIMo00tbgvR78b7uWwnkRKhIQxp4IoDZn117gGAtczs+LT8/hGM8KR9MSQ+zwaX2CXxRYUzFUcgVEtgc6PyXe9eS9kw4zQv8UBqWL2zaJaB43zk1kupBkKU8EGv3F/klCXBeo4JbrQVhB7aN600VGstiWleR1oe4+pC0GKVcJKV9I4SvWRYgryvGuS6VypaFosVRTV8uZiA2CifbaUSV0gA9yhIlQhv3knYUXbvZz1RwuXoVy2nmtuyKattumXJWIELuCJoT4Pe1fcTs1p1S5FJLXVKR8dqnZPJkHvS3J6E0llXgCJOFD1xj/97kXy2Hc3j1lXjM5AQnYg1D4e/2SEjuJ2BV4CCkdNNabWgF6GbunQODlTXx3fIKeE=\"}";
+const ENCRYPTED = "{\"salt\":\"dzuUNwbscZriyq/TawoKCQ==\",\"iv\":\"j/gAdBwVjphO/3xJ\",\"ct\":\"bhJALbM4KToA1ASClbgzuxruoVHLeXZY+kylvkMpKc3uNpSQ/LpY4kSvMMJI4xliPA5jDiWLMPYH4+G6AmpIBKIjWqeEJ1unCVMEDLPjFVZRDJATjXt0XXOHdAIBGW7ynnW+Sf4tyR2szmj1YQUAMQNwq0wBOuUZBccM/jStVYhn4CpsFrBdFy5Y5d/gptLh6j0iBYKk8VR8f2DhEUrFz6khLt0S0G2Y/J2VHvyMwxXattAxbSG5eN8oVMOW6F9epDXvJiwfonlafwlhA548pM+PIYtiDJCLVOUWTCrTHJ4es8Hb2Rjm1Xqwi966AhAEhb3/yE3M7+8KdC0JCJCb9d8Oad+Z3RcuosrwIu6Re3MnBM2bL7jRY3W+vhatrgZ7ruxR3JBzTUgKesY6Gk3Y8w5Jkt2l5DxUOl9R4TIUdImzVtjtNP2L6EPYh/QmAtc+tqg43DkU32yf5A==\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -725,7 +758,7 @@ function radarChart(axes, series, maxV=5, opts={}){
 
 /* ============ ナビ・生徒切替（admin） ============ */
 const view = document.getElementById("view");
-const RENDER = {home:renderHome, reports:renderReports, cards:renderCards, vocab:renderVocab, growth:renderGrowth, addstu:renderAddStudent};
+const RENDER = {home:renderHome, reports:renderReports, cards:renderCards, vocab:renderVocab, growth:renderGrowth, diag:renderDiagnostic, addstu:renderAddStudent};
 const side = document.getElementById("side");
 try {
   window.matchMedia("(max-width:700px)").addEventListener("change", () => {
@@ -745,6 +778,14 @@ document.querySelectorAll("#side nav button").forEach(b => b.onclick = () => {
 });
 function setStudent(stu){
   STU = stu;
+  // 診断（体験レッスン）タブ: diagnostic付きレッスンがある生徒だけに表示。
+  // 体験生徒（trial）は診断が主役なので既定タブにする。入会後もタブは残る
+  const diagLessons = (stu.lessons || []).filter(l => l.diagnostic);
+  document.getElementById("navDiag").classList.toggle("hidden", !diagLessons.length);
+  if(!diagLessons.length && currentTab === "diag") currentTab = "home";
+  if(diagLessons.length && stu.info?.trial) currentTab = "diag";
+  document.querySelectorAll("#side nav button").forEach(x =>
+    x.classList.toggle("on", x.dataset.tab === currentTab));
   // adminは先生専用なのでふりがな不要（常時OFF・トグルも非表示）
   const savedFuri = localStorage.getItem(furiKey());
   FURI = MODE === "admin" ? false : (savedFuri != null ? savedFuri === "1" : !(stu.info?.kanjiOk));
@@ -887,8 +928,50 @@ function karteCard(){
     row("どこまで", k.stoppedAt ? renderJa(k.stoppedAt) : "") +
     row("約束・宿題", list(k.promises)) +
     row("メモ", k.teacherNotes ? renderJa(k.teacherNotes) : "") +
-    row("次回の重点", list(k.nextFocus))
+    row("次回の重点", list(k.nextFocus)) +
+    (k.intake ? (
+      row("🩺 目標（インテーク）", list(k.intake.goals)) +
+      row("🩺 興味", list(k.intake.interests)) +
+      row("🩺 学習歴", k.intake.learningHistory ? renderJa(k.intake.learningHistory) : "") +
+      row("🩺 メモ", k.intake.notes ? renderJa(k.intake.notes) : "")
+    ) : "")
   ));
+  return c;
+}
+
+/* 体験⇄通常モードの切替（admin Homeのみ・adminローカルサービス経由） */
+function trialModeCard(){
+  if(MODE !== "admin") return null;
+  const AL = DB.adminLocal;
+  const isTrial = !!STU.info?.trial;
+  const hasDiag = (STU.lessons || []).some(l => l.diagnostic);
+  if(!isTrial && !hasDiag) return null;   // 体験に関係ない生徒には出さない
+  const c = el("div","card");
+  c.innerHTML = `<h2>🩺 ${isTrial ? "体験レッスンの生徒" : "通常モード（診断履歴あり）"}</h2>
+    <div style="font-size:calc(15px * var(--fs));color:var(--ink2);line-height:1.8;margin-top:6px">
+      ${isTrial ? "レッスンは診断シートとして解析され、自動公開されません。入会したら通常モードへ切り替えてください。"
+                : "以降のレッスンは通常レビューです。診断履歴は Diagnostic タブに残ります。"}</div>`;
+  if(AL && AL.port && AL.token){
+    const btn = el("button","bigbtn", isTrial ? "✅ 入会 → 通常モードに切り替える" : "体験モードに戻す");
+    const msg = el("div","");
+    msg.style.cssText = "font-size:calc(14px * var(--fs));color:var(--ink2);margin-top:8px;white-space:pre-wrap";
+    btn.onclick = async () => {
+      btn.disabled = true; msg.textContent = "切り替え中…";
+      try{
+        const res = await fetch(`http://127.0.0.1:${AL.port}/set-trial?token=${encodeURIComponent(AL.token)}`, {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({slug: STU.info?.slug, trial: !isTrial})});
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || "切替に失敗しました");
+        STU.info.trial = !!data.trial;
+        msg.textContent = "✅ 切り替えました。次のビルド（次回の承認時）で公開ページにも反映されます。";
+        setTimeout(() => { view.innerHTML = ""; RENDER[currentTab](); }, 900);
+      }catch(e){ msg.textContent = "❌ " + e.message + "（Macのadminサービスに接続できる環境でのみ切替できます）"; btn.disabled = false; }
+    };
+    c.appendChild(btn); c.appendChild(msg);
+  } else {
+    c.appendChild(el("div","",`<div style="font-size:calc(14px * var(--fs));color:var(--muted);margin-top:8px">切替はMacで: <code>python3 scripts/graduate_trial.py ${esc(STU.info?.slug || "")}</code></div>`));
+  }
   return c;
 }
 function grammarCard(){
@@ -1020,6 +1103,152 @@ function coherenceHomeCard(ls){
   if(card) view.appendChild(card);
 }
 
+
+/* ============ 診断シート（体験レッスン・再診断） ============ */
+const DIAG_AXES = [
+  ["vocabulary","Vocabulary","Vocabulary"],
+  ["grammarAccuracy","Grammar accuracy","Accuracy"],
+  ["grammarRange","Grammar range","Range"],
+  ["fluency","Fluency","Fluency"],
+  ["interaction","Interaction","Interaction"],
+  ["coherence","Coherence","Coherence"]];
+const DIAG_BAND = {lower:"lower", mid:"mid", upper:"upper"};
+
+function renderDiagnostic(){
+  const dls = lessons().filter(l => l.diagnostic);
+  if(!dls.length){
+    view.appendChild(el("div","card","<div class='empty'>No diagnostic yet.</div>"));
+    return;
+  }
+  const body = el("div");
+  const showDiag = idx => {
+    body.innerHTML = "";
+    const lesson = dls[idx];
+    const prev = idx > 0 ? dls[idx-1] : null;
+    const d = lesson.diagnostic, pd = prev?.diagnostic;
+    const levelTxt = l2 => `${l2.level.jlpt} <small>(${DIAG_BAND[l2.level.jlptBand] || ""})</small>`;
+
+    /* --- レベルカード --- */
+    const head = el("div","card");
+    head.innerHTML = `<div class="diag-headrow"><h2>🩺 YOUR JAPANESE LEVEL · ${esc(lesson.date)}</h2>
+        <button class="diag-print" onclick="window.print()">🖨 Save as PDF</button></div>
+      <div class="diag-levels">
+        <div class="diag-level"><span>JLPT</span><b>${levelTxt(d)}</b></div>
+        <div class="diag-level"><span>CEFR</span><b>${esc(d.level.cefr)}</b></div>
+        ${pd ? `<div class="diag-prog">${levelTxt(pd)} → ${levelTxt(d)}<em>since ${esc(prev.date)}</em></div>` : ""}
+      </div>
+      <div class="diag-rationale">${renderJa(d.level.rationale || "")}</div>`;
+    body.appendChild(head);
+
+    /* --- レーダー＋軸リスト（コヒーレンスカードと同じ骨格を流用） --- */
+    const card = el("div","card","<h2>📊 SKILL PROFILE</h2>");
+    const row = el("div","coh-d");
+    const rc = el("div","coh-d-radar");
+    const values = l2 => DIAG_AXES.map(a => l2.diagnostic.scores[a[0]]?.score ?? 0);
+    const rSeries = [];
+    if(pd) rSeries.push({name:"previous", color:css("--axis"), values:values(prev), fillOpacity:0.06});
+    rSeries.push({name:"this diagnostic", color:css("--c5"), values:values(lesson)});
+    const mobile = window.matchMedia("(max-width:700px)").matches;
+    const size = mobile ? {w:380, h:352, r:150, f:16, dot:6, corners:true, maxw:420, glyph:HATSU_GLYPH}
+      : {w:700, h:490, r:180, f:22, lm:1.10, maxw:560, dot:6, glyph:HATSU_GLYPH};
+    rc.appendChild(radarChart(DIAG_AXES.map(a => a[2]), rSeries, 5, size));
+    row.appendChild(rc);
+    const list = el("div","coh-d-list");
+    const overall = d.overall;
+    const delta = pd ? overall - pd.overall : null;
+    const flat = delta != null && Math.abs(delta) < 0.05;
+    const deltaHtml = delta == null ? "" :
+      flat ? `<i style="color:var(--muted)">± 0.0<em>vs last diagnostic</em></i>` :
+      `<i style="color:var(${delta >= 0 ? "--good" : "--bad"})">${delta >= 0 ? "▲ +" : "▼ "}${fmt1(Math.abs(delta))}<em>vs last diagnostic</em></i>`;
+    list.innerHTML = `<div class="coh-d-top"><b>${fmt1(overall)}</b><span>/5</span>${deltaHtml}</div>` +
+      DIAG_AXES.map(a => {
+        const s = d.scores[a[0]];
+        return `<div class="coh-d-row"><span>${a[1]}</span>
+          <em><u style="width:${(s?.score ?? 0)*20}%"></u></em><b>${fmt1(s?.score ?? 0)}</b></div>`;
+      }).join("");
+    row.appendChild(list);
+    card.appendChild(row);
+    if(pd) card.appendChild(legendFor(["this diagnostic","previous"],[css("--c5"),css("--axis")]));
+
+    /* 機械指標（固定の物差し）: AI採点の横に並べて三角測量する */
+    const m = lesson.metrics || {}, cm = lesson.coherenceMetrics || {};
+    const pmm = prev?.metrics || {}, pcm = prev?.coherenceMetrics || {};
+    const talk = m.studentTalkSec && m.teacherTalkSec ? Math.round(100*m.studentTalkSec/(m.studentTalkSec+m.teacherTalkSec)) : null;
+    const ptalk = pmm.studentTalkSec && pmm.teacherTalkSec ? Math.round(100*pmm.studentTalkSec/(pmm.studentTalkSec+pmm.teacherTalkSec)) : null;
+    const tiles = el("div","tiles");
+    if(m.cpm != null) tiles.appendChild(tile("SPEED", m.cpm, "chars/min", pmm.cpm != null ? m.cpm - pmm.cpm : null));
+    if(talk != null) tiles.appendChild(tile("TALK SHARE", talk, "%", ptalk != null ? talk - ptalk : null));
+    if(cm.connectivesPer100 != null) tiles.appendChild(tile("CONNECTIVES", cm.connectivesPer100, "/100 chars",
+      pcm.connectivesPer100 != null ? Math.round((cm.connectivesPer100 - pcm.connectivesPer100)*10)/10 : null));
+    if(cm.meanTurnChars != null) tiles.appendChild(tile("AVG ANSWER", Math.round(cm.meanTurnChars), "chars",
+      pcm.meanTurnChars != null ? Math.round(cm.meanTurnChars - pcm.meanTurnChars) : null));
+    if(tiles.children.length) card.appendChild(tiles);
+    body.appendChild(card);
+
+    /* --- 根拠と伸ばし方（coh-ev の見た目を流用） --- */
+    const ev = el("div","card","<h2>🗣 WHAT WE HEARD & HOW TO LEVEL UP</h2>");
+    DIAG_AXES.forEach(a => {
+      const s = d.scores[a[0]];
+      if(!s?.evidence) return;
+      ev.appendChild(el("div","coh-ev",
+        `<div class="coh-ev-head">${a[1]} <b>${fmt1(s.score)}</b></div>
+         <div class="coh-quote">「${renderJa(s.evidence)}」</div>
+         ${s.feedback ? `<div class="coh-fb">${esc(s.feedback)}</div>` : ""}
+         ${s.improved ? `<div class="coh-improved">✅ Try: 「${renderJa(s.improved)}」</div>` : ""}`));
+    });
+    if(d.comment) ev.appendChild(el("div","coh-comment",esc(d.comment)));
+    body.appendChild(ev);
+
+    /* --- 目標とロードマップ --- */
+    if(d.goal && d.roadmap?.length){
+      const rm = el("div","card",
+        `<h2>🗺 YOUR ROADMAP</h2>
+         <div class="diag-goal"><span>GOAL</span><div>${renderJa(d.goal.statement || "")}
+           <b class="diag-target">→ ${esc(d.goal.targetJlpt || "")}</b></div></div>`);
+      const ol = el("ol","diag-steps");
+      d.roadmap.forEach(step => {
+        ol.appendChild(el("li","", `<b>${renderJa(step.milestone || "")}</b><div>${renderJa(step.detail || "")}</div>`));
+      });
+      rm.appendChild(ol);
+      body.appendChild(rm);
+    }
+
+    /* --- その場ミニ教材（今回の実ミスから） --- */
+    if(d.miniLesson?.length){
+      const ml = el("div","card","<h2>✏️ MINI LESSON FROM YOUR TRIAL</h2>");
+      d.miniLesson.forEach(item => {
+        const idx2 = parseInt(String(item.source||"").split(":")[1], 10);
+        const mk = (lesson.mistakes || [])[idx2];
+        if(!mk) return;
+        ml.appendChild(el("div","coh-ev",
+          `<div class="coh-quote">「${renderJa(mk.original || "")}」</div>
+           <div class="coh-improved">✅ 「${renderJa(mk.better || mk.corrected || "")}」</div>
+           ${mk.explanation ? `<div class="coh-fb">${renderJa(mk.explanation)}</div>` : ""}
+           ${item.tip ? `<div class="diag-tip">💡 ${esc(item.tip)}</div>` : ""}`));
+      });
+      ml.appendChild(el("div","",`<div style="font-size:calc(14px * var(--fs));color:var(--muted);margin-top:10px">These are also waiting for you in the Flashcards tab.</div>`));
+      body.appendChild(ml);
+    }
+  };
+
+  if(dls.length > 1){
+    const bar = el("div","datebar");
+    dls.forEach((l, i) => {
+      const b = el("button","", esc(l.date));
+      b.dataset.d = l.date;
+      b.onclick = () => {
+        bar.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+        showDiag(i);
+      };
+      if(i === dls.length-1) b.classList.add("on");
+      bar.appendChild(b);
+    });
+    view.appendChild(bar);
+  }
+  view.appendChild(body);
+  showDiag(dls.length-1);
+}
+
 function renderHome(){
   const ls = lessons();
   const sb = statusBanner();
@@ -1028,6 +1257,8 @@ function renderHome(){
   if(ua) view.appendChild(ua);
   const kc = karteCard();
   if(kc) view.appendChild(kc);
+  const tm = trialModeCard();
+  if(tm) view.appendChild(tm);
   const gc = grammarCard();
   if(gc) view.appendChild(gc);
   if(!ls.length){
@@ -2167,6 +2398,7 @@ function renderAddStudent(){
     </div>
     <label class="adm-chk"><input type="checkbox" id="asKanji">ふりがななしでも漢字を読める</label>
     <label class="adm-chk"><input type="checkbox" id="asCal">Macカレンダーの予定からレッスンを探す（Zoom直接予約の生徒向け）</label>
+    <label class="adm-chk"><input type="checkbox" id="asTrial">🩺 体験レッスン（診断シートを作る・通常レビューなし・自動公開されない）</label>
     <button class="bigbtn" id="asSubmit">この内容で登録する</button>
     <div id="asMsg" style="min-height:1.4em;color:var(--bad);font-weight:600;margin-top:8px;font-size:calc(15px * var(--fs))"></div>`;
   view.appendChild(form);
@@ -2195,6 +2427,7 @@ function renderAddStudent(){
       curriculum: form.querySelector('input[name="asCur"]:checked').value,
       kanjiOk: form.querySelector("#asKanji").checked,
       checkMacCalendar: form.querySelector("#asCal").checked,
+      trial: form.querySelector("#asTrial").checked,
     };
     try{
       const res = await fetch(`${base}/register?token=${encodeURIComponent(AL.token)}`, {
