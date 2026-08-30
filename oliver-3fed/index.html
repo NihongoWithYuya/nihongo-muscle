@@ -475,7 +475,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"dzuUNwbscZriyq/TawoKCQ==\",\"iv\":\"j/gAdBwVjphO/3xJ\",\"ct\":\"bhJALbM4KToA1ASClbgzuxruoVHLeXZY+kylvkMpKc3uNpSQ/LpY4kSvMMJI4xliPA5jDiWLMPYH4+G6AmpIBKIjWqeEJ1unCVMEDLPjFVZRDJATjXt0XXOHdAIBGW7ynnW+Sf4tyR2szmj1YQUAMQNwq0wBOuUZBccM/jStVYhn4CpsFrBdFy5Y5d/gptLh6j0iBYKk8VR8f2DhEUrFz6khLt0S0G2Y/J2VHvyMwxXattAxbSG5eN8oVMOW6F9epDXvJiwfonlafwlhA548pM+PIYtiDJCLVOUWTCrTHJ4es8Hb2Rjm1Xqwi966AhAEhb3/yE3M7+8KdC0JCJCb9d8Oad+Z3RcuosrwIu6Re3MnBM2bL7jRY3W+vhatrgZ7ruxR3JBzTUgKesY6Gk3Y8w5Jkt2l5DxUOl9R4TIUdImzVtjtNP2L6EPYh/QmAtc+tqg43DkU32yf5A==\"}";
+const ENCRYPTED = "{\"salt\":\"gxK1IZxt7kHPvOnpYjghRA==\",\"iv\":\"DA3eT72SKsAW0CuM\",\"ct\":\"4xa8IQH5r5tijOuE3TQmMWpqj1jIuzaCJz2VS1I5q1TrccK1LqB0PuoU9jZ27ME/JiQxaKRUjIaxJMvvxh5QITiV+Kq3P69HxkgwwYPuqAX/9PNVhsedVwzbn6vuS1ysbOQgjxGtmvlL+76dQSZ9iGDgVQADXMmL/AJKraCxFZ7KlWf8CKPI+x0vqPoywQwzZ965GEamrBcelEjV775CP7vCSpV97lZAmpGGWfrMVeD4M0GFJwRAbMjOYef/B+PgbrDjysWW6YerIUjFBpcEnL8Bp+E43kGv7jIIJ2wqN2oOYTb7l1sSwtOcCMv3EQwGCkjzIEOCQBWNNilTkjFd6j2lZ0KOodfFntlPmx29kiAkrQCO8fATtKlIUdEdBLbKkW4Ec5nHC9Yi7FuhAP4bgZh6tfWzTuJOe4+SzUFmwrR+Wcd3QahBry7XN8Rw4zvLgq+YrM3sBzaRxA==\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -1220,11 +1220,18 @@ function renderDiagnostic(){
         const idx2 = parseInt(String(item.source||"").split(":")[1], 10);
         const mk = (lesson.mistakes || [])[idx2];
         if(!mk) return;
-        ml.appendChild(el("div","coh-ev",
+        const block = el("div","coh-ev",
           `<div class="coh-quote">「${renderJa(mk.original || "")}」</div>
            <div class="coh-improved">✅ 「${renderJa(mk.better || mk.corrected || "")}」</div>
            ${mk.explanation ? `<div class="coh-fb">${renderJa(mk.explanation)}</div>` : ""}
-           ${item.tip ? `<div class="diag-tip">💡 ${esc(item.tip)}</div>` : ""}`));
+           ${item.tip ? `<div class="diag-tip">💡 ${esc(item.tip)}</div>` : ""}`);
+        // 先生の実音声があれば言い直し文の頭に🎧（通常レポートと同じ体験）
+        const au = (mk.better && mk.betterAudio) ? mk.betterAudio : mk.correctedAudio;
+        if(au){
+          const imp = block.querySelector(".coh-improved");
+          imp.insertBefore(speakerBtn(au), imp.firstChild);
+        }
+        ml.appendChild(block);
       });
       ml.appendChild(el("div","",`<div style="font-size:calc(14px * var(--fs));color:var(--muted);margin-top:10px">These are also waiting for you in the Flashcards tab.</div>`));
       body.appendChild(ml);
