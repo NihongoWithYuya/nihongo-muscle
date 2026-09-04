@@ -355,13 +355,11 @@ header.mob{display:none}
 .diag-prog small{font-size:calc(13px * var(--fs));font-weight:600;color:var(--muted)}
 .diag-prog em{display:block;font-style:normal;font-size:calc(12px * var(--fs));font-weight:500;color:var(--muted);margin-top:2px}
 .diag-rationale{margin-top:12px;font-size:calc(17px * var(--fs));color:var(--ink2);line-height:1.75}
-.diag-goal{display:flex;gap:12px;align-items:flex-start;margin-top:12px;font-size:calc(17px * var(--fs));line-height:1.7}
-.diag-goal span{flex:none;padding:4px 10px;border-radius:8px;background:var(--accent-sub);color:var(--accent-ink);
-  font-size:calc(12px * var(--fs));font-weight:700;letter-spacing:.08em;margin-top:2px}
-.diag-target{color:var(--accent-ink);margin-left:6px}
 .diag-steps{margin:14px 0 0;padding-left:26px}
 .diag-steps li{margin-bottom:12px;font-size:calc(17px * var(--fs));line-height:1.7}
 .diag-steps li b{color:var(--ink)}
+.diag-steps li .diag-ja{display:block;font-style:normal;font-size:calc(15px * var(--fs));
+  color:var(--accent-ink);font-weight:600;margin-top:2px}
 .diag-steps li div{font-size:calc(16px * var(--fs));color:var(--ink2);margin-top:2px}
 .diag-tip{margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--accent-sub);
   color:var(--accent-ink);font-size:calc(16px * var(--fs));line-height:1.7}
@@ -479,7 +477,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"VlNiipGcPTvjyliIcq3pIw==\",\"iv\":\"d0DPb76qyqRMs0wb\",\"ct\":\"FLFdtbWFtRaHvt8vriZC5AQeNKBJ5QYM5h9ApEcNdeA2O1qZmGwePhKxIGgPcK9AZEI5EGYQwB2sn6M3uKhj4TZWOnA8jrc0UEuWQKJb2t5h85YnMT+qfcirA3dlRQeaY6OouXcNb0gk6SjM/13PFggu9i0T4u8Arj/slFfO0UJMun9ZVW54df5/gCf7Aj2Dauk+qfoM8r2jTthDwgcs0aCF7I1yzyx3eL989D+5MijMz+NRQskNmjZz6/KSbojWqKYbbrawyPCtD6NUNIpcw7imMi3FwQelJCWVoqENhIdlww+gWWRA5hNf7EX4DuLlpNRySTZND6l7Kb99aBNJYHMJ5D2qAPOtb6VQLWeDdYVfX6YDNXywlcp5iPltVfVGU4Led3yZNTyXbokTIHhXu8ShlAS0UjjsRoSRzYUUOSYHwkmj14oKklCiGshL4Qz4eLAR05EUGt32g4CKlr0JPr7eO/xetmp4ySOoPhatrlWHChkR8/nuTtPC0kVXW/O3fqc3D8XjzDDYwiWYUC/awX6TH8gH1k1/khd7+VQG7hQQfb6DKhXf+CNKj26vhbeMcIYOj9YSziISo/D6wpTLn6oXKFwmULO8fMBoDzECLWo5vZyB3NCkDKX/0YwBleg6Xtiz0EEFI7dwCvd4zlaV5tydhpC/OFlnMRBWbHf4nAKlFgSH+iuyQkwKynRFll/1NHTf3YJiZRHxja+X07MKrLjQy9Bt\"}";
+const ENCRYPTED = "{\"salt\":\"G2j0d62k4H95+N+c9mFCyg==\",\"iv\":\"CpV50KnU984Utv8p\",\"ct\":\"/LesFpgVTZko5VGVs2sPOwqS8b0t3Du9k8c81K/YRa+Aj9STb5eYbdTn0RNEi2Upoaep2bZAqhEC2otnWJ5z3Ppov7QAKvDrkIGvFjhIsLfCLG3NVAKQ7jL4VURflP9T3FUpE1wdVpoCbeIZvg/ha8Z4AK7PhXjOLD/sbOrLqlvOl7jMUK6axsWTUHxV275Dn5aCOzvszkzb1jBcGtWYKbi9FVZiF7xKBjs5FJuS7ubcpjBJ1Rf3RrJaZt7YxCGJyJz2qs84iqI26VoPFbe3OBXuq8EFyjVH+RqIpyb9puEOs0eC3txaMtI3RCXsoS3jSJtLIGXQAjXn6Fpv2OvzvAkg/FXVKtMilJEsvBYMAThPAX3ScWrWIE1U2dDlstmEMqzaCSO59K1/ZJqf9jsRdxxbbbJ64QxQ5sZ/vbFFAhYPJEnG/q40Pu+Zdl2tmYKzKBdMzn+f+d8Wjzp59nKBFOvILok1GRtE/GCczgv9LAY4Odx1Fm75oQNCZKiMU5pDngBeA6HorXQgvfJnpRhhFoTR3T7FHlb8YcrGCxrjYRcdQeuJAHvIH3EH/o0750Ow9qvXjr3jf9o42Tupt6ydlzZsQ2auzJeDxNX4Bf2XAmd78KzljtnrZKuKAXWhggjPamlAcNYcXXVdxzoPiZOUVmpGvBHwDOBUaHlaqqvPqkir/2xEtYN4H+bO70cPXXzjZYaEepGmnGgKEo3MnVY9EoSxWsVI\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -1212,15 +1210,15 @@ function renderDiagnostic(){
     if(d.comment) ev.appendChild(el("div","coh-comment",esc(d.comment)));
     body.appendChild(ev);
 
-    /* --- 目標とロードマップ --- */
-    if(d.goal && d.roadmap?.length){
-      const rm = el("div","card",
-        `<h2>🗺 YOUR ROADMAP</h2>
-         <div class="diag-goal"><span>GOAL</span><div>${renderJa(d.goal.statement || "")}
-           <b class="diag-target">→ ${esc(d.goal.targetJlpt || "")}</b></div></div>`);
+    /* --- ロードマップ（見出しは英語＋日本語の併記） --- */
+    if(d.roadmap?.length){
+      const rm = el("div","card","<h2>🗺 YOUR ROADMAP</h2>");
       const ol = el("ol","diag-steps");
       d.roadmap.forEach(step => {
-        ol.appendChild(el("li","", `<b>${renderJa(step.milestone || "")}</b><div>${renderJa(step.detail || "")}</div>`));
+        ol.appendChild(el("li","",
+          `<b>${renderJa(step.milestone || "")}</b>` +
+          (step.milestoneJa ? `<i class="diag-ja">${renderJa(step.milestoneJa)}</i>` : "") +
+          `<div>${renderJa(step.detail || "")}</div>`));
       });
       rm.appendChild(ol);
       body.appendChild(rm);
