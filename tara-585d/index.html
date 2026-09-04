@@ -141,6 +141,10 @@ header.mob{display:none}
 .adm-opt input{position:absolute;opacity:0}
 .adm-opt span{display:block;text-align:center;padding:10px 6px;border:1.5px solid var(--grid);border-radius:9px;font-weight:600;cursor:pointer;color:var(--ink2);font-size:calc(15px * var(--fs))}
 .adm-opt input:checked + span{background:var(--accent-sub);border-color:var(--accent);color:var(--accent-ink)}
+.adm-sub{margin-top:8px;padding:10px 12px;border:1px dashed var(--grid);border-radius:9px;background:var(--surface2)}
+.adm-hint{font-size:calc(13px * var(--fs));color:var(--muted);margin-top:8px}
+.adm-lv{flex:none;min-width:60px}
+.adm-lv[disabled] + span{opacity:.4;cursor:not-allowed}
 .adm-form label.adm-chk{display:flex;align-items:center;gap:9px;margin:14px 0 0;font-size:calc(15px * var(--fs));font-weight:500;letter-spacing:0;color:var(--ink2);cursor:pointer}
 .adm-chk input{flex:none;width:18px;height:18px;accent-color:var(--accent);margin:0}
 .adm-status{font-size:calc(13px * var(--fs));font-weight:700;border-radius:999px;padding:4px 12px;display:inline-block}
@@ -475,7 +479,7 @@ table.vocab .v-date{color:var(--muted);white-space:nowrap;font-variant-numeric:t
 
 <script>
 "use strict";
-const ENCRYPTED = "{\"salt\":\"NuPV+P2nyVhd1GNVE7e6RA==\",\"iv\":\"vXiKXHxHUCjPO3vw\",\"ct\":\"Di1tYWr7/cFOPGjQgc2u3c3/SDcWjbRog41BJdhQ6kzy/ScggBYhETFoxsgdJXuG0DzZnf3yNefdGq+Cle1/7kKZcHaZygfD7bHPBCaf7Z4+9RghgEPNKWVfi3dVuDimVIKbK/RYwlFifLWwAVRPTk2oJ9Kf3r9ty51mAhDhMrzY8IgIV9zOHBK7qYHQWT5MDrx4+yAE0QSq9naSt2cHvWJBXQkd52WSzNcmmzQOA93DdV0RSnEFeHcv6Zsi/e0I+1cZqHK1Tdp7ua0KivSPirvn295+2b9DLUi35FitcxSQFjHP1cCtG92b36jZenpbc4gVHt9Z880rgUBzUsGzm+ipjPD0Ivfclvt3Pw7LPB/TfFV8C8nSoFsHMHsdI1uw7aoKdPAFEI+p/Ni9HEhDLRS8o2J45yCfmPAWy5IefKFLndJr4/Vo6ICVjYEhGa+NggBx5A==\"}";
+const ENCRYPTED = "{\"salt\":\"VlNiipGcPTvjyliIcq3pIw==\",\"iv\":\"d0DPb76qyqRMs0wb\",\"ct\":\"FLFdtbWFtRaHvt8vriZC5AQeNKBJ5QYM5h9ApEcNdeA2O1qZmGwePhKxIGgPcK9AZEI5EGYQwB2sn6M3uKhj4TZWOnA8jrc0UEuWQKJb2t5h85YnMT+qfcirA3dlRQeaY6OouXcNb0gk6SjM/13PFggu9i0T4u8Arj/slFfO0UJMun9ZVW54df5/gCf7Aj2Dauk+qfoM8r2jTthDwgcs0aCF7I1yzyx3eL989D+5MijMz+NRQskNmjZz6/KSbojWqKYbbrawyPCtD6NUNIpcw7imMi3FwQelJCWVoqENhIdlww+gWWRA5hNf7EX4DuLlpNRySTZND6l7Kb99aBNJYHMJ5D2qAPOtb6VQLWeDdYVfX6YDNXywlcp5iPltVfVGU4Led3yZNTyXbokTIHhXu8ShlAS0UjjsRoSRzYUUOSYHwkmj14oKklCiGshL4Qz4eLAR05EUGt32g4CKlr0JPr7eO/xetmp4ySOoPhatrlWHChkR8/nuTtPC0kVXW/O3fqc3D8XjzDDYwiWYUC/awX6TH8gH1k1/khd7+VQG7hQQfb6DKhXf+CNKj26vhbeMcIYOj9YSziISo/D6wpTLn6oXKFwmULO8fMBoDzECLWo5vZyB3NCkDKX/0YwBleg6Xtiz0EEFI7dwCvd4zlaV5tydhpC/OFlnMRBWbHf4nAKlFgSH+iuyQkwKynRFll/1NHTf3YJiZRHxja+X07MKrLjQy9Bt\"}";
 const MODE = "student"; // "student" | "admin"（build_dashboard.mjs が置換）
 let DB = null;      // 復号済みペイロード全体
 let STU = null;     // 表示中の生徒データ {info, lessons, mistakes, cards, reports}
@@ -978,24 +982,33 @@ function grammarCard(){
   if(MODE !== "admin") return null;
   const gp = STU.grammarProgress;
   if(!gp || !gp.lessons?.length) return null;
-  const c = el("div","card",`<h2>📚 教科書進捗 · ${esc((gp.curriculum||"").toUpperCase())}</h2>`);
-  const wrap = el("div");
-  wrap.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-top:12px";
-  gp.lessons.forEach(l => {
-    const covered = l.total ? (l.practiced + l.mastered) / l.total : 0;
-    const touched = l.total ? (l.introduced + l.practiced + l.mastered) / l.total : 0;
-    const bg = covered >= 1 ? "var(--accent)"
-      : covered > 0 ? "rgba(13,148,136,.35)"
-      : touched > 0 ? "rgba(13,148,136,.14)"
-      : "var(--surface2)";
-    const ink = covered >= 1 ? "#fff" : "var(--ink)";
-    const box = el("span");
-    box.style.cssText = `min-width:40px;text-align:center;padding:6px 4px;border-radius:6px;background:${bg};color:${ink};font-size:12px;cursor:default`;
-    box.title = `L${l.lesson}: 定着${l.mastered} / 練習${l.practiced} / 導入${l.introduced} / 全${l.total}項目`;
-    box.textContent = (l.book === 2 ? "II-" : "I-") + l.lesson;
-    wrap.appendChild(box);
+  const c = el("div","card","<h2>📚 教科書進捗</h2>");
+  // 教材ごとに1ブロック（1コースの生徒は従来と同じ見た目）
+  const groups = gp.courses?.length ? gp.courses
+    : [{ label: (gp.curriculum||"").toUpperCase(), lessons: gp.lessons }];
+  groups.forEach(g => {
+    if(groups.length > 1 || g.label){
+      const h = el("div","",`<div style="font-size:calc(13px * var(--fs));font-weight:700;color:var(--accent-ink);letter-spacing:.06em;margin-top:12px">${esc(g.label||"")}</div>`);
+      c.appendChild(h);
+    }
+    const wrap = el("div");
+    wrap.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-top:8px";
+    (g.lessons||[]).forEach(l => {
+      const covered = l.total ? (l.practiced + l.mastered) / l.total : 0;
+      const touched = l.total ? (l.introduced + l.practiced + l.mastered) / l.total : 0;
+      const bg = covered >= 1 ? "var(--accent)"
+        : covered > 0 ? "rgba(13,148,136,.35)"
+        : touched > 0 ? "rgba(13,148,136,.14)"
+        : "var(--surface2)";
+      const ink = covered >= 1 ? "#fff" : "var(--ink)";
+      const box = el("span");
+      box.style.cssText = `min-width:40px;text-align:center;padding:6px 4px;border-radius:6px;background:${bg};color:${ink};font-size:12px;cursor:default`;
+      box.title = `${l.title || ("L" + l.lesson)}: 定着${l.mastered} / 練習${l.practiced} / 導入${l.introduced} / 全${l.total}項目`;
+      box.textContent = l.chip || ((l.book === 2 ? "II-" : "I-") + l.lesson);
+      wrap.appendChild(box);
+    });
+    c.appendChild(wrap);
   });
-  c.appendChild(wrap);
   c.appendChild(el("div","",`<div style="font-size:calc(13px * var(--fs));color:var(--muted);margin-top:10px">
     薄い=導入あり / 中間=一部練習済み / 濃い=全項目練習済み（ホバーで内訳）</div>`));
   return c;
@@ -2289,7 +2302,7 @@ function renderGrowth(){
   // ⑤ 文法進捗（genki/quartetの生徒のみ。集計値だけを表示）
   const gs = STU.grammarSummary;
   if(gs && gs.total){
-    const g = el("div","card",`<h2>📚 GRAMMAR PROGRESS · ${esc((gs.curriculum||"").toUpperCase())}</h2>`);
+    const g = el("div","card",`<h2>📚 GRAMMAR PROGRESS · ${esc(gs.label || (gs.curriculum||"").toUpperCase())}</h2>`);
     const tiles = el("div","tiles");
     tiles.appendChild(tile("MASTERED", gs.counts?.mastered || 0, `/ ${gs.total}`));
     tiles.appendChild(tile("PRACTICED", gs.counts?.practiced || 0, ""));
@@ -2316,7 +2329,7 @@ function renderGrowth(){
         row.innerHTML = `<span class="gr-badge ${m.c}">${m.i}</span>
           <div><div class="gr-lname">${renderJa(x.name)}</div>
           <div class="gr-lgloss">${renderJa(x.gloss || "")}${x.evidence ? " · 🗣 " + renderJa(x.evidence) : ""}</div></div>
-          <span class="cat">L${x.lesson} · ${esc(shortDate(x.date))}</span>`;
+          <span class="cat">${esc(x.where || ("L" + x.lesson))} · ${esc(shortDate(x.date))}</span>`;
         list.appendChild(row);
       });
       g.appendChild(el("div","gr-roster-head","Grammar you've studied"));
@@ -2328,13 +2341,13 @@ function renderGrowth(){
   // ⑤' 教科書の語彙カバレッジ（実際に口に出せた語。点数ではなく「使えた語」として見せる）
   const vc = STU.vocabCoverage;
   if(vc && (vc.lessons||[]).length){
-    const card = el("div","card",`<h2>📖 TEXTBOOK VOCABULARY · ${esc((vc.curriculum||"").toUpperCase())}</h2>`);
+    const card = el("div","card",`<h2>📖 TEXTBOOK VOCABULARY · ${esc(vc.label || (vc.curriculum||"").toUpperCase())}</h2>`);
     card.appendChild(el("div","gw-note","Words from your textbook that you've actually said out loud in a lesson."));
     const wrap = el("div","catbars");
     vc.lessons.forEach(row => {
       const pct = row.total ? Math.round(row.used / row.total * 100) : 0;
       const bar = el("div","catbar");
-      bar.innerHTML = `<span class="cb-name">${esc(row.label)} L${row.lesson}</span>
+      bar.innerHTML = `<span class="cb-name">${esc(row.name || (row.label + " L" + row.lesson))}</span>
         <span class="cb-track"><i style="width:${Math.max(3, pct)}%;background:var(--accent)"></i></span>
         <b class="cb-val">${row.used}/${row.total}</b>`;
       wrap.appendChild(bar);
@@ -2397,12 +2410,12 @@ function renderAddStudent(){
       <label class="adm-opt"><input type="radio" name="asLevel" value="N2"><span>N2</span></label>
       <label class="adm-opt"><input type="radio" name="asLevel" value="N1"><span>N1</span></label>
     </div>
-    <label>コース</label>
-    <div class="adm-row">
-      <label class="adm-opt"><input type="radio" name="asCur" value="genki"><span>げんき</span></label>
-      <label class="adm-opt"><input type="radio" name="asCur" value="quartet"><span>カルテット</span></label>
-      <label class="adm-opt"><input type="radio" name="asCur" value="free" checked><span>フリー</span></label>
-    </div>
+    <label>教材（複数選択可・何も選ばなければフリートーク）</label>
+    <div class="adm-row" id="asCourseTb"></div>
+    <label>🎯 JLPT対策</label>
+    <div class="adm-row" id="asJlptLv"></div>
+    <div class="adm-sub hidden" id="asJlptBooks"></div>
+    <div class="adm-hint" id="asCourseHint">選択中: フリートーク</div>
     <label class="adm-chk"><input type="checkbox" id="asKanji">ふりがななしでも漢字を読める</label>
     <label class="adm-chk"><input type="checkbox" id="asCal">Macカレンダーの予定からレッスンを探す（Zoom直接予約の生徒向け）</label>
     <label class="adm-chk"><input type="checkbox" id="asTrial">🩺 体験レッスン（診断シートを作る・通常レビューなし・自動公開されない）</label>
@@ -2411,6 +2424,51 @@ function renderAddStudent(){
   view.appendChild(form);
   const result = el("div","card hidden");
   view.appendChild(result);
+
+  /* 教材の選択（登録簿=DB.courseRegistry から組み立てる）。
+     チェック状態は Set で持つので、JLPTのレベルを切り替えても選択が消えない */
+  const REG = Array.isArray(DB.courseRegistry) ? DB.courseRegistry : [];
+  const picked = new Set();
+  const hint = form.querySelector("#asCourseHint");
+  const jlptBooks = form.querySelector("#asJlptBooks");
+  const updateHint = () => {
+    const names = [...picked].map(id => REG.find(c => c.id === id)?.label || id);
+    hint.textContent = "選択中: " + (names.length ? names.join(" ＋ ") : "フリートーク（教材なし）");
+  };
+  const chip = (course, checked) => {
+    const lab = el("label","adm-opt");
+    lab.innerHTML = `<input type="checkbox" value="${esc(course.id)}"${checked ? " checked" : ""}><span>${esc(course.label || course.id)}</span>`;
+    lab.querySelector("input").onchange = e => {
+      if(e.target.checked) picked.add(course.id); else picked.delete(course.id);
+      updateHint();
+    };
+    return lab;
+  };
+  const tbWrap = form.querySelector("#asCourseTb");
+  REG.filter(c => c.kind !== "jlpt").forEach(c => tbWrap.appendChild(chip(c, false)));
+  if(!tbWrap.children.length) tbWrap.appendChild(el("div","adm-hint","教科書の登録がありません"));
+
+  const LEVELS = ["N5","N4","N3","N2","N1"];
+  const lvWrap = form.querySelector("#asJlptLv");
+  const showLevel = lv => {
+    jlptBooks.innerHTML = "";
+    const books = REG.filter(c => c.kind === "jlpt" && c.jlpt === lv);
+    if(!books.length){
+      jlptBooks.classList.add("hidden");
+      return;
+    }
+    const row = el("div","adm-row");
+    books.forEach(c => row.appendChild(chip(c, picked.has(c.id))));
+    jlptBooks.appendChild(row);
+    jlptBooks.classList.remove("hidden");
+  };
+  LEVELS.forEach(lv => {
+    const n = REG.filter(c => c.kind === "jlpt" && c.jlpt === lv).length;
+    const lab = el("label","adm-opt");
+    lab.innerHTML = `<input type="radio" name="asJlpt" class="adm-lv" value="${lv}"${n ? "" : " disabled"}><span>${lv}${n ? ` (${n})` : ""}</span>`;
+    lab.querySelector("input").onchange = () => showLevel(lv);
+    lvWrap.appendChild(lab);
+  });
 
   pingAdminLocal(base, AL.token).then(ok => {
     if(ok){
@@ -2431,7 +2489,8 @@ function renderAddStudent(){
       displayName: form.querySelector("#asDisp").value,
       email: form.querySelector("#asMail").value,
       level: form.querySelector('input[name="asLevel"]:checked').value,
-      curriculum: form.querySelector('input[name="asCur"]:checked').value,
+      curricula: [...picked],
+      curriculum: [...picked][0] || "free",
       kanjiOk: form.querySelector("#asKanji").checked,
       checkMacCalendar: form.querySelector("#asCal").checked,
       trial: form.querySelector("#asTrial").checked,
